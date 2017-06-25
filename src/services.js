@@ -6,6 +6,7 @@ export const server = axios.create({
 
 export default {
     server: {
-        get: (url) => server ({method: `GET`, url})
+        get: (url) => server ({method: `GET`, url}),
+        post: (url, data) => server ({method: `POST`, url, data})
     }
 }

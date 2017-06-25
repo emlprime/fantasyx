@@ -39,16 +39,17 @@ class TestDraft(unittest.TestCase):
         result = [character.name for character in self.user.draft_list()]
         self.assertEqual(result, expected)
         
-    def test_draft_list_removed(self):
+    def test_draft_list_released(self):
         self.user.draft(self.character1)
         self.user.draft(self.character2)
         
-        self.user.remove(self.character1)
+        self.user.release(self.character1)
         
         expected = [self.character2.name]
         result = [character.name for character in self.user.draft_list()]
         self.assertEqual(result, expected)
-        
+
+    def 
         
 if __name__ == '__main__':
     unittest.main()

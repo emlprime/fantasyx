@@ -19,6 +19,8 @@ class User(Base):
     characters = association_proxy('drafts', 'character',
                                    creator=lambda k, v:
                                    Draft(character=v))
+    refresh_token = Column(String)
+    access_token = Column(String)
     
     def __repr__(self):
         return self.name
@@ -30,11 +32,11 @@ class User(Base):
         self.characters[character.name] = character
         return self.characters[character.name]
     
-    def remove(self, character):
+    def release(self, character):
         draft = self.drafts[character.name]
         draft.returned_at = func.now()
-        rem_character = self.characters.pop(character.name)
-        return rem_character
+        released_character = self.characters.pop(character.name)
+        return released_character
     
 class Draft(Base):
     __tablename__ = 'draft'
@@ -51,7 +53,12 @@ class Draft(Base):
                     cascade="all, delete-orphan"
                     )
                 )
-    character = relationship("Character")
+    character = relationship('Character', backref=backref(
+                    "draftors",
+                    collection_class=attribute_mapped_collection('user.name'),
+                    cascade="all, delete-orphan"
+                    )
+                )
     
     def __repr__(self):
         return "%s drafted %s at %s" % (self.user, self.character, self.drafted_at)
@@ -62,6 +69,9 @@ class Character(Base):
     id               = Column(Integer, primary_key=True)
     name             = Column(String)
     created_at       = Column(DateTime, default=func.now())
+    draftors = association_proxy('drafts', 'user',
+                                   creator=lambda k, v:
+                                   Draft(user=v))
     
     def __repr__(self):
         return self.name
