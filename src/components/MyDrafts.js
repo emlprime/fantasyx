@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import api from '../services';
 import Button from './Button';
 
@@ -17,7 +19,7 @@ const releaseButtonStyles = {
     textAlign: 'right'
 }
 
-export default class Draft extends Component {
+class MyDrafts extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +27,7 @@ export default class Draft extends Component {
         };
         
         this.getCharacters = this.getMyDrafts.bind(this);
-        this.release = this.release.bind(this);
+        this.release       = this.release.bind(this);
     }
     
     componentWillMount() {
@@ -33,13 +35,13 @@ export default class Draft extends Component {
     }
 
     getMyDrafts() {
-        api.server.get(`my_drafts/peter`).then(response => {
+        api.server.get(`my_drafts/${this.props.user_data.user_identifier}`).then(response => {
             this.setState({ characters: response.data.characters });
         })
     }
 
     release(character_id) {
-        api.server.post(`release`, {user_name: 'peter', character_id}).then(response => {
+        api.server.post(`release/${this.props.user_data.user_identifier}`, {character_id}).then(response => {
             this.getCharacters();
         })
     }
@@ -61,3 +63,12 @@ export default class Draft extends Component {
         );
     }
 }
+
+const mapStateToProps = (state, ownProps) => ({  
+    user_data: state.user_data,
+});
+const MyDraftsContainer = connect(  
+    mapStateToProps
+)(MyDrafts);
+
+export default MyDraftsContainer;  

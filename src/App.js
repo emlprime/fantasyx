@@ -9,6 +9,7 @@ import Characters       from './components/Characters';
 import MyDrafts         from './components/MyDrafts';
 import Draft            from './components/Draft';
 import Home             from './components/Home';
+import LoggedIn         from './components/LoggedIn';
 import { push as Menu } from 'react-burger-menu';
 
 const menuStyles = {
@@ -70,8 +71,9 @@ const App = () => (
     <Link to="/my_drafts">My Drafts</Link>
     </Menu>
     <main id="page-wrap" style={pageWrapStyles}>
-    <h1 style={headerStyles}>FantasyX</h1>
+    <h1 style={headerStyles}>aGoT</h1>
     <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
+    <Route path="/user/:user_identifier" component={LoggedIn}/>
     <Route exact path="/" component={Home}/>
     <Route path="/characters" component={Characters}/>
     <Route path="/draft" component={Draft}/>

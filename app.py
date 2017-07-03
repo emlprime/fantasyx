@@ -5,6 +5,8 @@ from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, Load
 from models import Character, User, Draft
+from flask_socketio import SocketIO, emit
+
 import json
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -19,6 +21,7 @@ app = Flask(__name__)
 CORS(app)
 app.debug = DEBUG
 app.secret_key = SECRET_KEY
+socketio = SocketIO(app)
 oauth = OAuth()
  
 google = oauth.remote_app('google',
@@ -27,7 +30,8 @@ google = oauth.remote_app('google',
                           request_token_url=None,
                           request_token_params={'scope': 'https://www.googleapis.com/auth/userinfo.email',
                                                 'response_type': 'code',
-                                                'access_type':'offline'
+                                                'access_type':'offline',
+                                                'prompt': 'consent'
                           },
                           access_token_url='https://accounts.google.com/o/oauth2/token',
                           access_token_method='POST',
@@ -44,6 +48,7 @@ db_session = Session(bind=engine)
  
 @app.route('/')
 def index():
+    print("in index")
     access_token = session.get('access_token')
     if access_token is None:
         return redirect(url_for('login'))
@@ -56,28 +61,31 @@ def index():
                   None, headers)
     try:
         res = urlopen(req)
+        print("response:", res)
     except URLError as e:
         if e.code == 401:
             # Unauthorized - bad token
             session.pop('access_token', None)
             return redirect(url_for('login'))
         return res.read()
-    
+    print("in passed the first try")
+
     try:
         import json
-        import hashlib
         response = res.read()
         data = json.loads(response)
         email = data["email"]
+        user = db_session.query(User).filter(User.email==email).one()
+        print(user.as_dict())
     except ValueError:
         print("Could not parse json response from Google")
     
-    user_identifier = hashlib.sha224(email).hexdigest()
-    return redirect('http://localhost:3000?u=%s' % user_identifier)
+    return redirect('http://localhost:3000/user/%s' % user.identifier)
  
  
 @app.route('/login')
 def login():
+    print("in login")
     callback=url_for('authorized', _external=True)
     return google.authorize(callback=callback)
  
@@ -86,6 +94,7 @@ def login():
 @app.route(REDIRECT_URI)
 @google.authorized_handler
 def authorized(resp):
+    print("in authorized")
     access_token = resp['access_token']
     session['access_token'] = access_token, ''
     return redirect(url_for('index'))
@@ -94,6 +103,13 @@ def authorized(resp):
 @google.tokengetter
 def get_access_token():
     return session.get('access_token')
+
+@app.route('/api/v1/user/<user_identifier>')
+@cross_origin(origin='*')
+def user(user_identifier):
+    print("user identifier:%s" % user_identifier)
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
+    return jsonify({"email": user.email})
 
 @app.route('/api/v1/characters')
 @cross_origin(origin='*')
@@ -107,10 +123,12 @@ def available_characters():
     result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
     return jsonify(characters=[{"id": item[0], "name": item[1]} for item in result if item[0]])
 
-@app.route('/api/v1/my_drafts/<user_name>')
+@app.route('/api/v1/my_drafts/<user_identifier>')
 @cross_origin(origin='*')
-def my_drafts(user_name):
-    user = db_session.query(User).filter(User.name == user_name).first()
+def my_drafts(user_identifier):
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
+    if not user:
+        raise Exception("No user found with name %s" % user_identifier)
     return jsonify(characters=[{"id": character.id, "name": character.name} for character in user.characters.values()])
 
 @app.route('/api/v1/draft_list/<user_name>')
@@ -123,34 +141,35 @@ def draft_list(user_name):
     draft_result = [{"id": character.id, "name": character.name} for character in drafts]
     return jsonify(characters=draft_result)
 
-@app.route('/api/v1/draft', methods=['POST'])
+@app.route('/api/v1/draft/<user_identifier>', methods=['POST'])
 @cross_origin(origin='*')
-def draft():
+def draft(user_identifier):
     data = json.loads(request.get_data(parse_form_data=True))
-    username = data['user_name']
     character_id = data['character_id']
 
-    user = db_session.query(User).filter(User.name == data['user_name']).first()
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
     character = db_session.query(Character).filter(Character.id == data['character_id']).first()
+    if not user:
+        raise Exception("No user found with identifier %s" % user_identifier)
+    print "Drafting %s for %s" % (character, user_identifier)
     user.draft(character)
     
     return jsonify(True)
 
-@app.route('/api/v1/release', methods=['POST'])
+@app.route('/api/v1/release/<user_identifier>', methods=['POST'])
 @cross_origin(origin='*')
-def release():
+def release(user_identifier):
     data = json.loads(request.get_data(parse_form_data=True))
-    username = data['user_name']
     character_id = data['character_id']
 
-    user = db_session.query(User).filter(User.name == data['user_name']).first()
-    character = db_session.query(Character).filter(Character.id == data['character_id']).first()
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
+    character = db_session.query(Character).filter(Character.id == character_id).first()
     user.release(character)
     
     return jsonify(True)
 
 def main():
-    app.run(debug=True, host='0.0.0.0', threaded=True)
+    socketio.run(app, debug=True, host='0.0.0.0')
  
  
 if __name__ == '__main__':

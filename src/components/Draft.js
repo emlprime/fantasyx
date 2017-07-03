@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import api from '../services';
 import Button from './Button';
 
@@ -17,13 +18,13 @@ const draftButtonStyles = {
     textAlign: 'right'
 }
 
-export default class Draft extends Component {
+class Draft extends Component {
     constructor(props) {
         super(props);
         this.state = {
             characters: []
         };
-        
+        console.log(this.props);
         this.getCharacters = this.getAvailableCharacters.bind(this);
         this.draft = this.draft.bind(this);
     }
@@ -39,7 +40,7 @@ export default class Draft extends Component {
     }
 
     draft(character_id) {
-        api.server.post(`draft`, {user_name: 'peter', character_id}).then(response => {
+        api.server.post(`draft/${this.props.user_data.user_identifier}`, {character_id}).then(response => {
             this.getCharacters();
         })
     }
@@ -47,7 +48,7 @@ export default class Draft extends Component {
     render() {
         return (
             <div>
-            Draft:
+            Draft for {this.props.email}:
             <ul>
             {this.state.characters.map((character) => (
                 <li id={`character${character.id}`} key={`character_${character.id}`} style={draftRowStyles}>
@@ -61,3 +62,13 @@ export default class Draft extends Component {
         );
     }
 }
+
+const mapStateToProps = (state, ownProps) => ({  
+    user_data: state.user_data,
+    email: state.email,
+});
+const DraftContainer = connect(  
+    mapStateToProps
+)(Draft);
+
+export default DraftContainer;  

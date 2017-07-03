@@ -12,7 +12,9 @@
     "react": "^15.6.1",
     "react-burger-menu": "^2.1.1",
     "react-dom": "^15.6.1",
-    "react-router-dom": "^4.1.1"
+    "react-redux": "^5.0.5",
+    "react-router-dom": "^4.1.1",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

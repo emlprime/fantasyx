@@ -16,7 +16,7 @@ const scoreStyles = {
 export default () => (
     <div style={styles}>
     <h2>Home</h2>
-    <p>Welcome to FantasyX: the place where we all choose the characters we like best, and Ted takes all the points because Ramsay Bolton is an asshole.</p>
+    <p>Welcome to aGoT: the place where we all choose the characters we like best, and Ted takes all the points because Ramsay Bolton is an asshole.</p>
     <p>The draft will open on July 15th. Registrations will be predetermined and by invitation only. Players will be randomly sorted into an S curve Seed list.</p>
     <p>Trades can occur at any point except the blackout period between when the episode airs and the point at which all players have confirmed they have seen the episode. When you have finished watching the episode please log in and confirm. We will show the confirmations on the page. Please only discuss the details with those who have already confirmed that they have watched.</p>
     <p>The judges will be Kris and Myself. We will, with no partiality, award points based on the rubric. We reserve the right to take into account reasonable arguments, impassioned pleas delivered via YouTube, written notes from Geroge R.R. Martin himself, and of course Bribes.</p>
