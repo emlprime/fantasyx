@@ -22,20 +22,20 @@ const draftButtonStyles = {
 
 class Draft extends Component {
     componentDidMount() {
+        console.log(this.props.ws);
         this.getAvailableCharacters();
     }
 
     getAvailableCharacters() {
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
         let gotCharacters = this.props.gotAvailableCharacters;
-        socket.onmessage = function(evt){
+        this.props.ws.onmessage = function(evt){
             const parsed_data = JSON.parse(evt.data)
             console.log("evt available_characters:", parsed_data);
             gotCharacters(parsed_data.available_characters);
         }
         console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'available_characters', user_identifier: this.props.user_identifier})
-        socket.onopen = () => socket.send(msg);
+        this.props.ws.send(msg);
 
     }
 
@@ -46,18 +46,16 @@ class Draft extends Component {
     }
     
     draft(character_id) {
-        console.log("character_id:", character_id);
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
         let gotCharacters = this.props.gotAvailableCharacters;
 
-        socket.onmessage = function(evt){
+        this.props.ws.onmessage = function(evt){
             const parsed_data = JSON.parse(evt.data)
             console.log("evt draft:", parsed_data);
             gotCharacters(parsed_data.available_characters);
         }
 
         const msg = JSON.stringify({type: 'draft', user_identifier: this.props.user_identifier, character_id: character_id})
-        socket.onopen = () => socket.send(msg);
+        this.props.ws.send(msg);
 
         
     }
@@ -84,6 +82,7 @@ const mapStateToProps = (state, ownProps) => ({
     user_identifier: state.user_data.user_identifier,
     email: state.user_data.email,
     available_characters: state.user_data.available_characters,
+    ws: state.user_data.ws,
 });
 const mapDispatchToProps = {  
     gotAvailableCharacters,

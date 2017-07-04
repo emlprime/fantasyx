@@ -26,17 +26,15 @@ class MyDraft extends Component {
     }
 
     getMyDrafts() {
-        console.log("in my draft", this.props);
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
         let gotMyDrafts = this.props.gotMyDrafts;
-        socket.onmessage = function(evt){
+        this.props.ws.onmessage = function(evt){
             const parsed_data = JSON.parse(evt.data)
             console.log("evt my_drafts:", parsed_data);
             gotMyDrafts(parsed_data.my_drafts);
         }
         const msg = JSON.stringify({type: 'my_drafts', user_identifier: this.props.user_identifier})
 
-        socket.onopen = () => socket.send(msg);
+        this.props.ws.send(msg);
     }
 
     componentWillUnmount() {
@@ -46,11 +44,9 @@ class MyDraft extends Component {
     }
     
     release(character_id) {
-        console.log("character_id:", character_id);
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
         let gotMyDrafts = this.props.gotMyDrafts;
 
-        socket.onmessage = function(evt){
+        this.props.ws.onmessage = function(evt){
             const parsed_data = JSON.parse(evt.data)
             console.log("evt release:", parsed_data);
             gotMyDrafts(parsed_data.my_drafts);
@@ -58,7 +54,7 @@ class MyDraft extends Component {
 
         console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'release', user_identifier: this.props.user_identifier, character_id: character_id})
-        socket.onopen = () => socket.send(msg);
+        this.props.ws.send(msg);
 
         
     }
@@ -86,6 +82,7 @@ const mapStateToProps = (state, ownProps) => ({
     user_identifier: state.user_data.user_identifier,
     email: state.user_data.email,
     my_drafts: state.user_data.my_drafts,
+    ws: state.user_data.ws,
 });
 const mapDispatchToProps = {  
     gotMyDrafts,

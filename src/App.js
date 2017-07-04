@@ -12,9 +12,6 @@ import Draft            from './components/Draft';
 import Home             from './components/Home';
 import LoggedIn         from './components/LoggedIn';
 import { push as Menu } from 'react-burger-menu';
-import {  
-    gotUserData,
-} from './redux';
 
 const menuStyles = {
     bmBurgerButton: {
@@ -67,22 +64,9 @@ const pageWrapStyles = {
 }
 
 class App extends Component {
-    componentDidMount() {
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
-
-        socket.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            gotUserData(parsed_data.user_data);
-        }
-
-        if(this.props.user_identifier){
-            const msg = JSON.stringify({type: 'user_data', user_identifier: this.props.user_identifier})
-            socket.onopen = () => socket.send(msg);
-        }
-    }
 
     componentWillUnmount() {
-        this.ws.close()
+        this.props.ws.close()
     }
 
     render() {
@@ -114,7 +98,9 @@ class App extends Component {
 const mapStateToProps = (state, ownProps) => ({  
     user_identifier: state.user_data.user_identifier,
     email: state.user_data.email,
+    ws: state.user_data.ws,
 });
+
 const AppContainer = connect(  
     mapStateToProps
 )(App);

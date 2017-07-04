@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-export default class Characters extends Component {
+class Characters extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -10,13 +11,13 @@ export default class Characters extends Component {
     }
     
     componentDidMount() {
-        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        const socket = this.props.ws;
         let handleCharacters = this.handleCharacters;
         socket.onmessage = function(evt){
             handleCharacters(JSON.parse(evt.data));
         }
         const msg = JSON.stringify({type: 'characters'})
-        socket.onopen = () => socket.send(msg);
+        socket.send(msg);
     }
 
     handleCharacters(data) {
@@ -43,3 +44,11 @@ export default class Characters extends Component {
         );
     }
 }
+const mapStateToProps = (state, ownProps) => ({  
+    ws: state.user_data.ws,
+});
+const CharactersContainer = connect(  
+    mapStateToProps,
+)(Characters);
+
+export default CharactersContainer;  
