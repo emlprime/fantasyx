@@ -4,7 +4,7 @@ import { gotCharacters } from '../redux';
 
 class Characters extends Component {
     componentWillMount() {
-        setTimeout(() => {this.getCharacters()}, 1000);
+        setTimeout(() => {this.getCharacters()}, 100);
     }
 
     getCharacters() {
