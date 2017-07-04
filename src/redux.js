@@ -2,9 +2,11 @@ import {
     applyMiddleware,
     combineReducers,
     createStore,
+    compose,
 } from 'redux';
 
 import thunk from 'redux-thunk';
+import persistState from 'redux-localstorage'
 
 // actions.js
 export const loggedIn = user_identifier => ({  
@@ -37,11 +39,18 @@ export const loggedOut = () => ({
 });
 
 // reducers.js
-export const user_data = (state = {available_characters: [], my_drafts: []}, action) => {  
+export const user_data = (state={}, action) => {  
     console.log("handing action:", action.type);
+    console.log("state:", state);
     switch (action.type) {
         case 'LOGGED_IN':
-            return {...state, user_identifier: action.user_identifier};
+            let user_identifier = undefined;
+            if(state.user_identifier) {
+                user_identifier = state.user_identifier;
+            } else if (action.user_identifier !== 'undefined') {
+                user_identifier = action.user_identifier;
+            }
+            return {...state, user_identifier, available_characters: [], my_drafts: []};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
@@ -63,10 +72,14 @@ export const reducers = combineReducers({
 
 // store.js
 export function configureStore(initialState = {}) {  
+    const enhancer = compose(
+        applyMiddleware(thunk),
+        persistState(),
+    )
     const store = createStore(
         reducers,
         initialState,
-        applyMiddleware(thunk)
+        enhancer
     )
     return store;
 };

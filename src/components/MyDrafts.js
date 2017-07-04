@@ -36,12 +36,6 @@ class MyDraft extends Component {
 
         this.props.ws.send(msg);
     }
-
-    componentWillUnmount() {
-        if(this.ws) {
-            this.ws.close()
-        }
-    }
     
     release(character_id) {
         let gotMyDrafts = this.props.gotMyDrafts;

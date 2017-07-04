@@ -6,16 +6,25 @@ import {
     gotWebsocket,
     gotUserData,
 } from '../redux';
+import queryString from 'query-string';
 
 class LoggedIn extends Component {
     constructor(props) {
         super(props);
-        const user_identifier = props.match.params.user_identifier;
-        console.log("LoggedIn user_identifier", user_identifier);
-        this.props.loggedIn(user_identifier);
+        const parsed = queryString.parse(global.location.search);
+
+        this.state = {
+            user_identifier: props.match.params.user_identifier,
+            redirect_to: parsed.redirect_to,
+        };
+    }
+
+    componentWillMount() {
+        console.log("LoggedIn user_identifier", this.state.user_identifier);
+        this.props.loggedIn(this.state.user_identifier);
         this.ws = new WebSocket('ws://127.0.0.1:5000/test');
         this.props.gotWebsocket(this.ws);
-        this.getUserData(user_identifier);
+        this.getUserData(this.state.user_identifier);
         console.log(this.props);
     }
 

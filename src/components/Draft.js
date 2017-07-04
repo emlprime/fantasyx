@@ -39,12 +39,6 @@ class Draft extends Component {
 
     }
 
-    componentWillUnmount() {
-        if(this.ws) {
-            this.ws.close()
-        }
-    }
-    
     draft(character_id) {
         let gotCharacters = this.props.gotAvailableCharacters;
 

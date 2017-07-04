@@ -24,12 +24,6 @@ class Characters extends Component {
         this.setState({characters: data.characters});
     }
 
-    componentWillUnmount() {
-        if(this.ws) {
-            this.ws.close();
-        }
-    }
-    
     render() {
         return (
             <div>

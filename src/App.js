@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
     BrowserRouter as Router,
     Route,
-    Link
+    Link,
+    Redirect,
 }                       from 'react-router-dom'
 import './App.css';
 import Characters       from './components/Characters';
@@ -66,32 +67,52 @@ const pageWrapStyles = {
 class App extends Component {
 
     componentWillUnmount() {
-        this.props.ws.close()
+        /* this.props.ws.close()*/
     }
 
     render() {
-        return (
-            <Router>
-            <div id="outer-container">
-            <Menu styles={menuStyles} pageWrapId={`page-wrap`} outerContainerId={ "outer-container" }>
-            <Link to="/">Home</Link>
-            <Link to="/characters">Characters</Link>
-            <Link to="/draft">Draft</Link>
-            <Link to="/my_drafts">My Drafts</Link>
-            </Menu>
-            <main id="page-wrap" style={pageWrapStyles}>
-            <h1 style={headerStyles}>aGoT</h1>
-            <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
-            <h3>Welcome {this.props.email}</h3>
-            <Route path="/user/:user_identifier" component={LoggedIn}/>
-            <Route exact path="/" component={Home}/>
-            <Route path="/characters" component={Characters}/>
-            <Route path="/draft" component={Draft}/>
-            <Route path="/my_drafts" component={MyDrafts}/>
-            </main>
-            </div>
-            </Router>
-        )
+        let content = '';
+        if(!this.props.ws || !this.props.ws.url) {
+            const redirect_to = global.location.pathname.split('?')[0];
+            console.log("no websocket, we should redirect to login and then to:", redirect_to);
+            content = (
+                <Router>
+                <div id="outer-container">
+                <main id="page-wrap" style={pageWrapStyles}>
+                <Route path="/user/:user_identifier" component={LoggedIn}/>
+                </main>
+                <Redirect to={{
+                    pathname: `/user/${this.props.user_identifier}/?redirect_to=${redirect_to}`
+                }}/>
+                </div>
+                </Router>
+            );
+        } else {
+            console.log("websocket found! yay", this.props.ws.url);
+            content = (
+                <Router>
+                <div id="outer-container">
+                <Menu styles={menuStyles} pageWrapId={`page-wrap`} outerContainerId={ "outer-container" }>
+                <Link to="/">Home</Link>
+                <Link to="/characters">Characters</Link>
+                <Link to="/draft">Draft</Link>
+                <Link to="/my_drafts">My Drafts</Link>
+                </Menu>
+                <main id="page-wrap" style={pageWrapStyles}>
+                <h1 style={headerStyles}>aGoT</h1>
+                <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
+                <h3>Welcome {this.props.email}</h3>
+                <Route path="/user/:user_identifier" component={LoggedIn}/>
+                <Route exact path="/" component={Home}/>
+                <Route path="/characters" component={Characters}/>
+                <Route path="/draft" component={Draft}/>
+                <Route path="/my_drafts" component={MyDrafts}/>
+                </main>
+                </div>
+                </Router>
+            )
+        }
+        return content;
     }
 }
 
