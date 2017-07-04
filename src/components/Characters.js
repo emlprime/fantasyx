@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import api from '../services';
-
 
 export default class Characters extends Component {
     constructor(props) {
@@ -8,17 +6,27 @@ export default class Characters extends Component {
         this.state = {
             characters: []
         };
-        this.getCharacters = this.getCharacters.bind(this);
+        this.handleCharacters = this.handleCharacters.bind(this);
     }
     
-    componentWillMount() {
-        this.getCharacters();
+    componentDidMount() {
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        let handleCharacters = this.handleCharacters;
+        socket.onmessage = function(evt){
+            handleCharacters(JSON.parse(evt.data));
+        }
+        const msg = JSON.stringify({type: 'characters'})
+        socket.onopen = () => socket.send(msg);
     }
 
-    getCharacters() {
-        api.server.get(`characters`).then(response => {
-            this.setState({ characters: response.data.characters });
-        })
+    handleCharacters(data) {
+        this.setState({characters: data.characters});
+    }
+
+    componentWillUnmount() {
+        if(this.ws) {
+            this.ws.close();
+        }
     }
     
     render() {

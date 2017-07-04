@@ -5,7 +5,8 @@ from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, Load
 from models import Character, User, Draft
-from flask_socketio import SocketIO, emit
+from flask_uwsgi_websocket import GeventWebSocket
+from game import handle_event
 
 import json
 # You must configure these 3 values from Google APIs console
@@ -21,7 +22,7 @@ app = Flask(__name__)
 CORS(app)
 app.debug = DEBUG
 app.secret_key = SECRET_KEY
-socketio = SocketIO(app)
+websocket = GeventWebSocket(app)
 oauth = OAuth()
  
 google = oauth.remote_app('google',
@@ -41,10 +42,8 @@ google = oauth.remote_app('google',
                           
 )
 
-
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
 db_session = Session(bind=engine)
-
  
 @app.route('/')
 def index():
@@ -141,6 +140,7 @@ def draft_list(user_name):
     draft_result = [{"id": character.id, "name": character.name} for character in drafts]
     return jsonify(characters=draft_result)
 
+
 @app.route('/api/v1/draft/<user_identifier>', methods=['POST'])
 @cross_origin(origin='*')
 def draft(user_identifier):
@@ -168,9 +168,20 @@ def release(user_identifier):
     
     return jsonify(True)
 
+@websocket.route('/test')
+def test(ws):
+    while True:
+        msg = ws.receive()
+        if msg:
+            print("message: %s" % msg)
+            decoded_msg = json.loads(msg)
+            if decoded_msg['type']:
+                response = handle_event(decoded_msg['type'], decoded_msg, db_session)
+                ws.send(response)
+            
+
 def main():
-    socketio.run(app, debug=True, host='0.0.0.0')
- 
+    app.run(gevent=100, debug=True, host='0.0.0.0')
  
 if __name__ == '__main__':
     main()    

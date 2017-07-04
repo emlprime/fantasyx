@@ -1,4 +1,5 @@
-import React            from 'react';
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import {
     BrowserRouter as Router,
     Route,
@@ -11,6 +12,9 @@ import Draft            from './components/Draft';
 import Home             from './components/Home';
 import LoggedIn         from './components/LoggedIn';
 import { push as Menu } from 'react-burger-menu';
+import {  
+    gotUserData,
+} from './redux';
 
 const menuStyles = {
     bmBurgerButton: {
@@ -61,27 +65,58 @@ const pageWrapStyles = {
     width: '70%',
     margin: 'auto'
 }
-const App = () => (
-    <Router>
-    <div id="outer-container">
-    <Menu styles={menuStyles} pageWrapId={`page-wrap`} outerContainerId={ "outer-container" }>
-    <Link to="/">Home</Link>
-    <Link to="/characters">Characters</Link>
-    <Link to="/draft">Draft</Link>
-    <Link to="/my_drafts">My Drafts</Link>
-    </Menu>
-    <main id="page-wrap" style={pageWrapStyles}>
-    <h1 style={headerStyles}>aGoT</h1>
-    <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
-    <Route path="/user/:user_identifier" component={LoggedIn}/>
-    <Route exact path="/" component={Home}/>
-    <Route path="/characters" component={Characters}/>
-    <Route path="/draft" component={Draft}/>
-    <Route path="/my_drafts" component={MyDrafts}/>
-    </main>
-    </div>
-    </Router>
-)
 
-export default App;
+class App extends Component {
+    componentDidMount() {
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
 
+        socket.onmessage = function(evt){
+            const parsed_data = JSON.parse(evt.data)
+            gotUserData(parsed_data.user_data);
+        }
+
+        if(this.props.user_identifier){
+            const msg = JSON.stringify({type: 'user_data', user_identifier: this.props.user_identifier})
+            socket.onopen = () => socket.send(msg);
+        }
+    }
+
+    componentWillUnmount() {
+        this.ws.close()
+    }
+
+    render() {
+        return (
+            <Router>
+            <div id="outer-container">
+            <Menu styles={menuStyles} pageWrapId={`page-wrap`} outerContainerId={ "outer-container" }>
+            <Link to="/">Home</Link>
+            <Link to="/characters">Characters</Link>
+            <Link to="/draft">Draft</Link>
+            <Link to="/my_drafts">My Drafts</Link>
+            </Menu>
+            <main id="page-wrap" style={pageWrapStyles}>
+            <h1 style={headerStyles}>aGoT</h1>
+            <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
+            <h3>Welcome {this.props.email}</h3>
+            <Route path="/user/:user_identifier" component={LoggedIn}/>
+            <Route exact path="/" component={Home}/>
+            <Route path="/characters" component={Characters}/>
+            <Route path="/draft" component={Draft}/>
+            <Route path="/my_drafts" component={MyDrafts}/>
+            </main>
+            </div>
+            </Router>
+        )
+    }
+}
+
+const mapStateToProps = (state, ownProps) => ({  
+    user_identifier: state.user_data.user_identifier,
+    email: state.user_data.email,
+});
+const AppContainer = connect(  
+    mapStateToProps
+)(App);
+
+export default AppContainer;  

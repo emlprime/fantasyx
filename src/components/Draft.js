@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import api from '../services';
 import Button from './Button';
+import {  
+    gotAvailableCharacters,
+} from '../redux';
 
 const labelStyles = {
     width: '15em',
@@ -19,30 +21,44 @@ const draftButtonStyles = {
 }
 
 class Draft extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            characters: []
-        };
-        console.log(this.props);
-        this.getCharacters = this.getAvailableCharacters.bind(this);
-        this.draft = this.draft.bind(this);
-    }
-    
-    componentWillMount() {
-        this.getCharacters();
+    componentDidMount() {
+        this.getAvailableCharacters();
     }
 
     getAvailableCharacters() {
-        api.server.get(`available_characters`).then(response => {
-            this.setState({ characters: response.data.characters });
-        })
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        let gotCharacters = this.props.gotAvailableCharacters;
+        socket.onmessage = function(evt){
+            const parsed_data = JSON.parse(evt.data)
+            console.log("evt available_characters:", parsed_data);
+            gotCharacters(parsed_data.available_characters);
+        }
+        const msg = JSON.stringify({type: 'available_characters', user_identifier: this.props.user_identifier})
+        socket.onopen = () => socket.send(msg);
+
     }
 
+    componentWillUnmount() {
+        if(this.ws) {
+            this.ws.close()
+        }
+    }
+    
     draft(character_id) {
-        api.server.post(`draft/${this.props.user_data.user_identifier}`, {character_id}).then(response => {
-            this.getCharacters();
-        })
+        console.log("character_id:", character_id);
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        let gotCharacters = this.props.gotAvailableCharacters;
+
+        socket.onmessage = function(evt){
+            const parsed_data = JSON.parse(evt.data)
+            console.log("evt draft:", parsed_data);
+            gotCharacters(parsed_data.available_characters);
+        }
+
+        const msg = JSON.stringify({type: 'draft', user_identifier: this.props.user_identifier, character_id: character_id})
+        socket.onopen = () => socket.send(msg);
+
+        
     }
     
     render() {
@@ -50,7 +66,7 @@ class Draft extends Component {
             <div>
             Draft for {this.props.email}:
             <ul>
-            {this.state.characters.map((character) => (
+            {this.props.available_characters.map((character) => (
                 <li id={`character${character.id}`} key={`character_${character.id}`} style={draftRowStyles}>
                 <div style={labelStyles}>{character.name}</div>
                 <Button style={draftButtonStyles} onClick={() => {this.draft(character.id)}}>Draft</Button>
@@ -64,11 +80,16 @@ class Draft extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({  
-    user_data: state.user_data,
-    email: state.email,
+    user_identifier: state.user_data.user_identifier,
+    email: state.user_data.email,
+    available_characters: state.user_data.available_characters,
 });
+const mapDispatchToProps = {  
+    gotAvailableCharacters,
+};
 const DraftContainer = connect(  
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps
 )(Draft);
 
 export default DraftContainer;  

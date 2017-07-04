@@ -17,32 +17,41 @@ export const gotUserData = user_data => ({
     user_data,
 });
 
+export const gotAvailableCharacters = available_characters => ({  
+    type: 'AVAILABLE_CHARACTERS',
+    available_characters,
+});
+
+export const gotMyDrafts = my_drafts => ({  
+    type: 'MY_DRAFTS',
+    my_drafts,
+});
+
 export const loggedOut = () => ({  
     type: 'LOGGED_OUT',
 });
 
 // reducers.js
-export const user_data = (state = {}, action) => {  
+export const user_data = (state = {available_characters: [], my_drafts: []}, action) => {  
+    console.log("handing action:", action.type);
     switch (action.type) {
         case 'LOGGED_IN':
-            localStorage.setItem('user_identifier', action.user_identifier);
-            
             return {...state, user_identifier: action.user_identifier};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
-            console.log("email:", action.user_data.email);
             return {...state, email: action.user_data.email};
+        case 'AVAILABLE_CHARACTERS':
+            return {...state, available_characters: action.available_characters};
+        case 'MY_DRAFTS':
+            return {...state, my_drafts: action.my_drafts};
         default:
-            console.log("action:", action);
-            const user_identifier = localStorage.getItem('user_identifier');
-            console.log("user identifier is:", user_identifier);
-            return {...state, user_identifier};
+            return state;
     }
 };
 
 export const reducers = combineReducers({  
-    user_data,
+    user_data
 });
 
 // store.js

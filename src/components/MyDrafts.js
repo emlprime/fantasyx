@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-import api from '../services';
 import Button from './Button';
+import {  
+    gotMyDrafts,
+} from '../redux';
 
 const labelStyles = {
     width: '15em',
@@ -10,7 +11,7 @@ const labelStyles = {
     marginTop: '.9em'
 }
 
-const draftRowStyles = {
+const releaseRowStyles = {
     listStyleType: 'none'
 }
 
@@ -19,46 +20,60 @@ const releaseButtonStyles = {
     textAlign: 'right'
 }
 
-class MyDrafts extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            characters: []
-        };
-        
-        this.getCharacters = this.getMyDrafts.bind(this);
-        this.release       = this.release.bind(this);
+class MyDraft extends Component {
+    componentDidMount() {
+        this.getAvailableCharacters();
+    }
+
+    getAvailableCharacters() {
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        let gotMyDrafts = this.props.gotMyDrafts;
+        socket.onmessage = function(evt){
+            const parsed_data = JSON.parse(evt.data)
+            console.log("evt my_drafts:", parsed_data);
+            gotMyDrafts(parsed_data.my_drafts);
+        }
+        const msg = JSON.stringify({type: 'my_drafts', user_identifier: this.props.user_identifier})
+        socket.onopen = () => socket.send(msg);
+    }
+
+    componentWillUnmount() {
+        if(this.ws) {
+            this.ws.close()
+        }
     }
     
-    componentWillMount() {
-        this.getCharacters();
-    }
-
-    getMyDrafts() {
-        api.server.get(`my_drafts/${this.props.user_data.user_identifier}`).then(response => {
-            this.setState({ characters: response.data.characters });
-        })
-    }
-
     release(character_id) {
-        api.server.post(`release/${this.props.user_data.user_identifier}`, {character_id}).then(response => {
-            this.getCharacters();
-        })
+        console.log("character_id:", character_id);
+        const socket = new WebSocket('ws://127.0.0.1:5000/test');
+        let gotCharacters = this.props.gotAvailableCharacters;
+
+        socket.onmessage = function(evt){
+            const parsed_data = JSON.parse(evt.data)
+            console.log("evt release:", parsed_data);
+            gotCharacters(parsed_data.available_characters);
+        }
+
+        const msg = JSON.stringify({type: 'release', user_identifier: this.props.user_data.user_identifier, character_id: character_id})
+        socket.onopen = () => socket.send(msg);
+
+        
     }
     
     render() {
+        const characters =  this.props.user_data.my_drafts || [];
         return (
             <div>
-            My Drafts:
+            MyDraft for {this.props.email}:
             <ul>
-            {this.state.characters.map((character) => (
-                <li id={`character${character.id}`} key={`character_${character.id}`} style={draftRowStyles}>
+            {characters.map((character) => (
+                <li id={`character${character.id}`} key={`character_${character.id}`} style={releaseRowStyles}>
                 <div style={labelStyles}>{character.name}</div>
                 <Button style={releaseButtonStyles} onClick={() => {this.release(character.id)}}>Release</Button>
                 </li>
             ))}
             </ul>
-                
+            
             </div>
         );
     }
@@ -66,9 +81,15 @@ class MyDrafts extends Component {
 
 const mapStateToProps = (state, ownProps) => ({  
     user_data: state.user_data,
+    email: state.user_data.email,
+    my_drafts: state.user_data.my_drafts,
 });
-const MyDraftsContainer = connect(  
-    mapStateToProps
-)(MyDrafts);
+const mapDispatchToProps = {  
+    gotMyDrafts,
+};
+const MyDraftContainer = connect(  
+    mapStateToProps,
+    mapDispatchToProps
+)(MyDraft);
 
-export default MyDraftsContainer;  
+export default MyDraftContainer;  
