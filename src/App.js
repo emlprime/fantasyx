@@ -80,6 +80,7 @@ class App extends Component {
                 <div id="outer-container">
                 <main id="page-wrap" style={pageWrapStyles}>
                 <Route path="/user/:user_identifier" component={LoggedIn}/>
+                <Route exact path="/" component={Home}/>
                 </main>
                 <Redirect to={{
                     pathname: `/user/${this.props.user_identifier}/?redirect_to=${redirect_to}`

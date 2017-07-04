@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from './Button';
-import {  
-    gotMyDrafts,
-} from '../redux';
+import { gotMyDrafts } from '../redux';
 
 const labelStyles = {
     width: '15em',
@@ -22,7 +20,7 @@ const releaseButtonStyles = {
 
 class MyDraft extends Component {
     componentDidMount() {
-        this.getMyDrafts();
+        setTimeout(() => {this.getMyDrafts()}, 100);
     }
 
     getMyDrafts() {

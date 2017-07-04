@@ -23,7 +23,7 @@ const draftButtonStyles = {
 class Draft extends Component {
     componentDidMount() {
         console.log(this.props.ws);
-        this.getAvailableCharacters();
+        setTimeout(() => {this.getAvailableCharacters()}, 100);
     }
 
     getAvailableCharacters() {
@@ -36,7 +36,6 @@ class Draft extends Component {
         console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'available_characters', user_identifier: this.props.user_identifier})
         this.props.ws.send(msg);
-
     }
 
     draft(character_id) {

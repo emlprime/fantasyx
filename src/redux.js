@@ -19,6 +19,11 @@ export const gotUserData = user_data => ({
     user_data,
 });
 
+export const gotCharacters = characters => ({  
+    type: 'CHARACTERS',
+    characters,
+});
+
 export const gotAvailableCharacters = available_characters => ({  
     type: 'AVAILABLE_CHARACTERS',
     available_characters,
@@ -50,11 +55,13 @@ export const user_data = (state={}, action) => {
             } else if (action.user_identifier !== 'undefined') {
                 user_identifier = action.user_identifier;
             }
-            return {...state, user_identifier, available_characters: [], my_drafts: []};
+            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: []};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
             return {...state, email: action.user_data.email};
+        case 'CHARACTERS':
+            return {...state, characters: action.characters};
         case 'AVAILABLE_CHARACTERS':
             return {...state, available_characters: action.available_characters};
         case 'MY_DRAFTS':
