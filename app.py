@@ -1,4 +1,5 @@
 import os
+from collections import deque
 from flask import Flask, redirect, url_for, session, redirect, jsonify, request
 from flask_oauth import OAuth
 from flask_cors import CORS, cross_origin
@@ -44,7 +45,8 @@ google = oauth.remote_app('google',
 
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
 db_session = Session(bind=engine)
- 
+users = {}
+backlog = deque(maxlen=10)
 @app.route('/')
 def index():
     print("in index")
@@ -102,71 +104,6 @@ def authorized(resp):
 @google.tokengetter
 def get_access_token():
     return session.get('access_token')
-
-@app.route('/api/v1/user/<user_identifier>')
-@cross_origin(origin='*')
-def user(user_identifier):
-    print("user identifier:%s" % user_identifier)
-    user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    return jsonify({"email": user.email})
-
-@app.route('/api/v1/characters')
-@cross_origin(origin='*')
-def characters():
-    result = db_session.query(Character).values(Character.id, Character.name)
-    return jsonify(characters=[{"id": item[0], "name": item[1]} for item in result if item[0]])
-
-@app.route('/api/v1/available_characters')
-@cross_origin(origin='*')
-def available_characters():
-    result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
-    return jsonify(characters=[{"id": item[0], "name": item[1]} for item in result if item[0]])
-
-@app.route('/api/v1/my_drafts/<user_identifier>')
-@cross_origin(origin='*')
-def my_drafts(user_identifier):
-    user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    if not user:
-        raise Exception("No user found with name %s" % user_identifier)
-    return jsonify(characters=[{"id": character.id, "name": character.name} for character in user.characters.values()])
-
-@app.route('/api/v1/draft_list/<user_name>')
-@cross_origin(origin='*')
-def draft_list(user_name):
-    user = db_session.query(User).filter(User.name==user_name).first()
-    if not user:
-        return jsonify([])
-    drafts = user.draft_list()
-    draft_result = [{"id": character.id, "name": character.name} for character in drafts]
-    return jsonify(characters=draft_result)
-
-
-@app.route('/api/v1/draft/<user_identifier>', methods=['POST'])
-@cross_origin(origin='*')
-def draft(user_identifier):
-    data = json.loads(request.get_data(parse_form_data=True))
-    character_id = data['character_id']
-
-    user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    character = db_session.query(Character).filter(Character.id == data['character_id']).first()
-    if not user:
-        raise Exception("No user found with identifier %s" % user_identifier)
-    print "Drafting %s for %s" % (character, user_identifier)
-    user.draft(character)
-    
-    return jsonify(True)
-
-@app.route('/api/v1/release/<user_identifier>', methods=['POST'])
-@cross_origin(origin='*')
-def release(user_identifier):
-    data = json.loads(request.get_data(parse_form_data=True))
-    character_id = data['character_id']
-
-    user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    character = db_session.query(Character).filter(Character.id == character_id).first()
-    user.release(character)
-    
-    return jsonify(True)
 
 @websocket.route('/test')
 def test(ws):

@@ -38,7 +38,7 @@ def my_drafts(msg, db_session):
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with name %s" % user_identifier)
-    return {"my_drafts": [{"id": character.id, "name": character.name} for character in user.characters.values()]}
+    return {"my_drafts": [{"id": draft.character.id, "name": draft.character.name} for draft in user.drafts.values()]}
 
 def draft(msg, db_session):
     user_identifier = msg['user_identifier']
@@ -52,10 +52,15 @@ def draft(msg, db_session):
     character = db_session.query(Character).filter(Character.id == character_id).first()
     result = "Drafting %s for %s" % (character, user_identifier)
     print(result)
-    user.draft(character)
+    result = user.draft(character)
+    print("drafted")
+    print(result)
+    result = db_session.commit()
+    print("committed")
+    print(result)
     
     result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
-    return {"available_characters": [{"id": item[0], "name": item[1]} for item in result if item[0]]}
+    return available_characters(None, db_session)
 
 def release(msg, db_session):
     user_identifier = msg['user_identifier']
@@ -67,8 +72,7 @@ def release(msg, db_session):
         raise Exception("No user found with identifier %s" % user_identifier)
     
     character = db_session.query(Character).filter(Character.id == character_id).first()
-    result = "Releasing %s for %s" % (character, user_identifier)
-    print(result)
     user.release(character)
+    db_session.commit()
     
-    return {'release': result}
+    return my_drafts(msg, db_session)

@@ -36,6 +36,16 @@ export const user_data = (state = {available_characters: [], my_drafts: []}, act
     console.log("handing action:", action.type);
     switch (action.type) {
         case 'LOGGED_IN':
+            const socket = new WebSocket('ws://127.0.0.1:5000/test');
+            socket.onmessage = function(evt){
+                const parsed_data = JSON.parse(evt.data)
+                console.log("evt got_user_data:", parsed_data);
+                store.dispatch(gotUserData(parsed_data.user_data));
+            }
+
+            console.log("user_identifier:", action.user_identifier);
+            const msg = JSON.stringify({type: 'user_data', user_identifier: action.user_identifier})
+            socket.onopen = () => socket.send(msg);
             return {...state, user_identifier: action.user_identifier};
         case 'LOGGED_OUT':
             return {};

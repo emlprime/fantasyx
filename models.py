@@ -34,13 +34,11 @@ class User(Base):
     
     def draft(self, character):
         self.characters[character.name] = character
-        return self.characters[character.name]
+        return True
     
     def release(self, character):
-        draft = self.drafts[character.name]
-        draft.returned_at = func.now()
-        released_character = self.characters.pop(character.name)
-        return released_character
+        self.characters.pop(character.name)
+        return True
     
 class Draft(Base):
     __tablename__ = 'draft'
@@ -49,7 +47,6 @@ class Draft(Base):
     character_id = Column(Integer, ForeignKey('character.id', ondelete='CASCADE'), nullable=False, index=True)
     user_id      = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=False, index=True)
     drafted_at   = Column(DateTime, default=func.now(), nullable=False)
-    returned_at  = Column(DateTime, nullable=True)
 
     user = relationship(User, backref=backref(
                     "drafts",

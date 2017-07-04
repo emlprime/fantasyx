@@ -33,6 +33,7 @@ class Draft extends Component {
             console.log("evt available_characters:", parsed_data);
             gotCharacters(parsed_data.available_characters);
         }
+        console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'available_characters', user_identifier: this.props.user_identifier})
         socket.onopen = () => socket.send(msg);
 
