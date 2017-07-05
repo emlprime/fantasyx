@@ -11,9 +11,9 @@ const buttonStyles = {
   margin: 10,
 };
 
-const Button = ({ children, onClick }) => (
+const Button = ({ children, onClick, style={} }) => (
   <button
-    style={buttonStyles}
+    style={{...buttonStyles, ...style}}
     onClick={onClick}
   >
     {children}

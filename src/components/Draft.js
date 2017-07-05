@@ -13,13 +13,19 @@ const draftRowStyles = {
 }
 
 const draftButtonStyles = {
-    float: 'right',
-    textAlign: 'right'
+    color: 'black',
+}
+
+const disabledDraftButtonStyles = {
+    color: 'grey',
 }
 
 class Draft extends Component {
-    componentDidMount() {
-        console.log(this.props.ws);
+    constructor(props) {
+        super(props);
+        this.draftButton = this.draftButton.bind(this);
+    }
+    componentWillMount() {
         setTimeout(() => {this.getAvailableCharacters()}, 100);
     }
 
@@ -33,7 +39,20 @@ class Draft extends Component {
         this.props.ws.send(msg);
     }
     
+    draftButton(can_draft, character_id) {
+        if (this.props.can_draft) {
+            return (
+                <Button style={draftButtonStyles} onClick={() => {this.draft(character_id)}}>Draft</Button>
+            );
+        } else {
+            return (
+                <Button style={disabledDraftButtonStyles} disabled={true}>Draft</Button>
+            );
+        }
+
+    }
     render() {
+        console.log("re rendering draft", this.props.can_draft);
         return (
             <div>
             Draft for {this.props.email}:
@@ -41,7 +60,7 @@ class Draft extends Component {
             {this.props.available_characters.map((character) => (
                 <li id={`character${character.id}`} key={`character_${character.id}`} style={draftRowStyles}>
                 <div style={labelStyles}>{character.name}</div>
-                <Button style={draftButtonStyles} onClick={() => {this.draft(character.id)}}>Draft</Button>
+                {this.draftButton(this.props.can_draft, character.id)}
                 </li>
             ))}
             </ul>
@@ -56,6 +75,7 @@ const mapStateToProps = (state, ownProps) => ({
     email: state.user_data.email,
     available_characters: state.user_data.available_characters,
     ws: state.user_data.ws,
+    can_draft: state.user_data.can_draft,
 });
 const DraftContainer = connect(  
     mapStateToProps,

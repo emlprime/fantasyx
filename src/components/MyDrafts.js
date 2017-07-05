@@ -9,7 +9,9 @@ const labelStyles = {
 }
 
 const releaseRowStyles = {
-    listStyleType: 'none'
+    listStyleType: 'none',
+    width: '30em',
+    float: 'left',
 }
 
 const releaseButtonStyles = {
@@ -18,12 +20,13 @@ const releaseButtonStyles = {
 }
 
 class MyDraft extends Component {
-    componentDidMount() {
+    componentWillMount() {
         setTimeout(() => {this.getMyDrafts()}, 100);
     }
 
     getMyDrafts() {
         const msg = JSON.stringify({type: 'my_drafts', user_identifier: this.props.user_identifier})
+        console.log("my drafts props", this.props.ws, msg);
         this.props.ws.send(msg);
     }
     
@@ -33,6 +36,7 @@ class MyDraft extends Component {
     }
     
     render() {
+        console.log("rendering mydrafts", this.props.my_drafts);
         const characters =  this.props.my_drafts || [];
         return (
             <div>

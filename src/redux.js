@@ -28,6 +28,10 @@ export const gotMsg = msg => {
         console.log(`setting my_drafts`, msg);
         store.dispatch(gotMyDrafts(msg.my_drafts))
     }
+    if (typeof msg.can_draft !== 'undefined') {
+        /* console.log(`setting can_draft`, msg);*/
+        store.dispatch(gotCanDraft(msg.can_draft))
+    }
 };
 
 export const loggedIn = user_identifier => ({  
@@ -55,6 +59,11 @@ export const gotMyDrafts = my_drafts => ({
     my_drafts,
 });
 
+export const gotCanDraft = can_draft => ({  
+    type: 'CAN_DRAFT',
+    can_draft,
+});
+
 export const gotWebsocket = (ws) => ({  
     type: 'CONNECT_WEBSOCKET',
     ws
@@ -76,7 +85,7 @@ export const user_data = (state={}, action) => {
             } else if (action.user_identifier !== 'undefined') {
                 user_identifier = action.user_identifier;
             }
-            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: []};
+            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: [], can_draft: false};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
@@ -88,6 +97,9 @@ export const user_data = (state={}, action) => {
         case 'MY_DRAFTS':
             console.log("got my drafts");
             return {...state, my_drafts: action.my_drafts};
+        case 'CAN_DRAFT':
+            /* console.log("got can draft", action.can_draft);*/
+            return {...state, can_draft: action.can_draft};
         case 'CONNECT_WEBSOCKET':
             return {...state, ws: action.ws};
         default:

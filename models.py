@@ -40,6 +40,13 @@ class User(Base):
         self.characters.pop(character.name)
         return True
     
+class DraftTicket(Base):
+    __tablename__ = 'draft_ticket'
+
+    id              = Column(Integer, primary_key=True)
+    user_identifier = Column(String, nullable=False, index=True)
+    sort            = Column(Integer, nullable=False, index=True)
+    
 class Draft(Base):
     __tablename__ = 'draft'
 

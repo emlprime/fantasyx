@@ -68,8 +68,9 @@ class App extends Component {
 
     render() {
         let content = '';
-        console.log(`props:`, this.props.user_identifier);
-        if(!this.props.user_identifier) {
+        console.log(`ws:`, this.props.ws);
+        
+        if(this.props.ws && !this.props.ws.url) {
             const redirect_to = global.location.pathname.split('?')[0];
             console.log("no websocket, we should redirect to login and then to:", redirect_to);
             content = (

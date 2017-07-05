@@ -5,9 +5,9 @@ from flask_oauth import OAuth
 from flask_cors import CORS, cross_origin
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, Load
-from models import Character, User, Draft
+from models import Character, User, Draft, DraftTicket
 from flask_uwsgi_websocket import GeventWebSocket
-from game import handle_event
+from game import handle_event, can_draft
 
 import json
 # You must configure these 3 values from Google APIs console
@@ -108,27 +108,40 @@ def get_access_token():
 @websocket.route('/test')
 def test(ws):
     users[ws.id] = ws
+    print("first get user")
+    print(ws)
+    print("================")
     
     while True:
         msg = ws.receive()
         if msg:
             print("message: %s" % msg)
             decoded_msg = json.loads(msg)
-            if decoded_msg['type']:
-                response = handle_event(decoded_msg['type'], decoded_msg, db_session)
+            msg_type = decoded_msg['type']
+            if msg_type:
+                try:
+                    response = handle_event(msg_type, decoded_msg, db_session)
                     
-                print("================================================================")
-                if decoded_msg['type'] in ['user_data', 'my_drafts', 'release']:
-                    ws.send(response)
-                    if decoded_msg['type'] == 'release':
-                        available_characters = handle_event('available_characters', decoded_msg, db_session)
-                        for user in users.values():
-                            user.send(available_characters)
-                else:
-                    for user in users.values():
-                        print("sending message to %s (%s)" % (user.id, response[0:30]))
-                        user.send(response)
                     
+                    print("================================================================")
+                    if msg_type in ['user_data', 'my_drafts', 'release']:
+                        if msg_type == 'user_data':
+                            users[decoded_msg['user_identifier']] = ws
+                            del users[ws.id]
+                            print users
+                        ws.send(response)
+                        if msg_type == 'release':
+                            available_characters = handle_event('available_characters', decoded_msg, db_session)
+                            for user in users.values():
+                                user.send(available_characters)
+                    else:
+                        for user_identifier, user in users.items():
+                            user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
+                            user.send(response)
+                            
+                except Exception as error:
+                    user.send({"error": error.args[0]})
+                        
     del users[ws.id]
 
 def main():
