@@ -40,7 +40,7 @@ class LoggedIn extends Component {
     render() {
         return (
             <Redirect to={{
-            pathname: '/'
+            pathname: this.state.redirect_to
             }}/>
         )
     }
