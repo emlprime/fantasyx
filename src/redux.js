@@ -26,7 +26,7 @@ export const gotMsg = msg => {
     }
     if (msg.my_drafts) {
         console.log(`setting my_drafts`, msg);
-        store.dispatch(gotAvailableCharacters(msg.my_drafts))
+        store.dispatch(gotMyDrafts(msg.my_drafts))
     }
 };
 
@@ -86,6 +86,7 @@ export const user_data = (state={}, action) => {
         case 'AVAILABLE_CHARACTERS':
             return {...state, available_characters: action.available_characters};
         case 'MY_DRAFTS':
+            console.log("got my drafts");
             return {...state, my_drafts: action.my_drafts};
         case 'CONNECT_WEBSOCKET':
             return {...state, ws: action.ws};

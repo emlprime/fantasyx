@@ -116,13 +116,19 @@ def test(ws):
             decoded_msg = json.loads(msg)
             if decoded_msg['type']:
                 response = handle_event(decoded_msg['type'], decoded_msg, db_session)
+                    
                 print("================================================================")
-                if decoded_msg['type'] == 'user_data':
+                if decoded_msg['type'] in ['user_data', 'my_drafts', 'release']:
                     ws.send(response)
+                    if decoded_msg['type'] == 'release':
+                        available_characters = handle_event('available_characters', decoded_msg, db_session)
+                        for user in users.values():
+                            user.send(available_characters)
                 else:
                     for user in users.values():
-                        print("sending message to %s (%s)" % (user.id, response[0:20]))
+                        print("sending message to %s (%s)" % (user.id, response[0:30]))
                         user.send(response)
+                    
     del users[ws.id]
 
 def main():
