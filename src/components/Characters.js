@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+const characterRowStyles = {
+    height: '2em',
+    listStyleType: 'none'
+}
+const characterNameStyles = {
+    float: 'left'
+}
+
+const characterUserStyles = {
+    float: 'right'
+}
+
 class Characters extends Component {
     componentWillMount() {
         setTimeout(() => {this.getCharacters()}, 100);
@@ -17,7 +29,10 @@ class Characters extends Component {
             Characters:
             <ul>
             {this.props.characters.map((character) => (
-                <li id={`character${character.id}`} key={`character_${character.id}`}>{character.name}</li>
+                <li id={`character${character.id}`} key={`character_${character.id}`} style={characterRowStyles}>
+                <div style={characterNameStyles}>{character.name}</div>
+                <div style={characterUserStyles}>{character.user}</div>
+                </li>
             ))}
             </ul>
                 

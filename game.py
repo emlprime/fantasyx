@@ -22,8 +22,8 @@ def handle_event(msg_type, msg, db_session=None):
 
 # The full list of characters
 def characters(msg, db_session):
-    result = db_session.query(Character).values(Character.id, Character.name)
-    return {"characters": [{"id": item[0], "name": item[1]} for item in result if item[0]]}
+    result = db_session.query(Character).outerjoin(Draft).outerjoin(User).values(Character.id, Character.name, User.name)
+    return {"characters": [{"id": item[0], "name": item[1], "user": item[2]} for item in result if item[0]]}
 
 # user details for the front end display
 def user_data(msg, db_session):
