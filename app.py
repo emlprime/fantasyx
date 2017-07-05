@@ -46,7 +46,7 @@ google = oauth.remote_app('google',
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
 db_session = Session(bind=engine)
 users = {}
-backlog = deque(maxlen=10)
+
 @app.route('/')
 def index():
     print("in index")
@@ -107,6 +107,8 @@ def get_access_token():
 
 @websocket.route('/test')
 def test(ws):
+    users[ws.id] = ws
+    
     while True:
         msg = ws.receive()
         if msg:
@@ -114,8 +116,14 @@ def test(ws):
             decoded_msg = json.loads(msg)
             if decoded_msg['type']:
                 response = handle_event(decoded_msg['type'], decoded_msg, db_session)
-                ws.send(response)
-            
+                print("================================================================")
+                if decoded_msg['type'] == 'user_data':
+                    ws.send(response)
+                else:
+                    for user in users.values():
+                        print("sending message to %s (%s)" % (user.id, response[0:20]))
+                        user.send(response)
+    del users[ws.id]
 
 def main():
     app.run(gevent=100, debug=True, host='0.0.0.0')

@@ -9,6 +9,27 @@ import thunk from 'redux-thunk';
 import persistState from 'redux-localstorage'
 
 // actions.js
+
+export const gotMsg = msg => {
+    console.log(`got a message:`, msg);
+    if(msg.user_data) {
+        console.log(`setting user data`, msg);
+        store.dispatch(gotUserData(msg.user_data))
+    }
+    if (msg.characters) {
+        console.log(`setting characters`, msg);
+        store.dispatch(gotCharacters(msg.characters))
+    }
+    if (msg.available_characters) {
+        console.log(`setting available_characters`, msg);
+        store.dispatch(gotAvailableCharacters(msg.available_characters))
+    }
+    if (msg.my_drafts) {
+        console.log(`setting my_drafts`, msg);
+        store.dispatch(gotAvailableCharacters(msg.my_drafts))
+    }
+};
+
 export const loggedIn = user_identifier => ({  
     type: 'LOGGED_IN',
     user_identifier,
@@ -46,7 +67,7 @@ export const loggedOut = () => ({
 // reducers.js
 export const user_data = (state={}, action) => {  
     console.log("handing action:", action.type);
-    console.log("state:", state);
+    console.log("action:", action);
     switch (action.type) {
         case 'LOGGED_IN':
             let user_identifier = undefined;

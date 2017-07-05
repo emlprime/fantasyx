@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from './Button';
-import { gotMyDrafts } from '../redux';
 
 const labelStyles = {
     width: '15em',
@@ -24,31 +23,13 @@ class MyDraft extends Component {
     }
 
     getMyDrafts() {
-        let gotMyDrafts = this.props.gotMyDrafts;
-        this.props.ws.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            console.log("evt my_drafts:", parsed_data);
-            gotMyDrafts(parsed_data.my_drafts);
-        }
         const msg = JSON.stringify({type: 'my_drafts', user_identifier: this.props.user_identifier})
-
         this.props.ws.send(msg);
     }
     
     release(character_id) {
-        let gotMyDrafts = this.props.gotMyDrafts;
-
-        this.props.ws.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            console.log("evt release:", parsed_data);
-            gotMyDrafts(parsed_data.my_drafts);
-        }
-
-        console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'release', user_identifier: this.props.user_identifier, character_id: character_id})
         this.props.ws.send(msg);
-
-        
     }
     
     render() {
@@ -76,12 +57,8 @@ const mapStateToProps = (state, ownProps) => ({
     my_drafts: state.user_data.my_drafts,
     ws: state.user_data.ws,
 });
-const mapDispatchToProps = {  
-    gotMyDrafts,
-};
 const MyDraftContainer = connect(  
     mapStateToProps,
-    mapDispatchToProps
 )(MyDraft);
 
 export default MyDraftContainer;  

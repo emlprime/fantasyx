@@ -19,7 +19,6 @@ def handle_event(msg_type, msg, db_session=None):
         response = {"error": "no handler implemented for %s" % msg_type}
     return json.dumps(response)
 
-
 # The full list of characters
 def characters(msg, db_session):
     result = db_session.query(Character).values(Character.id, Character.name)

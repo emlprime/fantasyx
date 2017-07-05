@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Button from './Button';
-import {  
-    gotAvailableCharacters,
-} from '../redux';
 
 const labelStyles = {
     width: '15em',
@@ -27,30 +24,13 @@ class Draft extends Component {
     }
 
     getAvailableCharacters() {
-        let gotCharacters = this.props.gotAvailableCharacters;
-        this.props.ws.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            console.log("evt available_characters:", parsed_data);
-            gotCharacters(parsed_data.available_characters);
-        }
-        console.log("user_identifier:", this.props);
         const msg = JSON.stringify({type: 'available_characters', user_identifier: this.props.user_identifier})
         this.props.ws.send(msg);
     }
 
     draft(character_id) {
-        let gotCharacters = this.props.gotAvailableCharacters;
-
-        this.props.ws.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            console.log("evt draft:", parsed_data);
-            gotCharacters(parsed_data.available_characters);
-        }
-
         const msg = JSON.stringify({type: 'draft', user_identifier: this.props.user_identifier, character_id: character_id})
         this.props.ws.send(msg);
-
-        
     }
     
     render() {
@@ -77,12 +57,8 @@ const mapStateToProps = (state, ownProps) => ({
     available_characters: state.user_data.available_characters,
     ws: state.user_data.ws,
 });
-const mapDispatchToProps = {  
-    gotAvailableCharacters,
-};
 const DraftContainer = connect(  
     mapStateToProps,
-    mapDispatchToProps
 )(Draft);
 
 export default DraftContainer;  

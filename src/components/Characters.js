@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { gotCharacters } from '../redux';
 
 class Characters extends Component {
     componentWillMount() {
@@ -8,14 +7,7 @@ class Characters extends Component {
     }
 
     getCharacters() {
-        let gotCharacters = this.props.gotCharacters;
-        this.props.ws.onmessage = function(evt){
-            const parsed_data = JSON.parse(evt.data)
-            console.log("evt characters:", parsed_data);
-            gotCharacters(parsed_data.characters);
-        }
         const msg = JSON.stringify({type: 'characters'})
-
         this.props.ws.send(msg);
     }
     
@@ -37,12 +29,9 @@ const mapStateToProps = (state, ownProps) => ({
     characters: state.user_data.characters,
     ws: state.user_data.ws,
 });
-const mapDispatchToProps = {  
-    gotCharacters,
-};
+
 const CharactersContainer = connect(  
     mapStateToProps,
-    mapDispatchToProps,
 )(Characters);
 
 export default CharactersContainer;  

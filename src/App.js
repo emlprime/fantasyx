@@ -66,13 +66,10 @@ const pageWrapStyles = {
 
 class App extends Component {
 
-    componentWillUnmount() {
-        /* this.props.ws.close()*/
-    }
-
     render() {
         let content = '';
-        if(!this.props.ws || !this.props.ws.url) {
+        console.log(`props:`, this.props.user_identifier);
+        if(!this.props.user_identifier) {
             const redirect_to = global.location.pathname.split('?')[0];
             console.log("no websocket, we should redirect to login and then to:", redirect_to);
             content = (
