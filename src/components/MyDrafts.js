@@ -26,7 +26,6 @@ class MyDraft extends Component {
 
     getMyDrafts() {
         const msg = JSON.stringify({type: 'my_drafts', user_identifier: this.props.user_identifier})
-        console.log("my drafts props", this.props.ws, msg);
         this.props.ws.send(msg);
     }
     
@@ -36,7 +35,6 @@ class MyDraft extends Component {
     }
     
     render() {
-        console.log("rendering mydrafts", this.props.my_drafts);
         const characters =  this.props.my_drafts || [];
         return (
             <div>
@@ -61,6 +59,7 @@ const mapStateToProps = (state, ownProps) => ({
     my_drafts: state.user_data.my_drafts,
     ws: state.user_data.ws,
 });
+
 const MyDraftContainer = connect(  
     mapStateToProps,
 )(MyDraft);

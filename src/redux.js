@@ -11,21 +11,21 @@ import persistState from 'redux-localstorage'
 // actions.js
 
 export const gotMsg = msg => {
-    console.log(`got a message:`, msg);
+    /* console.log(`got a message:`, msg);*/
     if(msg.user_data) {
-        console.log(`setting user data`, msg);
+        /* console.log(`setting user data`, msg);*/
         store.dispatch(gotUserData(msg.user_data))
     }
     if (msg.characters) {
-        console.log(`setting characters`, msg);
+        /* console.log(`setting characters`, msg);*/
         store.dispatch(gotCharacters(msg.characters))
     }
     if (msg.available_characters) {
-        console.log(`setting available_characters`, msg);
+        /* console.log(`setting available_characters`, msg);*/
         store.dispatch(gotAvailableCharacters(msg.available_characters))
     }
     if (msg.my_drafts) {
-        console.log(`setting my_drafts`, msg);
+        /* console.log(`setting my_drafts`, msg);*/
         store.dispatch(gotMyDrafts(msg.my_drafts))
     }
     if (typeof msg.can_draft !== 'undefined') {
@@ -73,10 +73,15 @@ export const loggedOut = () => ({
     type: 'LOGGED_OUT',
 });
 
+export const removeNotification = key => ({
+    type: 'REMOVE_NOTIFICATION',
+    key
+});
+
 // reducers.js
 export const user_data = (state={}, action) => {  
-    console.log("handing action:", action.type);
-    console.log("action:", action);
+    /* console.log("handing action:", action.type);
+     * console.log("action:", action);*/
     switch (action.type) {
         case 'LOGGED_IN':
             let user_identifier = undefined;
@@ -85,7 +90,7 @@ export const user_data = (state={}, action) => {
             } else if (action.user_identifier !== 'undefined') {
                 user_identifier = action.user_identifier;
             }
-            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: [], can_draft: false};
+            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: [], can_draft: false, notifications: []};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
@@ -97,9 +102,30 @@ export const user_data = (state={}, action) => {
         case 'MY_DRAFTS':
             console.log("got my drafts");
             return {...state, my_drafts: action.my_drafts};
+        case 'REMOVE_NOTIFICATION':
+            console.log("removing notification");
+            let notifications = [];
+            if(state.notifications) {
+                notifications = state.notifications.filter(notification => notification.key !== action.key);
+            } 
+            return {...state, notifications};
         case 'CAN_DRAFT':
-            /* console.log("got can draft", action.can_draft);*/
-            return {...state, can_draft: action.can_draft};
+            console.log("got can draft", state.notifications.length,state.can_draft, action.can_draft);
+            if( (state.can_draft !== action.can_draft) && action.can_draft ) {
+                notifications = [...state.notifications, {
+                    message: `It's your turn to draft!`,
+                    key: `DraftNotice_${state.notifications.length + 1}`,
+                    dismissAfter: 2000,
+                    action: 'dismiss',
+                    onClick: (notification, deactivate) => {
+                        deactivate();
+                        removeNotification('DraftNotice');
+                    },
+                }];
+            } else {
+                notifications = [...state.notifications];
+            }
+            return {...state, can_draft: action.can_draft, notifications};
         case 'CONNECT_WEBSOCKET':
             return {...state, ws: action.ws};
         default:

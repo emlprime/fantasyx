@@ -5527,6 +5527,12 @@ react-modal@^1.2.0, react-modal@^1.2.1:
     prop-types "^15.5.7"
     react-dom-factories "^1.0.0"
 
+react-notification@^6.7.1:
+  version "6.7.1"
+  resolved "https://registry.yarnpkg.com/react-notification/-/react-notification-6.7.1.tgz#fec45cc6d369f4bbf7b4072fe58ddb3bc262c898"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-redux@^5.0.5:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-5.0.5.tgz#f8e8c7b239422576e52d6b7db06439469be9846a"

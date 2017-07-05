@@ -14,6 +14,10 @@ import Home             from './components/Home';
 import LoggedIn         from './components/LoggedIn';
 import { push as Menu } from 'react-burger-menu';
 
+import { NotificationStack } from 'react-notification';
+
+import { removeNotification } from './redux';
+
 const menuStyles = {
     bmBurgerButton: {
         position: 'fixed', 
@@ -65,10 +69,8 @@ const pageWrapStyles = {
 }
 
 class App extends Component {
-
     render() {
         let content = '';
-        console.log(`ws:`, this.props.ws);
         
         if(this.props.ws && !this.props.ws.url) {
             const redirect_to = global.location.pathname.split('?')[0];
@@ -107,6 +109,10 @@ class App extends Component {
                 <Route path="/draft" component={Draft}/>
                 <Route path="/my_drafts" component={MyDrafts}/>
                 </main>
+                <NotificationStack
+                notifications={this.props.notifications}
+                onDismiss={notification => this.props.removeNotification(notification)}
+                />
                 </div>
                 </Router>
             )
@@ -119,10 +125,16 @@ const mapStateToProps = (state, ownProps) => ({
     user_identifier: state.user_data.user_identifier,
     email: state.user_data.email,
     ws: state.user_data.ws,
+    notifications: state.user_data.notifications,
 });
 
+const mapDispatchToProps = {  
+    removeNotification,
+};
+
 const AppContainer = connect(  
-    mapStateToProps
+    mapStateToProps,
+    mapDispatchToProps,
 )(App);
 
 export default AppContainer;  

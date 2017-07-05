@@ -54,7 +54,6 @@ class Draft extends Component {
 
     }
     render() {
-        console.log("re rendering draft", this.props.can_draft);
         return (
             <div>
             Draft for {this.props.email}:
