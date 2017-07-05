@@ -14,10 +14,12 @@ const draftRowStyles = {
 
 const draftButtonStyles = {
     color: 'black',
+    fontWeight: 'bold',
+    outline: '1px solid black',
 }
 
 const disabledDraftButtonStyles = {
-    color: 'grey',
+    color: '#DDD',
 }
 
 class Draft extends Component {
