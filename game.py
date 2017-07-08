@@ -1,6 +1,6 @@
 import json
-from models import Character, User, Draft, DraftTicket
-
+from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
+from sqlalchemy import or_
 def handle_event(msg_type, msg, db_session=None):
     print("handling %s" % msg_type)
     handlers = {
@@ -86,3 +86,61 @@ def can_draft(msg, db_session):
     draft_ticket = db_session.query(DraftTicket).order_by(DraftTicket.sort).first()
     can_draft = draft_ticket.user_identifier == user_identifier
     return {"can_draft": can_draft}
+
+def generate_score(msg, db_session):
+    # Get the character from the unique character name
+    character_name = msg['character_name']
+    character = db_session.query(Character).filter(Character.name == character_name).first()
+    
+    # get the episode from the unique episode number
+    episode_number = msg['episode_number']
+    episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
+
+    # get a draft from the draft history. This is a historically idempotend approach
+    # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
+    try:
+        draft = db_session.query(DraftHistory).join(Character).filter(
+            Character.id == character.id,
+            DraftHistory.drafted_at < episode.aired_at,
+            (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
+        ).first()
+    except AttributeError as err:
+        print("%s: (%s)" % (err.message, msg))
+
+    # If we found a draft, populate the score with the relevant user information
+    if draft:
+        user = draft.user
+        user_id = user.id
+        draft_id = draft.id
+    # if we don't find a draft, still create the score, but don't associate it with a user
+    # this gives us a sense of the "points on the table" that were left because nobody
+    # had that character drafted at the time.
+    else:
+        user_id = None
+        draft_id = None
+
+    # specify the description, but apply points from the rubric
+    # this depends on the assumption that the rubric doesn't change once the
+    # game is in motion. If the rubric changes
+    rubric_description = msg['rubric_description']
+    rubric = db_session.query(Rubric).filter(Rubric.description == rubric_description).first()
+
+    # bonus can be applied if specified. If there is no bonus, make it 0 for easier summing
+    bonus = int(msg['bonus'] or 0)
+
+    # notes are to explain why specifically they got this.
+    notes = msg['notes']
+    
+    score_config = {
+        "character_id": character.id,
+        "draft_id": draft_id,
+        "user_id": user_id,
+        "episode_number": episode.number,
+        "rubric_id": rubric.id,
+        "points": rubric.points,
+        "bonus": bonus,
+        "notes": notes,
+    }
+    db_session.execute(Score.__table__.insert(), score_config)
+    db_session.commit()
+

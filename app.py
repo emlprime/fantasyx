@@ -135,6 +135,9 @@ def test(ws):
                             for user in users.values():
                                 user.send(available_characters)
                     else:
+                        if msg_type == 'release':
+                            user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
+                            
                         for user_identifier, user in users.items():
                             user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
                             user.send(response)

@@ -36,9 +36,10 @@ class LoggedIn extends Component {
     }
     
     render() {
+        const redirect_to = (this.state.redirect_to && !this.state.redirect_to.match(/user/)) ? this.state.redirect_to : '/';
         return (
             <Redirect to={{
-            pathname: this.state.redirect_to
+            pathname: redirect_to
             }}/>
         )
     }

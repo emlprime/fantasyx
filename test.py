@@ -1,26 +1,39 @@
 from sqlalchemy import func, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session
-from models import Character, User
+from models import Character, User, DraftHistory
+from game import generate_score
 
 Base = declarative_base()
 
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
 session = Session(bind=engine)
-result = session.query(Character).count()
 
-user_name = 'peter'
-peter = session.query(User).filter(User.name==user_name).first()
-def draft(user_name, character_name):
-    user = session.query(User).filter(User.name==user_name).first()
-    character = session.query(Character).filter(Character.name==character_name).first()
-    user.draft(character)
-    session.commit()
+msg = {
+    'character_name': 'Daenerys Targaryen',
+    'episode_number': 'S07E01',
+    'rubric_description': 'Changed the course of an individual life',
+    'bonus': 10,
+    'notes': 'He invented cunnilingus'
+}
 
+character_name = msg['character_name']
+character = session.query(Character).filter(Character.name == character_name).first()
+    
+user_identifier = 'ce59f778839e09c501bec59a88d5729d8b1648c085df592fa2b93030'
+user = session.query(User).filter(User.identifier == user_identifier).first()
 
-print(peter.draft_list())
-# draft('peter', 'Daario Naharis')
+user.draft(character)
+session.commit()
 
-for character in session.query(Character).all():
-    print "%s: %s" % (character, character.draftors)
+draft_history = DraftHistory(
+    character_id=1,
+    user_id=1,
+    drafted_at='2017-07-13'
+)
+session.add(draft_history)
+session.commit()
+
+generate_score(msg, session)
+
 

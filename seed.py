@@ -6,7 +6,7 @@ from sqlalchemy import String, Integer, Date, MetaData, create_engine
 from sqlalchemy.orm import Session
 import json
 import csv
-from models import Character, User, Draft, DraftTicket
+from models import Character, User, Draft, DraftTicket, Episode, Rubric
 
 # Create an ad-hoc table to use for the insert statement.
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
@@ -16,13 +16,22 @@ session.execute("TRUNCATE TABLE character restart identity CASCADE")
 session.execute("TRUNCATE TABLE draft restart identity CASCADE")
 session.execute("TRUNCATE TABLE draft_ticket restart identity CASCADE")
 session.execute('TRUNCATE TABLE "user" restart identity CASCADE')
+session.execute('TRUNCATE TABLE episode restart identity CASCADE')
+session.execute('TRUNCATE TABLE rubric restart identity CASCADE')
+session.execute('TRUNCATE TABLE score restart identity CASCADE')
 session.commit()
 
-with open('data/seeds/character.csv') as data_file:
-    characters = [dict(character) for character in csv.DictReader(data_file)]
-    # print(characters)
-    session.execute(Character.__table__.insert(), characters)
-    session.commit()
+seeds = {
+    Character: 'character',
+    Episode: 'episode',
+    Rubric: 'rubric',
+}
+
+for klass, filename in seeds.items():
+    with open('data/seeds/%s.csv' % (filename)) as data_file:
+        records = [dict(record) for record in csv.DictReader(data_file)]
+        session.execute(klass.__table__.insert(), records)
+        session.commit()
     
 with open('data/seeds/user.csv') as data_file:
     users = [dict(user) for user in csv.DictReader(data_file)]
