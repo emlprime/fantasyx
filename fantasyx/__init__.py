@@ -150,8 +150,3 @@ def test(ws):
                         
     del users[ws.id]
 
-def main():
-    app.run(gevent=100, debug=True, host='0.0.0.0')
- 
-if __name__ == '__main__':
-    main()    
