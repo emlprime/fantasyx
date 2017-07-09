@@ -1,0 +1,17 @@
+[Unit]
+Description=uWSGI Emperor
+After=syslog.target
+
+[Service]
+ExecStart=/var/www/fantasyx/venv/bin/uwsgi --ini /var/www/fantasyx/fantasyx_uwsgi.ini
+RuntimeDirectory=uwsgi
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+User=ubuntu
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

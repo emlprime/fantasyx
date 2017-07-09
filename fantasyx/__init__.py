@@ -8,18 +8,20 @@ from sqlalchemy.orm import Session, Load
 from models import Character, User, Draft, DraftTicket
 from flask_uwsgi_websocket import GeventWebSocket
 from game import handle_event, can_draft
-
+from flask import Flask
+from flask.ext.dotenv import DotEnv
 import json
+
+app = Flask(__name__)
+env = DotEnv()
+env.init_app(app, verbose_mode=True)
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
-GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
-GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
 REDIRECT_URI = '/oauth2callback'  # one of the Redirect URIs from Google APIs console
  
 SECRET_KEY = 'development key'
 DEBUG = True
  
-app = Flask(__name__)
 CORS(app)
 app.debug = DEBUG
 app.secret_key = SECRET_KEY
@@ -38,8 +40,8 @@ google = oauth.remote_app('google',
                           access_token_url='https://accounts.google.com/o/oauth2/token',
                           access_token_method='POST',
                           access_token_params={'grant_type': 'authorization_code'},
-                          consumer_key=GOOGLE_CLIENT_ID,
-                          consumer_secret=GOOGLE_CLIENT_SECRET,
+                          consumer_key=app.config['GOOGLE_CLIENT_ID'],
+                          consumer_secret=app.config['GOOGLE_CLIENT_SECRET'],
                           
 )
 
