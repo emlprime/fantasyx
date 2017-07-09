@@ -13,23 +13,21 @@ import persistState from 'redux-localstorage'
 export const gotMsg = msg => {
     /* console.log(`got a message:`, msg);*/
     if(msg.user_data) {
-        /* console.log(`setting user data`, msg);*/
         store.dispatch(gotUserData(msg.user_data))
     }
     if (msg.characters) {
-        /* console.log(`setting characters`, msg);*/
         store.dispatch(gotCharacters(msg.characters))
     }
     if (msg.available_characters) {
-        /* console.log(`setting available_characters`, msg);*/
         store.dispatch(gotAvailableCharacters(msg.available_characters))
     }
     if (msg.my_drafts) {
-        /* console.log(`setting my_drafts`, msg);*/
         store.dispatch(gotMyDrafts(msg.my_drafts))
     }
+    if (msg.scores) {
+        store.dispatch(gotScores(msg.scores))
+    }
     if (typeof msg.can_draft !== 'undefined') {
-        /* console.log(`setting can_draft`, msg);*/
         store.dispatch(gotCanDraft(msg.can_draft))
     }
 };
@@ -52,6 +50,11 @@ export const gotCharacters = characters => ({
 export const gotAvailableCharacters = available_characters => ({  
     type: 'AVAILABLE_CHARACTERS',
     available_characters,
+});
+
+export const gotScores = scores => ({  
+    type: 'SCORES',
+    scores,
 });
 
 export const gotMyDrafts = my_drafts => ({  
@@ -90,13 +93,15 @@ export const user_data = (state={}, action) => {
             } else if (action.user_identifier !== 'undefined') {
                 user_identifier = action.user_identifier;
             }
-            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: [], can_draft: false, notifications: []};
+            return {...state, user_identifier, characters: [], available_characters: [], my_drafts: [], can_draft: false, notifications: [], scores: {data: []}};
         case 'LOGGED_OUT':
             return {};
         case 'USER_DATA':
             return {...state, email: action.user_data.email};
         case 'CHARACTERS':
             return {...state, characters: action.characters};
+        case 'SCORES':
+            return {...state, scores: action.scores};
         case 'AVAILABLE_CHARACTERS':
             return {...state, available_characters: action.available_characters};
         case 'MY_DRAFTS':

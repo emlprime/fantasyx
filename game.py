@@ -1,6 +1,9 @@
 import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
 from sqlalchemy import or_
+import pandas as pd
+import numpy as np
+
 def handle_event(msg_type, msg, db_session=None):
     print("handling %s" % msg_type)
     handlers = {
@@ -10,11 +13,12 @@ def handle_event(msg_type, msg, db_session=None):
         "available_characters": available_characters,
         "draft": draft,
         "release": release,
+        "scores": scores,
         "user_data": user_data,
         "can_draft": can_draft,
     }
+
     if msg_type in handlers.keys():
-        
         response = handlers[msg_type](msg, db_session)
     else:
         response = {"error": "no handler implemented for %s" % msg_type}
@@ -43,6 +47,15 @@ def my_drafts(msg, db_session):
     if not user:
         raise Exception("No user found with name %s" % user_identifier)
     return {"my_drafts": [{"id": draft.character.id, "name": draft.character.name} for draft in user.drafts.values()]}
+
+# scores for the game so far
+def scores(msg, db_session):
+    df = pd.read_sql_query('SELECT c.name character_name, s.episode_number, s.points from "score" s inner join character c on c.id=s.character_id',con=db_session)
+
+    pt = pd.pivot_table(df, index='character_name', columns='episode_number', values='points', aggfunc=np.sum)
+
+    score_report =  json.loads(pt.to_json(orient="table"))
+    return {"scores": score_report}
 
 # action to draft character from available characters
 def draft(msg, db_session):

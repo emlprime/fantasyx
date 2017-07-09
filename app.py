@@ -120,28 +120,31 @@ def test(ws):
             msg_type = decoded_msg['type']
             if msg_type:
                 try:
-                    response = handle_event(msg_type, decoded_msg, db_session)
-                    
-                    
-                    print("================================================================")
-                    if msg_type in ['user_data', 'my_drafts', 'release']:
-                        if msg_type == 'user_data':
-                            users[decoded_msg['user_identifier']] = ws
-                            del users[ws.id]
-                            print users
+                    if msg_type == 'scores':
+                        response = handle_event(msg_type, decoded_msg, engine)
                         ws.send(response)
-                        if msg_type == 'release':
-                            available_characters = handle_event('available_characters', decoded_msg, db_session)
-                            for user in users.values():
-                                user.send(available_characters)
                     else:
-                        if msg_type == 'release':
-                            user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
-                            
-                        for user_identifier, user in users.items():
-                            user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
-                            user.send(response)
-                            
+                        response = handle_event(msg_type, decoded_msg, db_session)
+                        
+                        print("================================================================")
+                        if msg_type in ['user_data', 'my_drafts', 'release']:
+                            if msg_type == 'user_data':
+                                users[decoded_msg['user_identifier']] = ws
+                                del users[ws.id]
+                                print users
+                            ws.send(response)
+                            if msg_type == 'release':
+                                available_characters = handle_event('available_characters', decoded_msg, db_session)
+                                for user in users.values():
+                                    user.send(available_characters)
+                        else:
+                            if msg_type == 'release':
+                                user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
+                                
+                            for user_identifier, user in users.items():
+                                user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
+                                user.send(response)
+                                
                 except Exception as error:
                     user.send({"error": error.args[0]})
                         

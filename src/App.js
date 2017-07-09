@@ -12,6 +12,7 @@ import MyDrafts         from './components/MyDrafts';
 import Draft            from './components/Draft';
 import Home             from './components/Home';
 import LoggedIn         from './components/LoggedIn';
+import Leaderboard      from './components/Leaderboard';
 import { push as Menu } from 'react-burger-menu';
 
 import { NotificationStack } from 'react-notification';
@@ -98,6 +99,7 @@ class App extends Component {
                 <Link to="/characters">Characters</Link>
                 <Link to="/draft">Draft</Link>
                 <Link to="/my_drafts">My Drafts</Link>
+                <Link to="/leaderboard">Leaderboard</Link>
                 </Menu>
                 <main id="page-wrap" style={pageWrapStyles}>
                 <h1 style={headerStyles}>aGoT</h1>
@@ -108,6 +110,7 @@ class App extends Component {
                 <Route path="/characters" component={Characters}/>
                 <Route path="/draft" component={Draft}/>
                 <Route path="/my_drafts" component={MyDrafts}/>
+                <Route path="/leaderboard" component={Leaderboard}/>
                 </main>
                 <NotificationStack
                 notifications={this.props.notifications}

@@ -18,8 +18,12 @@ session.execute('TRUNCATE TABLE score restart identity CASCADE')
 users = session.query(User).all()
 
 tyrion = session.query(Character).filter(Character.name=='Tyrion Lannister').one()
+daenerys = session.query(Character).filter(Character.name=='Daenerys Targaryen').one()
+cersei = session.query(Character).filter(Character.name=='Cersei Lannister').one()
 
 users[0].draft(tyrion)
+users[0].draft(daenerys)
+users[1].draft(cersei)
 session.commit()
 
 episodes = [

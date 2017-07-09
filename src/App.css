@@ -30,3 +30,13 @@ a:visited {
     color: #c11d43;
 }
 
+div.ReactVirtualized__Table__rowColumn:first-of-type, div.ReactVirtualized__Table__headerColumn:first-of-type {
+                                                          text-align: left;
+}
+div.ReactVirtualized__Table__rowColumn, div.ReactVirtualized__Table__headerColumn {
+    text-align: right;
+}
+
+div.ReactVirtualized__Table__row:nth-child(odd) {
+    background: #EEE;
+}
