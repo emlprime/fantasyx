@@ -14,7 +14,8 @@ import json
 
 app = Flask(__name__)
 env = DotEnv()
-env.init_app(app, verbose_mode=True)
+env.init_app(app, env_file='/var/www/fantasyx/.env', verbose_mode=True)
+
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
 REDIRECT_URI = '/oauth2callback'  # one of the Redirect URIs from Google APIs console
