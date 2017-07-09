@@ -54,5 +54,6 @@ virtualenv venv
 pip install -r requirements.txt
 sudo mv example_emporer.uwsgi.service /etc/systemd/system/
 sudo chown root:root /etc/systemd/system/emporer.uwsgi.service
+sudo chmod 660 /etc/systemd/system/emporer.uwsgi.service
 sudo systemctl start emperor.uwsgi.service
 ```
