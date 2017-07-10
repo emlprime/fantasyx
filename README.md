@@ -22,7 +22,7 @@ python seed.py
 
 ## To install in Ec2
 ```
-sudo apt-get install libssl-dev
+sudo apt-get install libssl-dev npm
 sudo mkdir -p /var/www
 sudo mkdir -p /var/log/uwsgi
 cd /var/www
