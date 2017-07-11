@@ -9,13 +9,16 @@ from models import Character, User, Draft, DraftTicket
 from flask_uwsgi_websocket import GeventWebSocket
 from game import handle_event, can_draft
 from flask import Flask
-from flask.ext.dotenv import DotEnv
+from flask_dotenv import DotEnv
 import json
 import redis
+import os
+
 
 app = Flask(__name__)
 env = DotEnv()
-env.init_app(app, env_file='.env', verbose_mode=True)
+env_file = '/var/www/fantasyx/.env' if os.path.exists('/var/www/fantasyx/.env') else '.env'
+env.init_app(app, env_file=env_file, verbose_mode=True)
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
@@ -47,7 +50,11 @@ google = oauth.remote_app('google',
                           
 )
 
-engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
+if app.config['FLASK_ENV'] == 'development':
+    engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
+else:
+    engine=create_engine('postgresql://%(DB_USERNAME)s:%(DB_PASSWORD)s@%(DB_ENDPOINT)s:5432/fantasyx' % app.config)
+
 db_session = Session(bind=engine)
 
 @app.route('/api/')
@@ -127,7 +134,6 @@ def test(ws):
                         if msg_type in ['user_data', 'my_drafts', 'release']:
                             if msg_type == 'user_data':
                                 user_identifier = decoded_msg['user_identifier']
-                                users[] = ws
 
                             ws.send(response)
                             if msg_type == 'release':
