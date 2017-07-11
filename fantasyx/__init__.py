@@ -11,14 +11,15 @@ from game import handle_event, can_draft
 from flask import Flask
 from flask.ext.dotenv import DotEnv
 import json
+import redis
 
 app = Flask(__name__)
 env = DotEnv()
-env.init_app(app, env_file='/var/www/fantasyx/.env', verbose_mode=True)
+env.init_app(app, env_file='.env', verbose_mode=True)
 
 # You must configure these 3 values from Google APIs console
 # https://code.google.com/apis/console
-REDIRECT_URI = '/oauth2callback'  # one of the Redirect URIs from Google APIs console
+REDIRECT_URI = '/api/oauth2callback'  # one of the Redirect URIs from Google APIs console
  
 SECRET_KEY = 'development key'
 DEBUG = True
@@ -48,9 +49,8 @@ google = oauth.remote_app('google',
 
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
 db_session = Session(bind=engine)
-users = {}
 
-@app.route('/')
+@app.route('/api/')
 def index():
     print("in index")
     access_token = session.get('access_token')
@@ -87,7 +87,7 @@ def index():
     return redirect('http://localhost:3000/user/%s' % user.identifier)
  
  
-@app.route('/login')
+@app.route('/api/login')
 def login():
     print("in login")
     callback=url_for('authorized', _external=True)
@@ -108,17 +108,12 @@ def authorized(resp):
 def get_access_token():
     return session.get('access_token')
 
-@websocket.route('/test')
+@websocket.route('/api/test')
 def test(ws):
-    users[ws.id] = ws
-    print("first get user")
-    print(ws)
-    print("================")
-    
+    user_identifier = None
     while True:
         msg = ws.receive()
         if msg:
-            print("message: %s" % msg)
             decoded_msg = json.loads(msg)
             msg_type = decoded_msg['type']
             if msg_type:
@@ -129,12 +124,11 @@ def test(ws):
                     else:
                         response = handle_event(msg_type, decoded_msg, db_session)
                         
-                        print("================================================================")
                         if msg_type in ['user_data', 'my_drafts', 'release']:
                             if msg_type == 'user_data':
-                                users[decoded_msg['user_identifier']] = ws
-                                del users[ws.id]
-                                print users
+                                user_identifier = decoded_msg['user_identifier']
+                                users[] = ws
+
                             ws.send(response)
                             if msg_type == 'release':
                                 available_characters = handle_event('available_characters', decoded_msg, db_session)
@@ -151,5 +145,7 @@ def test(ws):
                 except Exception as error:
                     user.send({"error": error.args[0]})
                         
-    del users[ws.id]
+    if user_identifier:
+        # unsubscribe user identifier
+        pass
 

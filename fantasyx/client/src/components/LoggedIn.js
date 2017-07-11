@@ -21,7 +21,7 @@ class LoggedIn extends Component {
 
     componentWillMount() {
         this.props.loggedIn(this.state.user_identifier);
-        this.ws = new WebSocket('ws://127.0.0.1:5000/test');
+        this.ws = new WebSocket('ws://lot.emlprime.com:5000/test');
         this.ws.onmessage = function(evt){
             const parsed_data = JSON.parse(evt.data)
             gotMsg(parsed_data);
