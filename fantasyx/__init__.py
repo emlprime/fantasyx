@@ -90,8 +90,12 @@ def index():
         print(user.as_dict())
     except ValueError:
         print("Could not parse json response from Google")
-    
-    return redirect('http://localhost:3000/user/%s' % user.identifier)
+
+    if app.config['FLASK_ENV'] == 'development':
+        endpoint = 'localhost:3000'
+    else:
+        endpoint = 'lot.emlprime.com'
+    return redirect('http://%s/user/%s' % (endpoint, user.identifier))
  
  
 @app.route('/api/login')
