@@ -63,6 +63,9 @@ def draft(msg, db_session):
     character_id = msg['character_id']
 
     draft_ticket = db_session.query(DraftTicket).order_by(DraftTicket.sort).first()
+    if not draft_ticket:
+        return {"can_draft": False}
+    
     if not draft_ticket.user_identifier == user_identifier:
         raise Exception("It is not %s's turn to draft" % user_identifier)
     

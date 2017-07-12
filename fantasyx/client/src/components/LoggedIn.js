@@ -31,8 +31,18 @@ class LoggedIn extends Component {
     }
 
     getUserData(user_identifier) {
-        const msg = JSON.stringify({type: 'user_data', user_identifier: user_identifier})
-        this.ws.onopen = () => this.ws.send(msg);
+        console.log("do we have a user identifier: ", user_identifier);
+        if(user_identifier !== 'undefined') {
+            console.log("we have a user identifier");
+            console.log(typeof user_identifier);
+            console.log("PDS user identifier:", user_identifier);
+            const msg = JSON.stringify({type: 'user_data', user_identifier: user_identifier})
+            this.ws.onopen = () => this.ws.send(msg);
+        } else {
+            const msg = JSON.stringify({type: 'user_data', user_identifier: this.props.user_identifier})
+            this.ws.onopen = () => this.ws.send(msg);
+            console.log("we don't have a user identifier");
+        }
     }
     
     render() {
@@ -46,6 +56,7 @@ class LoggedIn extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({  
+    user_identifier: state.user_data.user_identifier    
 });
 
 const mapDispatchToProps = {  

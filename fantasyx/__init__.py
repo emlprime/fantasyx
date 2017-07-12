@@ -119,43 +119,57 @@ def authorized(resp):
 def get_access_token():
     return session.get('access_token')
 
+r = redis.Redis()
+pubsub = r.pubsub()
+
 @websocket.route('/api/test')
 def test(ws):
     user_identifier = None
+    pubsub.subscribe(['msgs'])
     while True:
         msg = ws.receive()
         if msg:
-            decoded_msg = json.loads(msg)
-            msg_type = decoded_msg['type']
+            msg = json.loads(msg)
+            print "msg [%s] for %s" % (msg, user_identifier)
+        else:
+            submsg = pubsub.get_message()
+            if submsg and type(submsg['data']) == str:
+                msg = json.loads(submsg['data'])
+                print "submsg [%s] for %s" % (submsg, user_identifier)
+                if msg and 'user_identifier' in msg.keys() and msg['user_identifier'] == user_identifier:
+                    msg = None
+        if msg:
+            msg_type = msg['type']
             if msg_type:
                 try:
                     if msg_type == 'scores':
-                        response = handle_event(msg_type, decoded_msg, engine)
+                        response = handle_event(msg_type, msg, engine)
                         ws.send(response)
                     else:
-                        response = handle_event(msg_type, decoded_msg, db_session)
-                        
+                        response = handle_event(msg_type, msg, db_session)
+                        ws.send(response)
+
                         if msg_type in ['user_data', 'my_drafts', 'release']:
                             if msg_type == 'user_data':
-                                user_identifier = decoded_msg['user_identifier']
+                                user_identifier = msg['user_identifier']
+                                print "setting user identifier for: %s" % user_identifier
 
-                            ws.send(response)
                             if msg_type == 'release':
-                                available_characters = handle_event('available_characters', decoded_msg, db_session)
-                                for user in users.values():
-                                    user.send(available_characters)
+                                r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
                         else:
-                            if msg_type == 'release':
-                                user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
-                                
-                            for user_identifier, user in users.items():
-                                user.send(handle_event('can_draft', {'user_identifier': user_identifier}, db_session))
-                                user.send(response)
-                                
+                            if msg_type == 'draft':
+                                r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
+
+                            can_draft_response = handle_event('can_draft', {'user_identifier': user_identifier}, db_session)
+                            ws.send(can_draft_response)
+
+
                 except Exception as error:
-                    user.send({"error": error.args[0]})
-                        
+                    print "error: %s" % error
+                    error_response = json.dumps({"error": error.args[0]})
+                    ws.send(error_response)
+
     if user_identifier:
         # unsubscribe user identifier
+        print "unsubscribe user identifier"
         pass
-
