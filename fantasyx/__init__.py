@@ -159,7 +159,7 @@ def test(ws):
                         else:
                             if msg_type == 'draft':
                                 r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
-
+                                
                             can_draft_response = handle_event('can_draft', {'user_identifier': user_identifier}, db_session)
                             ws.send(can_draft_response)
 

@@ -3,12 +3,13 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.orm.collections import attribute_mapped_collection
-
+from datetime import datetime
 Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'user'
-
+    MAX_DRAFTS = 8
+    
     id               = Column(Integer, primary_key=True)
     name             = Column(String, unique=True, nullable=False)
     seat_of_power    = Column(String, unique=True, nullable=False)
@@ -46,6 +47,35 @@ class User(Base):
         self.characters.pop(character.name)
         return True
 
+    def can_draft(self, db_session):
+        limit_reached = len(self.characters) >= self.MAX_DRAFTS
+        if limit_reached: print "User %s has reached their draft limit" % self.name
+
+        remaining_draft_tickets = db_session.query(DraftTicket).order_by(DraftTicket.sort)
+        count_of_draft_tickets = remaining_draft_tickets.count()
+        if count_of_draft_tickets:
+            print "there are draft tickets remaining"
+            next_draft_ticket = remaining_draft_tickets.first()
+            if self.identifier == next_draft_ticket.user_identifier:
+                my_turn = True
+                print "It's %s's turn" % (self.name)
+            else:
+                user = db_session.query(User).filter(User.identifier == next_draft_ticket.user_identifier).first()
+                print "It's %s's turn, not yours" % (user.name)
+                my_turn = False
+        else:
+            my_turn = True
+            print "We are finished with the drafting"
+
+        for episode in db_session.query(Episode).all():
+            is_blackout_date = episode.aired_at.date() == datetime.today().date()
+            if is_blackout_date:
+                print "The show is airing today. You can't draft"
+            else:
+                print "It's not a blackout day today"
+                
+        return not limit_reached and my_turn and not is_blackout_date
+    
 class Score(Base):
     __tablename__ = 'score'
     
@@ -75,6 +105,9 @@ class Episode(Base):
     title        = Column(String)
     number       = Column(String, index=True)
     aired_at     = Column(DateTime, nullable=False)
+
+    def __repr__(self):
+        return "%10s %s" % (self.number, self.aired_at)
     
 class DraftTicket(Base):
     __tablename__ = 'draft_ticket'
