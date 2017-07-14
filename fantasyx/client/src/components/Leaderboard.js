@@ -45,8 +45,8 @@ class Leaderboard extends Component {
     }
 }
 const mapStateToProps = (state, ownProps) => ({  
-    scores: state.user_data.scores,
-    ws: state.user_data.ws,
+    scores: state.scores,
+    ws: state.ws,
 });
 
 const LeaderboardContainer = connect(  

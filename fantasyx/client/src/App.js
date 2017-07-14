@@ -11,13 +11,15 @@ import Characters       from './components/Characters';
 import MyDrafts         from './components/MyDrafts';
 import Draft            from './components/Draft';
 import Home             from './components/Home';
-import LoggedIn         from './components/LoggedIn';
 import Leaderboard      from './components/Leaderboard';
 import { push as Menu } from 'react-burger-menu';
-
 import { NotificationStack } from 'react-notification';
+import queryString from 'query-string';
 
-import { removeNotification } from './redux';
+import {
+    removeNotification,
+    gotUserIdentifier,
+} from './actions';
 
 const menuStyles = {
     bmBurgerButton: {
@@ -70,30 +72,39 @@ const pageWrapStyles = {
 }
 
 class App extends Component {
-    render() {
-        let content = '';
-        
-        if(!this.props.ws || !this.props.ws.url) {
-            const redirect_to = global.location.pathname.split('?')[0];
-            console.log("no websocket, we should redirect to login and then to:", redirect_to);
-            content = (
-                <Router>
-                <div id="outer-container">
-                <main id="page-wrap" style={pageWrapStyles}>
-                <Route path="/user/:user_identifier" component={LoggedIn}/>
-                <Route exact path="/" component={Home}/>
-                </main>
-                <Redirect to={{
-                    pathname: `/user/${this.props.user_identifier}/?redirect_to=${redirect_to}`
-                }}/>
-                </div>
-                </Router>
-            );
+    constructor(props) {
+        console.log("getting constructed app");
+        super(props);
+        const query_string = queryString.parse(global.location.search);
+        const pathname = global.location.pathname;
+        this.getUserData = this.getUserData.bind(this);
+        console.log("pathname:", pathname);
+        if (pathname.match(/\/user\//)) {
+            const user_identifier = pathname.split("/")[2];
+            console.log("got user identifier:", user_identifier);
+            let getUserData = this.getUserData;
+            this.props.ws.onopen = (evt) => {
+                console.log("websocket on open. send user data");
+                getUserData(user_identifier);
+            }
+            this.props.gotUserIdentifier(user_identifier);
         } else {
-            console.log("websocket found! yay", this.props.ws.url);
-            content = (
-                <Router>
+            console.log("no user identifier, we should log in");
+            global.location.href = "http://lot.emlprime.com/api/login";
+        }
+    }
+
+    getUserData(user_identifier) {
+        const msg = JSON.stringify({type: 'user_data', user_identifier: user_identifier})
+        console.log("this.props.ws.readystate:", this.props.ws.readyState);
+        this.props.ws.send(msg);
+    }
+    
+    render() {
+        return (
+             <Router>
                 <div id="outer-container">
+                
                 <Menu styles={menuStyles} pageWrapId={`page-wrap`} outerContainerId={ "outer-container" }>
                 <Link to="/">Home</Link>
                 <Link to="/characters">Characters</Link>
@@ -101,38 +112,41 @@ class App extends Component {
                 <Link to="/my_drafts">My Drafts</Link>
                 <Link to="/leaderboard">Leaderboard</Link>
                 </Menu>
+                
                 <main id="page-wrap" style={pageWrapStyles}>
                 <h1 style={headerStyles}>aGoT</h1>
                 <h2 style={subtitleStyles}>Crush your enemies. See them driven before you. Hear the lamentations of their women.</h2>
                 <h3>Welcome {this.props.email}</h3>
-                <Route path="/user/:user_identifier" component={LoggedIn}/>
                 <Route exact path="/" component={Home}/>
+                <Route exact path="/user/:user_identifier" component={Home}/>
                 <Route path="/characters" component={Characters}/>
                 <Route path="/draft" component={Draft}/>
                 <Route path="/my_drafts" component={MyDrafts}/>
                 <Route path="/leaderboard" component={Leaderboard}/>
                 </main>
+                
                 <NotificationStack
-                notifications={this.props.notifications}
-                onDismiss={notification => this.props.removeNotification(notification)}
+            notifications={this.props.notifications}
+            onDismiss={notification => this.props.removeNotification(notification)}
                 />
-                </div>
-                </Router>
-            )
-        }
-        return content;
+                
+            </div>
+            </Router>
+        );
     }
 }
 
 const mapStateToProps = (state, ownProps) => ({  
-    user_identifier: state.user_data.user_identifier,
-    email: state.user_data.email,
-    ws: state.user_data.ws,
-    notifications: state.user_data.notifications,
+    all: state,
+    user_identifier: state.user_identifier,
+    email: state.email,
+    ws: state.ws,
+    notifications: state.notifications,
 });
 
 const mapDispatchToProps = {  
     removeNotification,
+    gotUserIdentifier,
 };
 
 const AppContainer = connect(  

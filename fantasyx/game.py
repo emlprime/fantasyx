@@ -32,6 +32,7 @@ def characters(msg, db_session):
 # user details for the front end display
 def user_data(msg, db_session):
     user_identifier = msg['user_identifier']
+    print "selecting user for user identifier: %s" % (user_identifier)
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     return {"user_data": {"email": user.email}}
 

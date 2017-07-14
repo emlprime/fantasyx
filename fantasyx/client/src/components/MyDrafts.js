@@ -38,7 +38,7 @@ class MyDraft extends Component {
         const characters =  this.props.my_drafts || [];
         return (
             <div>
-            MyDraft for {this.props.email}:
+            Characters that you have drafted:
             <ul>
             {characters.map((character) => (
                 <li id={`character${character.id}`} key={`character_${character.id}`} style={releaseRowStyles}>
@@ -54,10 +54,10 @@ class MyDraft extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({  
-    user_identifier: state.user_data.user_identifier,
-    email: state.user_data.email,
-    my_drafts: state.user_data.my_drafts,
-    ws: state.user_data.ws,
+    user_identifier: state.user_identifier,
+    email: state.email,
+    my_drafts: state.my_drafts,
+    ws: state.ws,
 });
 
 const MyDraftContainer = connect(  

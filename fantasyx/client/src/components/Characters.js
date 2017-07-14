@@ -41,8 +41,8 @@ class Characters extends Component {
     }
 }
 const mapStateToProps = (state, ownProps) => ({  
-    characters: state.user_data.characters,
-    ws: state.user_data.ws,
+    characters: state.characters,
+    ws: state.ws,
 });
 
 const CharactersContainer = connect(  
