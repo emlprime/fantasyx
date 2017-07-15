@@ -13,6 +13,11 @@ export const gotCharacters = characters => ({
     characters,
 });
 
+export const gotRubric = rubric => ({  
+    type: 'RUBRIC',
+    rubric,
+});
+
 export const gotAvailableCharacters = available_characters => ({  
     type: 'AVAILABLE_CHARACTERS',
     available_characters,

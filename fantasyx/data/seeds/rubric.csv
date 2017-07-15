@@ -1,31 +1,41 @@
 description,kind,points
-Changed the course of an individual life,plot,1
-Changed the course of a cohesive group or cadre,plot,2
-Changed the course of a war,plot,5
-Changed the course of a polity,plot,10
-Changed the course of a race,plot,15
-Changed the course of the world,plot,42
-Engaged in private nudity or salacious behavior,sex,1
-Engaged in private graphic sexual encounters,sex,2
-Engaged in public nudity or salacious behavior,sex,4
-Engaged in public graphic sexual encounters,sex,6
-Engaged in kinky or taboo sexual activity,sex,10
-Prevented another character from engaging in nudity or salacious behavior,sex,-10
-Draws own blood,blood,1
-Draws the blood of another,blood,2
-Kills an individual unnamed character,blood,3
-Kills a group of unnamed characters,blood,5
-Consumes a named character,blood,9
-Kills a named character (points per character),blood,10
-Flips out and kills someone for like...no reason (like a Ninja),blood,12
-Kills the leader of a polity,blood,14
-Kills the last of a race,blood,15
-Kills using ironic or apropos means,blood,20
-Kills having overcome a crippling fear of violence,blood,50
-Kills a direwolf,blood,-50
-Delivers a punchy one liner,rhetoric,1
-Makes a statement which is clearly veiled commentary on the current political climate,rhetoric,2
-Actually says their house words,rhetoric,4
-Says something that reveals a long misunderstood mystery,rhetoric,5
-Says something which could reasonably be printed on a Threadless.com t-shirt,rhetoric,6
-Changes the mind of a character using only words,rhetoric,10
+Change the course of the world,Plot,100
+Kill a leader,Blood,75
+Change the course of a race,Plot,70
+Change the course of a city/region,Plot,50
+Come back from the dead,Plot,50
+Kill having overcome a crippling fear of violence,Blood,50
+Have a memorable death,Blood,50
+Kill the last of a race,Blood,35
+Change the course of a war,Plot,30
+Surprise!  You can do magic!,Plot,30
+Get a cool new weapon,Plot,30
+Promotion (political or social),Plot,25
+Particiapte in an orgy (more than 2 people),Sex,25
+Kinky/taboo sex,Sex,25
+Kill a named character,Blood,25
+Change the course of a group/clan,Plot,20
+Have a vision or prophecy,Plot,20
+Take up a weird or new religion,Plot,20
+Public nudity,Sex,20
+Kill a group of unnamed characters,Blood,20
+Kill using ironic or apropos means,Blood,20
+Sex with a known character,Sex,15
+Kill a white walker,Blood,15
+Changes the mind of a character using only words,Rhetoric,15
+Change the course of an individual life,Plot,10
+Sex with an nameless/random character,Sex,10
+Private nudity (seen on screen),Sex,10
+Watch people have sex,Sex,10
+Kill an individual unnamed character,Blood,10
+Cannibalism,Blood,10
+Flips out and kill someone for like...no reason (like a Ninja),Blood,10
+Actually says their house words,Rhetoric,10
+Says something which could reasonably be printed on a Threadless.com t-shirt,Rhetoric,5
+Bold come-ons,Sex,5
+Draws the blood of another,Blood,5
+Says something that reveals a long misunderstood mystery,Rhetoric,15
+Makes a statement which is clearly veiled commentary on the current political climate,Rhetoric,5
+Delivers a punchy one liner,Rhetoric,5
+Cockblock/Clam Jam,Sex,-20
+Kill a direwolf,Blood,-50

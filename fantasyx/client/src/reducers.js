@@ -17,6 +17,8 @@ export const reducer = (state={}, action) => {
         return {...state, characters: action.characters};
     case 'SCORES':
         return {...state, scores: action.scores};
+    case 'RUBRIC':
+        return {...state, rubric: action.rubric};
     case 'AVAILABLE_CHARACTERS':
         return {...state, available_characters: action.available_characters};
     case 'MY_DRAFTS':
@@ -31,7 +33,7 @@ export const reducer = (state={}, action) => {
         return {...state, notifications};
     case 'CAN_DRAFT':
         console.log("got can draft", state.notifications.length,state.can_draft, action.can_draft);
-        if( action.can_draft ) {
+        if( action.can_draft != state.can_draft && action.can_draft ) {
             notifications = [...state.notifications, {
                 message: `It is your turn to draft!`,
                 key: `DraftNotice_${state.notifications.length + 1}`,

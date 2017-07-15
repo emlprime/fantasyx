@@ -44,7 +44,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('kind', sa.String(), nullable=True),
-    sa.Column('points', sa.String(), nullable=True),
+    sa.Column('points', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',

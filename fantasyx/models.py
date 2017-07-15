@@ -8,7 +8,7 @@ Base = declarative_base()
 
 class User(Base):
     __tablename__ = 'user'
-    MAX_DRAFTS = 8
+    MAX_DRAFTS = 6
     
     id               = Column(Integer, primary_key=True)
     name             = Column(String, unique=True, nullable=False)
@@ -96,7 +96,7 @@ class Rubric(Base):
     id           = Column(Integer, primary_key=True)
     description  = Column(String)
     kind         = Column(String)
-    points       = Column(String)
+    points       = Column(Integer)
     
 class Episode(Base):
     __tablename__ = 'episode'
@@ -169,6 +169,7 @@ class Character(Base):
 
     id               = Column(Integer, primary_key=True)
     name             = Column(String)
+    description      = Column(String)
     created_at       = Column(DateTime, default=func.now())
     draftors = association_proxy('drafts', 'user',
                                    creator=lambda k, v:

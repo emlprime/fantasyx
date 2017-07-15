@@ -14,6 +14,7 @@ import {
     gotUserIdentifier,
     gotUserData,
     gotCharacters,
+    gotRubric,
     gotAvailableCharacters,
     gotScores,
     gotMyDrafts,
@@ -35,6 +36,9 @@ export const gotMsg = msg => {
     }
     if (msg.characters) {
         store.dispatch(gotCharacters(msg.characters))
+    }
+    if (msg.rubric) {
+        store.dispatch(gotRubric(msg.rubric))
     }
     if (msg.available_characters) {
         store.dispatch(gotAvailableCharacters(msg.available_characters))
@@ -75,6 +79,7 @@ ws.onmessage = function(evt){
 }
 
 const preloadedState = {
+    rubric: {},
     characters: [],
     available_characters: [],
     my_drafts: [],

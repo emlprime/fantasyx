@@ -3,10 +3,20 @@ import { connect } from 'react-redux';
 
 const characterRowStyles = {
     height: '2em',
-    listStyleType: 'none'
+    listStyleType: 'none',
+    color: 'brown',
+}
+
+const characterStyles = {
+    float: 'left',
+    width: '80%',
 }
 const characterNameStyles = {
     float: 'left'
+}
+
+const characterDescriptionStyles = {
+    clear: 'left'
 }
 
 const characterUserStyles = {
@@ -30,7 +40,10 @@ class Characters extends Component {
             <ul>
             {this.props.characters.map((character) => (
                 <li id={`character${character.id}`} key={`character_${character.id}`} style={characterRowStyles}>
-                <div style={characterNameStyles}>{character.name}</div>
+                    <div style={characterStyles}>
+                    <h2 style={characterNameStyles}>{character.name}</h2>
+                    <h3 style={characterDescriptionStyles}>{character.description}</h3>
+                </div>
                 <div style={characterUserStyles}>{character.user}</div>
                 </li>
             ))}

@@ -1,130 +1,64 @@
-name
-Tyrion Lannister
-Cersei Lannister
-Daenerys Targaryen
-Jon Snow
-Sansa Stark
-Arya Stark
-Jaime Lannister
-Jorah Mormont
-Theon Greyjoy
-Samwell Tarly
-Lord Varys
-Petyr 'Littlefinger' Baelish
-Brienne of Tarth
-Bran Stark
-Bronn
-Grand Maester Pycelle
-Davos Seaworth
-Sandor 'The Hound' Clegane
-Missandei
-Eddison Tollett
-Podrick Payne
-Tywin Lannister
-Melisandre
-Margaery Tyrell
-Joffrey Baratheon
-Catelyn Stark
-Tormund Giantsbane
-Barristan Selmy
-Grey Worm
-Stannis Baratheon
-Hodor
-Gilly
-Grenn
-Robb Stark
-Loras Tyrell
-Shae
-Ramsay Bolton
-Roose Bolton
-Alliser Thorne
-Daario Naharis
-Tommen Baratheon
-Ygritte
-Jaqen H'ghar
-Gendry
-Olenna Tyrell
-Olly
-Meryn Trant
-Osha
-Lancel Lannister
-Qyburn
-Janos Slynt
-Maester Luwin
-Ros
-Meera Reed
-Rickon Stark
-Othell Yarwyck
-Rodrik Cassel
-Mace Tyrell
-Pypar
-Wun Wun
-Irri
-Yara Greyjoy
-High Sparrow
-Jeor Mormont
-Ellaria Sand
-Kevan Lannister
-Rast
-Talisa Stark
-Maester Aemon
-The Waif
-Doreah
-Hot Pie
-Gregor Clegane
-Eddard 'Ned' Stark
-Selyse Baratheon
-Jojen Reed
-Shireen Baratheon
-Bowen Marsh
-Khal Drogo
-Renly Baratheon
-Edmure Tully
-Locke
-Hizdahr zo Loraq
-Septa Unella
-Myranda
-Thoros of Myr
-Kovarro
-Robin Arryn
-Tommen Baratheon
-Obara Sand
-Tyene Sand
-Nymeria Sand
-Myrcella Baratheon
-Robert Baratheon
-Oberyn Martell
-Yoren
-Brynden 'Blackfish' Tully
-Olyvar
-Rakharo
-Marei
-Orell
-Areo Hotah
-Septa Mordane
-Black Walder Rivers
-Qotho
-Dontos Hollard
-Myrcella Baratheon
-Anguy
-High Septon
-Night's Watch Officer
-Viserys Targaryen
-Jory Cassel
-Walder Frey
-Lysa Arryn
-Mance Rayder
-Craster
-Benjen Stark
-Doran Martell
-Beric Dondarrion
-Xaro Xhoan Daxos
-Rickard Karstark
-Dagmer Cleftjaw
-Walda Bolton
-Trystane Martell
-Bernadette
-Steelshanks Walton
-Balon Greyjoy
-Nymeria 'the wolf'
-Ghost
+name,description
+Alys Karstark,"Alys Karstark is a member of House Karstark, the daughter of the deceased Rickard Karstark and sister of Harrion, Torrhen and Harald Karstark."
+Arya Stark,"The third child and second daughter of Lord Eddard Stark and his wife, Lady Catelyn Stark. After narrowly escaping the persecution of House Stark at the hands of House Lannister, Arya is trained as a Faceless Man at the House of Black and White in Braavos, and uses her new skills to bring those who have wronged her family to justice."
+Benjen Stark,"First Ranger of the Night's Watch. He embarks on a ranging north of the Wall, and does not return. He is finally encountered again when he saves Bran Stark and Meera Reed from wights after they escape from the cave of the three-eyed raven. Afterwards he leads Bran and Meera close to the Wall but stays behind because he cannot pass through it due to his undead status."
+Beric Dondarrion,"Lord Beric Dondarrion is the Lord of Blackhaven and the head of House Dondarrion. Initially sent out by Eddard Stark to lead a party of men to apprehend Ser Gregor Clegane for atrocities committed against the people of the Riverlands, he and his men then rallied deserters from different armies in the war, as well as commoners trying to defend their homes, to form a guerrilla resistance group known as the Brotherhood Without Banners, with Dondarrion as their leader."
+Bran Stark,The fourth child and second son of Eddard and Catelyn Stark. Bran is a warg and currently the new three-eyed raven.
+Brienne of Tarth,"Heir to the Tarth name at Evenfall Hall, Brienne is a warrior who has pledged to protect the children of Catelyn Stark."
+Bronn,"Bronn was originally a sellsword for Tyrion Lannister, but following the Battle of the Blackwater was made a knight."
+Cersei Lannister,"After the assassinations of Joffrey and Myrcella and Tommen's suicide in the wake of the destruction of the Great Sept of Baelor, Cersei assumed the throne under the name of Cersei of the House Lannister, the First of Her Name, Queen of the Andals and the First Men, Protector of the Seven Kingdoms."
+Daario Naharis,"Commander of the Second Sons, Daario is a loyal warrior to Daenerys Targaryen."
+Daenerys Targaryen,"Daenerys of House Targaryen, the First of Her Name
+Queen of Meereen
+Queen of the Andals, the Rhoynar and the First Men
+Lady Regnant of the Seven Kingdoms
+Protector of the Realm
+Khaleesi of the Great Grass Sea
+the Breaker of Chains, and Mother of Dragons."
+Davos Seaworth,"A smuggler before he was knighted, Ser Davos served as Hand of the King to Stannis Baratheon."
+Eddison Tollett,"Often called just Edd, he is one of Jon Snow's trusted friends and Lord Commander of the Night's Watch."
+Edmure Tully,"Ser Edmure Tully is the son of Lord Hoster Tully and Lady Minisa Whent, and the heir to House Tully of Riverrun"
+Ellaria Sand,"Ellaria was the paramour of Prince Oberyn Martell, and following his death continued to stay in Prince Doran's court. She is a bastard daughter of house Uller."
+Euron Greyjoy,"The younger brother of Balon Greyjoy, since the first Greyjoy rebellion he has spent his time as a pirate, raiding around the world."
+Gendry,"An up and coming blacksmith, Gendry was forced to flee King's Landing when it was discovered that he was the bastard son of King Robert."
+Ghost,"Ghost is the all-white, red-eyed direwolf of Jon Snow."
+Gilly,"Originally the daughter-wife of Craster, a wildling, she came south of the Wall with Sam Tarly, and continued to travel south with him when he left to become a maester."
+Grey Worm,"The elected leader of the Unsullied, Grey Worm is one of Daenerys' most loyal soldiers, and one of her main advisors."
+Harrag,Character in the seventh season. He will be portrayed by Brendan Cowell. Harrag is an ironborn
+Jaime Lannister,"Jaime previously served in the Kingsguard of Aerys Targaryen, known as the Mad King, before infamously backstabbing him during the Sack of King's Landing, earning Jaime the nickname of the Kingslayer. He continued to serve in the Kingsguard of Robert Baratheon, and as Lord Commander for Robert's alleged sons Joffrey and Tommen. However, a confrontation with the Faith of the Seven led to his dismissal from the sworn order."
+Jaqen H'ghar,"One of the Faceless Men, Jaqen H'ghar is Arya's mentor."
+Jon Snow,"King Jon Snow is the son of Lady Lyanna Stark and Rhaegar Targaryen, the Prince of Dragonstone. From infancy, Jon is presented as the bastard son of Lord Eddard Stark, Lyanna's brother, and raised by Eddard alongside his lawful children at Winterfell but his true parentage is kept secret from everyone, including Jon himself."
+Jorah Mormont,Jorah is an exiled knight from Westeros who served in the court of Daenerys Targryen before being exiled from Mereen. He continues to serve her even in exile.
+Kinvara,"A Red Priestess, Kinvara is the High Priestess of Volantis. She serves the Lord of Light and believes Daenerys is the one who was foretold."
+Koner,Character in the seventh season. He will be portrayed by Joseph Quinn
+Lyanna Mormont,"She is the young Lady of Bear Island and thus the head of House Mormont of Bear Island ever since the death of her mother, Maege Mormont. She is the niece of Lord Commander Jeor Mormont of the Night's Watch and the first cousin of Ser Jorah Mormont."
+Marei,"Recurring character in the second, third, fourth, fifth, sixth, and seventh seasons. She is a prostitute in the King's Landing brothel owned by Petyr ""Littlefinger"" Baelish."
+Meera Reed,"The eldest child of Howland Reed, she serves as a protector of Bran Stark."
+Melisandre,"Often called the Red Woman, she is a priestess of the Red Temple. She helped Stannis Baratheon in his rebellion, but now serves Jon Snow."
+Missandei,"A former slave, Missandei is the handmaid and advisor to Daenerys."
+Nymeria (wolf),"Arya Stark's direwolf, Nymeria is currently somewhere in the Riverlands."
+Nymeria Sand,"Nymeria is the second of eight bastard daughters of Oberyn Martell, called the Sand Snakes. She is skilled in the use of a bullwhip in battle."
+Obara Sand,"The eldest of Sand Snakes, Obara is considered to be a great warrior."
+Olenna Tyrell,"After most of her family are killed in the Destruction of the Great Sept of Baelor, an event orchestrated by Cersei Lannister, Olenna's desire for vengeance leads her to pledge House Tyrell's forces to Daenerys Targaryen."
+Petyr Baelish,"Often called Littlefinger, he was master of coin to King Robert, and owns brothels around Westeros. He is currently serving Robin Arryn."
+Podrick Payne,"Former squire of Tyrion Lannister, Pod now serves Brienne of Tarth."
+Qhono,Dothraki warrior.
+Qyburn,"Once a maester, they took his chain for performing sinister experiments. He now serves Cersei, and it was his experiments that kept the Mountain from death."
+Randyll Tarly,"Father to Samwell Tarly and Lord of Horn Hill, he is head of one of the most powerful families in the Reach."
+Robett Glover,"Lord of Deepwood Motte and head of House Glover. He is portrayed by Tim McInnerny, and first appears in ""The Broken Man""."
+Robin Arryn,"Though still a child, Robin is head of house Arryn, Lord of the Eyrie, Warden of the East, and Lord Paramount of the Vale of Arryn."
+Samwell Tarly,"A member of the Night's Watch, Sam is one of Jon's closest advisors. He is currently training as the new maester of the Night's Watch."
+Sansa Stark,"Second child and first daughter of Eddard and Catelyn Stark, she was first the wife of Tyrion Lannister before being married to Ramsay Bolton. She is protected by Brienne of Tarth."
+The Hound,"Sandor Clegane, nicknamed The Hound, is the younger brother of Gregor Clegane and was the personal bodyguard (sworn shield) of Joffrey Baratheon."
+The Mountain,"Ser Gregor Clegane, he is considered one of the fiercest and most sadistic warriors in Westeros. He serves as bodyguard to Queen Cersei."
+The Night King,"Originally a man caught by the Children of the Forest, he was changed into the first White Walker, and now leads them across the region north of the Wall."
+Theon Greyjoy,"The only son of Balon Greyjoy, he was raised as a ward of Eddard Stark. He is later captured and tortured by Ramsay Bolton."
+Thoros of Myr,"Thoros, commonly known as Thoros of Myr, is a red priest of the Lord of Light and a noted warrior."
+Tormund Giantsbane,"One of the many leaders of the Wildlings, and perhaps the most influential, he is loyal to Jon Snow after the Lord Commander saved his people from the White Walkers."
+Tycho Nestoris,"Tycho Nestoris is a representative of the Iron Bank of Braavos. He is a rational man, more interested in numbers than in words, reasoning that the former are less likely to deceive than the latter."
+Tyene Sand,"The third born of the Sand Snakes, Tyene is also the daughter of Ellaria Sand. She is skilled with daggers and poisons."
+Tyrion Lannister,"Often called the Imp, he is the second son of Tywin Lannister. He served briefly as Hand of the King to his nephew Joffrey Baratheon, and now serves in the court of Daenerys."
+Varys,"Sometimes called the spider, he is a spymaster serving Daenerys."
+Wolkan,"He is a member of the Order of Maesters, and was in service to House Bolton at the Dreadfort and then Winterfell. It is currently unknown if he still serves at Winterfell now that it has been taken back by House Stark and House Bolton is extinct after the Battle of the Bastards."
+Yara Greyjoy,"Older sister of Theon, she is a reaver from the Iron Islands, and is considered a leader among the Ironborn."
+Yohn Royce,"Lord Yohn Royce, also known as ""Bronze Yohn"", is the Lord of Runestone and a powerful bannerman of House Arryn."

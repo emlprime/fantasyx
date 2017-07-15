@@ -9,6 +9,7 @@ def handle_event(msg_type, msg, db_session=None):
     handlers = {
         "draft": draft,
         "my_drafts": my_drafts,
+        "rubric": rubric,
         "characters": characters,
         "available_characters": available_characters,
         "draft": draft,
@@ -25,9 +26,20 @@ def handle_event(msg_type, msg, db_session=None):
     return json.dumps(response)
 
 # The full list of characters
+def rubric(msg, db_session):
+    rubric = {}
+    result = db_session.query(Rubric).order_by(Rubric.kind, Rubric.points).values(Rubric.description, Rubric.kind, Rubric.points)
+    for row in result:
+        description, kind, points = row
+        if not kind in rubric.keys():
+            rubric[kind] = []
+        rubric[kind].append({"description":description, "points":points})
+    print("writing rubric: %s" % rubric)
+    return {"rubric": rubric}
+
 def characters(msg, db_session):
-    result = db_session.query(Character).outerjoin(Draft).outerjoin(User).values(Character.id, Character.name, User.name)
-    return {"characters": [{"id": item[0], "name": item[1], "user": item[2]} for item in result if item[0]]}
+    result = db_session.query(Character).outerjoin(Draft).outerjoin(User).order_by(Character.name).values(Character.id, Character.name, Character.description, User.name)
+    return {"characters": [{"id": item[0], "name": item[1], "description": item[2], "user": item[3]} for item in result if item[0]]}
 
 # user details for the front end display
 def user_data(msg, db_session):
@@ -38,7 +50,7 @@ def user_data(msg, db_session):
 
 # characters that are unclaimed at this point in time
 def available_characters(msg, db_session):
-    result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
+    result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).order_by(Character.name).values(Character.id, Character.name)
     return {"available_characters": [{"id": item[0], "name": item[1]} for item in result if item[0]]}
 
 # characters claimed by the session with this user identifier
