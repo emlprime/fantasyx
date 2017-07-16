@@ -116,6 +116,9 @@ class DraftTicket(Base):
     user_identifier = Column(String, nullable=False, index=True)
     sort            = Column(Integer, nullable=False, index=True)
     
+    def __repr__(self):
+        return self.user_identifier
+    
 class Draft(Base):
     __tablename__ = 'draft'
 
@@ -163,6 +166,9 @@ class DraftHistory(Base):
                     cascade="all, delete-orphan"
                     )
                 )
+    
+    def __repr__(self):
+        return "%s drafted %s" % (self.user.name, self.character.name)
     
 class Character(Base):
     __tablename__ = 'character'

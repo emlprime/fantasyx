@@ -7,6 +7,64 @@ from fantasyx.game import rubric
 user = db_session.query(User).first()
 
 print user.can_draft(db_session)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # rubric = db_session.query(Rubric).first()
 # print rubric.description
 # print rubric({}, db_session)
