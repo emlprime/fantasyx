@@ -63,11 +63,13 @@ def my_drafts(msg, db_session):
 
 # scores for the game so far
 def scores(msg, db_session):
-    df = pd.read_sql_query('SELECT c.name character_name, s.episode_number, s.points from "score" s inner join character c on c.id=s.character_id',con=db_session)
+    print "getting scores"
+    df = pd.read_sql_query('SELECT c.name character_name, s.episode_number, s.points + s.bonus as points from "score" s inner join character c on c.id=s.character_id',con=db_session)
 
     pt = pd.pivot_table(df, index='character_name', columns='episode_number', values='points', aggfunc=np.sum)
 
     score_report =  json.loads(pt.to_json(orient="table"))
+    print "score_report: %s" % score_report
     return {"scores": score_report}
 
 # action to draft character from available characters
@@ -123,27 +125,25 @@ def generate_score(msg, db_session):
     
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
+    print("episode_number: %s" % episode_number)
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
 
     # get a draft from the draft history. This is a historically idempotend approach
     # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
-    try:
-        draft = db_session.query(DraftHistory).join(Character).filter(
-            Character.id == character.id,
-            DraftHistory.drafted_at < episode.aired_at,
-            (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
-        ).first()
-    except AttributeError as err:
-        print("%s: (%s)" % (err.message, msg))
-
+    draft = db_session.query(DraftHistory).join(Character).filter(
+        Character.id == character.id,
+        DraftHistory.drafted_at < episode.aired_at,
+        (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
+    ).first()
+        
     # If we found a draft, populate the score with the relevant user information
     if draft:
         user = draft.user
         user_id = user.id
         draft_id = draft.id
-    # if we don't find a draft, still create the score, but don't associate it with a user
-    # this gives us a sense of the "points on the table" that were left because nobody
-    # had that character drafted at the time.
+        # if we don't find a draft, still create the score, but don't associate it with a 
+        # user this gives us a sense of the "points on the table" that were left because 
+        # nobody had that character drafted at the time.
     else:
         user_id = None
         draft_id = None

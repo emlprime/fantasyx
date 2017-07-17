@@ -24,7 +24,7 @@ class Home extends Component {
     }
 
     getRubric() {
-        console.log("getting rubric");
+        // console.log("getting rubric");
         const msg = JSON.stringify({type: 'rubric'})
         this.props.ws.send(msg);
     }
@@ -32,11 +32,11 @@ class Home extends Component {
     renderRubricSection(rubric, section) {
         let rendered_section = <div></div>;
         if (rubric[section]) {
-            console.log("section:", rubric[section])
+            // console.log("section:", rubric[section])
             rendered_section = rubric[section].map((row) => {
-                console.log("row:", row);
-                console.log("description:", row.description);
-                console.log("points:", row.points);
+                // console.log("row:", row);
+                // console.log("description:", row.description);
+                // console.log("points:", row.points);
                 return <tr style={rowStyles} key={row.description}><td>{row.description}</td><td style={scoreStyles}>{row.points}</td></tr>
             });
         }
@@ -44,14 +44,14 @@ class Home extends Component {
     }
     
     render() {
-        console.log("rubric:", this.props.rubric);
-        console.log("about to render section");
+        // console.log("rubric:", this.props.rubric);
+        // console.log("about to render section");
         let plot_section = this.renderRubricSection(this.props.rubric, 'Plot');
         let blood_section = this.renderRubricSection(this.props.rubric, 'Blood');
         let rhetoric_section = this.renderRubricSection(this.props.rubric, 'Rhetoric');
         let sex_section = this.renderRubricSection(this.props.rubric, 'Sex');
-        console.log("finished rendering  section");
-        console.log("plot section: ", plot_section);
+        // console.log("finished rendering  section");
+        // console.log("plot section: ", plot_section);
         return (
                 <div style={styles}>
                 <h2>Home</h2>

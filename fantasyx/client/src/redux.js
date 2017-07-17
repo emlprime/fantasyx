@@ -1,12 +1,10 @@
 import {  
     applyMiddleware,
-    combineReducers,
     createStore,
     compose,
 } from 'redux';
 
 import thunk from 'redux-thunk';
-import {persistStore, autoRehydrate} from 'redux-persist'
 
 // actions.js
 
@@ -19,7 +17,6 @@ import {
     gotScores,
     gotMyDrafts,
     gotCanDraft,
-    loggedOut,
     removeNotification,
 } from './actions';
 import {
@@ -27,7 +24,7 @@ import {
 } from './reducers';
 
 export const gotMsg = msg => {
-    console.log(`got a message:`, msg);
+    // console.log(`got a message:`, msg);
     if(msg.user_identifier) {
         store.dispatch(gotUserIdentifier(msg.user_identifier))
     }
@@ -50,13 +47,13 @@ export const gotMsg = msg => {
         store.dispatch(gotScores(msg.scores))
     }
     if (typeof msg.can_draft !== 'undefined') {
-        console.log("doing can draft");
+        // console.log("doing can draft");
         store.dispatch(gotCanDraft(msg.can_draft))
     }
 };
 
 export function configureStore(preloadedState = {}) {
-    console.log("starting app with preloadedState:", preloadedState);
+    // console.log("starting app with preloadedState:", preloadedState);
     const enhancer = compose(
         applyMiddleware(thunk),
         // autoRehydrate(),
@@ -71,9 +68,12 @@ export function configureStore(preloadedState = {}) {
     return store;
 };
 
-const ws = new WebSocket('ws://lot.emlprime.com/api/test');
+const hostname = global.location.host.split(":")[0];
+const host = hostname === 'localhost' ? 'localhost:5000' : hostname;
+const socket_address = `ws://${host}/api/test`;
+const ws = new WebSocket(socket_address);
 ws.onmessage = function(evt){
-    console.log("evt with data:", evt);
+    // console.log("evt with data:", evt);
     const parsed_data = JSON.parse(evt.data)
     gotMsg(parsed_data);
 }
