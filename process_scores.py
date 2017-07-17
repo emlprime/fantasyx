@@ -4,9 +4,18 @@ from fantasyx.game import generate_score, scores
 import csv
 
 db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
-with open('fantasyx/data/seeds/score.csv') as data_file:
-    for score in csv.DictReader(data_file):
-        generate_score(dict(score), db_session)
+
+episodes = [
+    'S07E01',
+    'S07E02',
+]
+for episode in episodes:
+    with open('fantasyx/data/episode_scores/%s.csv' % episode) as data_file:
+        for raw_score in csv.DictReader(data_file):
+            score = dict(raw_score)
+            score["episode_number"] = episode
+            print score
+            generate_score(score, db_session)
         
 
 print scores({"type":"scores"}, engine)

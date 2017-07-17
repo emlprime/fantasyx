@@ -122,7 +122,9 @@ def generate_score(msg, db_session):
     # Get the character from the unique character name
     character_name = msg['character_name']
     character = db_session.query(Character).filter(Character.name == character_name).first()
-    
+    if not character:
+        db_session.execute(Character.__table__.insert(), [{"name": character_name}])
+        character = db_session.query(Character).filter(Character.name == character_name).first()
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
     print("episode_number: %s" % episode_number)
