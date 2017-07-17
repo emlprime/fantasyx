@@ -15,7 +15,9 @@
     "react-dom": "^15.6.1",
     "react-notification": "^6.7.1",
     "react-redux": "^5.0.5",
+    "react-responsive-sidebar": "^0.1.16",
     "react-router-dom": "^4.1.1",
+    "react-sidebar": "^2.3.2",
     "react-virtualized": "^9.8.0",
     "redux-persist": "^4.8.2",
     "redux-thunk": "^2.2.0"

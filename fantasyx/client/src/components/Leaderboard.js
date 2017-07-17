@@ -11,11 +11,12 @@ class Leaderboard extends Component {
 
     getScores() {
         const msg = JSON.stringify({type: 'scores'})
+        console.log("requesting scores");
         this.props.ws.send(msg);
     }
     
     render() {
-        console.log(this.props.scores);
+        console.log("scores:", this.props.scores);
         return (
             <div>
             <AutoSizer>
@@ -37,6 +38,7 @@ class Leaderboard extends Component {
                     width={100}
                     label={`S07E0${episode_number}`}
                     dataKey={`S07E0${episode_number}`}
+                    key={`S07E0${episode_number}`}
                     />))}
             </Table>)}
             </AutoSizer>

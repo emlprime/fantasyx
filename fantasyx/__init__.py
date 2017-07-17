@@ -17,7 +17,16 @@ import os
 
 app = Flask(__name__)
 env = DotEnv()
-env_file = '/var/www/fantasyx/.env' if os.path.exists('/var/www/fantasyx/.env') else '.env'
+env_file_path = [
+    '.env',
+    '../.env',
+    '/var/www/fantasyx/.env',
+]
+for env_file_location in env_file_path:
+    if os.path.exists(env_file_location):
+        env_file = env_file_location
+        break
+
 env.init_app(app, env_file=env_file, verbose_mode=True)
 
 # You must configure these 3 values from Google APIs console
@@ -141,8 +150,10 @@ def test(ws):
         if msg:
             msg_type = msg['type']
             if msg_type:
+                print "handling message type: %s" % msg_type
                 try:
                     if msg_type == 'scores':
+                        print "trying to get scores"
                         response = handle_event(msg_type, msg, engine)
                         ws.send(response)
                     else:

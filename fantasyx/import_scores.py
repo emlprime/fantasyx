@@ -6,25 +6,14 @@ from sqlalchemy import String, Integer, Date, MetaData, create_engine, or_
 from sqlalchemy.orm import Session
 import json
 import csv
-from game import generate_score
+from game import generate_score, scores
 from models import Character, Episode, DraftHistory, User
 
 # Create an ad-hoc table to use for the insert statement.
 engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
-session = Session(bind=engine)
+db_session = Session(bind=engine)
 
-session.execute('TRUNCATE TABLE score restart identity CASCADE')
-
-users = session.query(User).all()
-
-tyrion = session.query(Character).filter(Character.name=='Tyrion Lannister').one()
-daenerys = session.query(Character).filter(Character.name=='Daenerys Targaryen').one()
-cersei = session.query(Character).filter(Character.name=='Cersei Lannister').one()
-
-users[0].draft(tyrion)
-users[0].draft(daenerys)
-users[1].draft(cersei)
-session.commit()
+db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
 
 episodes = [
     "S07E01",
@@ -36,10 +25,8 @@ for episode_number in episodes:
         records = [dict(record) for record in csv.DictReader(data_file)]
         for record in records:
             record['episode_number'] = episode_number
-            generate_score(record, session)
+            generate_score(record, db_session)
             
-session.commit()
+db_session.commit()
 
-
-
-
+print scores({}, engine)

@@ -13,7 +13,17 @@ import os
 
 app = Flask(__name__)
 env = DotEnv()
-env_file = '/var/www/fantasyx/.env' if os.path.exists('/var/www/fantasyx/.env') else '.env'
+
+env_file_path = [
+    '.env',
+    '../.env',
+    '/var/www/fantasyx/.env',
+]
+for env_file_location in env_file_path:
+    if os.path.exists(env_file_location):
+        env_file = env_file_location
+        break
+
 env.init_app(app, env_file=env_file, verbose_mode=True)
 if app.config['FLASK_ENV'] == 'development':
     engine=create_engine('postgresql://admin:admin@localhost:5432/fantasyx')
