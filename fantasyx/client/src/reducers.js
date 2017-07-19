@@ -16,7 +16,7 @@ export const reducer = (state={}, action) => {
     case 'CHARACTERS':
         return {...state, characters: action.characters};
     case 'SCORES':
-        return {...state, scores: action.scores};
+            return {...state, scores: action.scores};
     case 'RUBRIC':
         return {...state, rubric: action.rubric};
     case 'AVAILABLE_CHARACTERS':

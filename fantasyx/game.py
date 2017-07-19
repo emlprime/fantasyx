@@ -63,14 +63,18 @@ def my_drafts(msg, db_session):
 
 # scores for the game so far
 def scores(msg, db_session):
-    print "getting scores"
-    df = pd.read_sql_query('SELECT c.name character_name, s.episode_number, s.points + s.bonus as points from "score" s inner join character c on c.id=s.character_id',con=db_session)
+    option =  "" if msg['options'] and msg['options']['include'] == 'altfacts' else """ and r.canon='canon'"""
+    print "option: %s" % option
+    df = pd.read_sql_query("""SELECT c.name as character_name, u.name as user_name, s.points + s.bonus as total_points, s.episode_number as episode_number FROM score s join character c on s.character_id = c.id join rubric r on r.id=s.rubric_id left outer join "user" u on u.id=s.user_id  %s""" % (option),con=db_session)
+    character_pt = pd.pivot_table(df, index='character_name', columns='episode_number', values='total_points', aggfunc=np.sum)
+    user_pt = pd.pivot_table(df, index='user_name', columns='episode_number', values='total_points', aggfunc=np.sum)
 
-    pt = pd.pivot_table(df, index='character_name', columns='episode_number', values='points', aggfunc=np.sum)
-
-    score_report =  json.loads(pt.to_json(orient="table"))
-    print "score_report: %s" % score_report
-    return {"scores": score_report}
+    character_score_report =  json.loads(character_pt.to_json(orient="table"))
+    user_score_report =  json.loads(user_pt.to_json(orient="table"))
+    return {"scores": {
+        "character_score_report": character_score_report,
+        "user_score_report": user_score_report,
+    }}
 
 # action to draft character from available characters
 def draft(msg, db_session):
@@ -127,7 +131,6 @@ def generate_score(msg, db_session):
         character = db_session.query(Character).filter(Character.name == character_name).first()
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
-    print("episode_number: %s" % episode_number)
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
 
     # get a draft from the draft history. This is a historically idempotend approach
@@ -137,7 +140,7 @@ def generate_score(msg, db_session):
         DraftHistory.drafted_at < episode.aired_at,
         (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
     ).first()
-        
+
     # If we found a draft, populate the score with the relevant user information
     if draft:
         user = draft.user
@@ -155,7 +158,9 @@ def generate_score(msg, db_session):
     # game is in motion. If the rubric changes
     rubric_description = msg['rubric_description']
     rubric = db_session.query(Rubric).filter(Rubric.description == rubric_description).first()
-
+    if not rubric:
+        db_session.execute(Rubric.__table__.insert(), [{"description": rubric_description, "points": msg['points'] or 0, "canon": "altfacts"}])
+        rubric = db_session.query(Rubric).filter(Rubric.description == rubric_description).first()
     # bonus can be applied if specified. If there is no bonus, make it 0 for easier summing
     bonus = int(msg['bonus'] or 0)
 

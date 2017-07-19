@@ -5,6 +5,8 @@ import csv
 
 db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
 
+db_session.commit()
+
 episodes = [
     'S07E01',
     'S07E02',
@@ -14,7 +16,7 @@ for episode in episodes:
         for raw_score in csv.DictReader(data_file):
             score = dict(raw_score)
             score["episode_number"] = episode
-            print score
+            # print score
             generate_score(score, db_session)
         
 

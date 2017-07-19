@@ -97,6 +97,7 @@ class Rubric(Base):
     description  = Column(String)
     kind         = Column(String)
     points       = Column(Integer)
+    canon        = Column(String, nullable=False, default='canon')
     
 class Episode(Base):
     __tablename__ = 'episode'
