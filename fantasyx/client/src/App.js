@@ -1,24 +1,27 @@
-import React, {Component} from 'react';
-import { connect } from 'react-redux';
+import React, {Component}           from 'react';
+import { connect }                  from 'react-redux';
 import {
     BrowserRouter as Router,
     Route,
     Link,
-}                       from 'react-router-dom'
+}                                   from 'react-router-dom'
 import './App.css';
-import Characters       from './components/Characters';
-import MyDrafts         from './components/MyDrafts';
-import Draft            from './components/Draft';
-import Home             from './components/Home';
-import Leaderboard      from './components/Leaderboard';
-import { NotificationStack } from 'react-notification';
+import Characters                   from './components/Characters';
+import MyDrafts                     from './components/MyDrafts';
+import Draft                        from './components/Draft';
+import Home                         from './components/Home';
+import LeaderboardUserCanon         from './components/LeaderboardUserCanon';
+import LeaderboardUserAltfacts      from './components/LeaderboardUserAltfacts';
+import LeaderboardCharacterCanon    from './components/LeaderboardCharacterCanon';
+import LeaderboardCharacterAltfacts from './components/LeaderboardCharacterAltfacts';
+import { NotificationStack }        from 'react-notification';
 
 import {
     removeNotification,
     gotUserIdentifier,
-} from './actions';
+}                                   from './actions';
 
-import { Sidebar, SidebarItem } from 'react-responsive-sidebar';
+import { Sidebar, SidebarItem }     from 'react-responsive-sidebar';
 
 const headerStyles = {
     marginTop: '1em',
@@ -77,7 +80,7 @@ class App extends Component {
             <SidebarItem><Link to="/characters">Characters</Link></SidebarItem>,
             <SidebarItem><Link to="/draft">Draft</Link></SidebarItem>,
             <SidebarItem><Link to="/my_drafts">My Drafts</Link></SidebarItem>,
-            <SidebarItem><Link to="/leaderboard">Leaderboard</Link></SidebarItem>,
+            <SidebarItem><Link to="/leaderboard/user/altfacts">Leaderboard</Link></SidebarItem>,
         ];
 
         
@@ -95,7 +98,10 @@ class App extends Component {
             <Route path="/characters" component={Characters}/>
             <Route path="/draft" component={Draft}/>
             <Route path="/my_drafts" component={MyDrafts}/>
-            <Route path="/leaderboard" component={Leaderboard}/>
+            <Route path="/leaderboard/user/altfacts" component={LeaderboardUserAltfacts}/>
+            <Route path="/leaderboard/user/canon" component={LeaderboardUserCanon}/>
+            <Route path="/leaderboard/character/canon" component={LeaderboardCharacterCanon}/>
+            <Route path="/leaderboard/character/altfacts" component={LeaderboardCharacterAltfacts}/>
             </main>
             
             </Sidebar>            

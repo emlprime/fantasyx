@@ -63,17 +63,22 @@ def my_drafts(msg, db_session):
 
 # scores for the game so far
 def scores(msg, db_session):
-    option =  "" if msg['options'] and msg['options']['include'] == 'altfacts' else """ and r.canon='canon'"""
-    print "option: %s" % option
-    df = pd.read_sql_query("""SELECT c.name as character_name, u.name as user_name, s.points + s.bonus as total_points, s.episode_number as episode_number FROM score s join character c on s.character_id = c.id join rubric r on r.id=s.rubric_id left outer join "user" u on u.id=s.user_id  %s""" % (option),con=db_session)
-    character_pt = pd.pivot_table(df, index='character_name', columns='episode_number', values='total_points', aggfunc=np.sum)
-    user_pt = pd.pivot_table(df, index='user_name', columns='episode_number', values='total_points', aggfunc=np.sum)
+    pivot = msg['options']['pivot']
+    canon = msg['options']['canon']
+    
+    canon_filter =  "" if canon == 'altfacts' else """ WHERE r.canon='canon'"""
+    index = 'user_name' if pivot == 'user' else 'character_name'
+            
+    query = """SELECT c.name as character_name, u.name as user_name, s.points + s.bonus as total_points, s.episode_number as episode_number FROM score s join character c on s.character_id = c.id join rubric r on r.id=s.rubric_id left outer join "user" u on u.id=s.user_id  %s""" % (canon_filter)
+    print query
+    df = pd.read_sql_query(query,con=db_session)
+    
+    pt = pd.pivot_table(df, index=index, columns='episode_number', values='total_points', aggfunc=np.sum)
 
-    character_score_report =  json.loads(character_pt.to_json(orient="table"))
-    user_score_report =  json.loads(user_pt.to_json(orient="table"))
+    report =  json.loads(pt.to_json(orient="table"))
+    report_title = "%s_%s_report" % (pivot, canon)
     return {"scores": {
-        "character_score_report": character_score_report,
-        "user_score_report": user_score_report,
+        report_title: report,
     }}
 
 # action to draft character from available characters

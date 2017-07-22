@@ -94,7 +94,12 @@ const preloadedState = {
                     removeNotification('DraftNotice');
                 },
             }],
-    scores: {data: []},
+    scores: {
+        user_canon_report: undefined,
+        user_altfacts_report: undefined,
+        character_canon_report: undefined,
+        character_altfacts_report: undefined,
+    },
     ws: ws,
 }
 export const store = configureStore(preloadedState);                
