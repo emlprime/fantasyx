@@ -80,22 +80,26 @@ def scores(msg, db_session):
 def draft(msg, db_session):
     user_identifier = msg['user_identifier']
     character_id = msg['character_id']
-
-    draft_ticket = db_session.query(DraftTicket).order_by(DraftTicket.sort).first()
-    if not draft_ticket:
-        return {"can_draft": False}
-    
-    if not draft_ticket.user_identifier == user_identifier:
-        raise Exception("It is not %s's turn to draft" % user_identifier)
     
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
     
+    if not user.can_draft(db_session):
+        return {"can_draft": False}
+    
+    draft_ticket = user.next_draft_ticket(db_session)
+    if draft_ticket:
+        if not draft_ticket.user_identifier == user_identifier:
+            raise Exception("It is not %s's turn to draft" % user_identifier)
+    
     character = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).filter(Character.id == character_id).first()
+    
     result = "Drafting %s for %s" % (character, user_identifier)
     user.draft(character)
-    db_session.delete(draft_ticket)
+    if draft_ticket:
+        db_session.delete(draft_ticket)
+        
     db_session.commit()
     db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
     return available_characters(msg, db_session)
@@ -118,9 +122,11 @@ def release(msg, db_session):
 
 def can_draft(msg, db_session):
     user_identifier = msg['user_identifier']
-    draft_ticket = db_session.query(DraftTicket).order_by(DraftTicket.sort).first()
-    can_draft = draft_ticket.user_identifier == user_identifier
-    return {"can_draft": can_draft}
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
+    if not user:
+        raise Exception("No user found with identifier %s" % user_identifier)
+
+    return {"can_draft": user.can_draft(db_session)}
 
 def generate_score(msg, db_session):
     # Get the character from the unique character name

@@ -22,7 +22,6 @@ class Leaderboard extends Component {
     
     toggleCanon() {
         const new_canon = this.state.canon === 'canon' ? 'altfacts' : 'canon';
-        console.log("new_canon:", new_canon);
         this.setState({canon: new_canon});
         setTimeout(() => {this.getScores()}, 100);
     }
@@ -33,12 +32,10 @@ class Leaderboard extends Component {
 
     getScores() {
         const msg = JSON.stringify({type: 'scores', options: {include: this.state.canon}})
-        console.log("requesting scores");
         this.props.ws.send(msg);
     }
     
     render() {
-        console.log("scores:", this.props.scores);
         const csr = this.props.scores.character_score_report;
         const usr = this.props.scores.user_score_report;
 

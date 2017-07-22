@@ -84,7 +84,7 @@ class App extends Component {
         return (
             <Router>
             <div id="outer-container">
-            <Sidebar content={items} width="170" background="#23160d">
+            <Sidebar content={items} width={170} background="#23160d">
             
             <main id="page-wrap" style={pageWrapStyles}>
             <h1 style={headerStyles}>aGoT</h1>

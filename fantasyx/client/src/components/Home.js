@@ -30,7 +30,7 @@ class Home extends Component {
     }
     
     renderRubricSection(rubric, section) {
-        let rendered_section = <div></div>;
+        let rendered_section = <tr></tr>;
         if (rubric[section]) {
             // console.log("section:", rubric[section])
             rendered_section = rubric[section].map((row) => {

@@ -1,4 +1,4 @@
-from sqlalchemy import Text, Column, Integer, String, ForeignKey, DateTime, func, create_engine
+from sqlalchemy import Text, Column, Integer, String, ForeignKey, DateTime, func, create_engine, exists
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
@@ -47,34 +47,45 @@ class User(Base):
         self.characters.pop(character.name)
         return True
 
+    def remaining_draft_tickets(self, db_session):
+        return db_session.query(DraftTicket).order_by(DraftTicket.sort)
+
+    def count_of_draft_tickets(self, db_session):
+        return self.remaining_draft_tickets(db_session).count()
+
+    def next_draft_ticket(self, db_session):
+        """ Get the next user in the draft
+        """
+        draft_ticket = self.remaining_draft_tickets(db_session).first()
+        if not draft_ticket:
+            return None
+        return db_session.query(User).filter(User.identifier == draft_ticket.user_identifier).first()
+
+    def draft_allowed(self, db_session):
+        """ Are we allowed to draft
+
+        Either this user is the next user in the draft
+        OR there are no draft tickets left, so drafting is open
+        """
+        draft_ticket_count = self.count_of_draft_tickets(db_session)
+        if not draft_ticket_count:
+            return True
+        
+        next_user_identifier = self.next_draft_ticket(db_session).identifier 
+
+        return next_user_identifier == self.identifier
+
+    def is_not_episode_blackout(self, db_session, day=datetime.today()):
+        return not db_session.query(exists().where(Episode.aired_at == day)).scalar()
+
+    def empty_slots(self):
+        return len(self.characters) < self.MAX_DRAFTS
+
     def can_draft(self, db_session):
-        limit_reached = len(self.characters) >= self.MAX_DRAFTS
-        if limit_reached: print "User %s has reached their draft limit" % self.name
-
-        remaining_draft_tickets = db_session.query(DraftTicket).order_by(DraftTicket.sort)
-        count_of_draft_tickets = remaining_draft_tickets.count()
-        if count_of_draft_tickets:
-            print "there are draft tickets remaining"
-            next_draft_ticket = remaining_draft_tickets.first()
-            if self.identifier == next_draft_ticket.user_identifier:
-                my_turn = True
-                print "It's %s's turn" % (self.name)
-            else:
-                user = db_session.query(User).filter(User.identifier == next_draft_ticket.user_identifier).first()
-                print "It's %s's turn, not yours" % (user.name)
-                my_turn = False
-        else:
-            my_turn = True
-            print "We are finished with the drafting"
-
-        for episode in db_session.query(Episode).all():
-            is_blackout_date = episode.aired_at.date() == datetime.today().date()
-            if is_blackout_date:
-                print "The show is airing today. You can't draft"
-            else:
-                print "It's not a blackout day today"
-                
-        return not limit_reached and my_turn and not is_blackout_date
+        not_blackout = self.is_not_episode_blackout(db_session)
+        draft_allowed = self.draft_allowed(db_session)
+        empty_slots = self.empty_slots()
+        return not_blackout and draft_allowed and empty_slots
     
 class Score(Base):
     __tablename__ = 'score'

@@ -20,7 +20,7 @@ for episode in episodes:
             generate_score(score, db_session)
         
 
-print scores({"type":"scores"}, engine)
+print scores({"type":"scores", }, engine)
 
 # for row in db_session.query(DraftHistory).offset(37).all():
 #     print row
