@@ -1,6 +1,8 @@
 import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
 from sqlalchemy import or_
+from sqlalchemy.orm import lazyload
+
 import pandas as pd
 import numpy as np
 
@@ -15,6 +17,7 @@ def handle_event(msg_type, msg, db_session=None):
         "draft": draft,
         "release": release,
         "scores": scores,
+        "raw_scores": raw_scores,
         "user_data": user_data,
         "can_draft": can_draft,
     }
@@ -81,6 +84,33 @@ def scores(msg, db_session):
         report_title: report,
     }}
 
+def raw_scores(msg, db_session):
+    canon = msg['options']['canon']
+    query = db_session.query(Score).outerjoin(Character).options(lazyload('rubric'))
+    if canon == 'canon':
+        query = query.outerjoin(Rubric).filter(Rubric.canon == 'canon')
+    raw_report = query.order_by(Score.episode_number, Character.name).all()
+
+    data = [{
+        "ep": score.episode_number,
+        "notes": score.notes,
+        "points": score.points,
+        "bonus": score.bonus,
+        "kind": score.rubric.kind,
+        "canon": score.rubric.canon,
+        "description": score.rubric.description,
+        "character_name": score.character.name,
+    } for score in raw_report]
+
+    report = {
+        "data": data,
+    }
+    # print report
+    report_title = "raw_scores_%s_report" % (canon)
+    return {"raw_scores": {
+        report_title: report,
+    }}
+    
 # action to draft character from available characters
 def draft(msg, db_session):
     user_identifier = msg['user_identifier']

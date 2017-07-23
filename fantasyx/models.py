@@ -3,7 +3,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.orm.collections import attribute_mapped_collection
-from datetime import datetime
+from datetime import date
 Base = declarative_base()
 
 class User(Base):
@@ -75,7 +75,7 @@ class User(Base):
 
         return next_user_identifier == self.identifier
 
-    def is_not_episode_blackout(self, db_session, day=datetime.today()):
+    def is_not_episode_blackout(self, db_session, day=date.today()):
         return not db_session.query(exists().where(Episode.aired_at == day)).scalar()
 
     def empty_slots(self):
@@ -100,6 +100,18 @@ class Score(Base):
     bonus          = Column(Integer)
     notes          = Column(String)
     
+    rubric = relationship('Rubric', backref=backref(
+                    "score",
+                    collection_class=attribute_mapped_collection('rubric.description'),
+                    cascade="all, delete-orphan"
+                    )
+                )
+    character = relationship('Character', backref=backref(
+                    "score",
+                    collection_class=attribute_mapped_collection('character.name'),
+                    cascade="all, delete-orphan"
+                    )
+                )
     
 class Rubric(Base):
     __tablename__ = 'rubric'

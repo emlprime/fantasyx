@@ -31,6 +31,18 @@ a:visited {
     color: #c11d43;
 }
 
+a:link.active {
+    font-weight: bold;
+    color: #000; 
+    text-decoration: none;
+}
+
+a:visited.active {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
 div.ReactVirtualized__Table__rowColumn:first-of-type, div.ReactVirtualized__Table__headerColumn:first-of-type {
                                                           text-align: left;
 }
@@ -63,3 +75,4 @@ li {
 #characters li:nth-child(odd) {
     background-color: rgba(0,0,0,0.1);
 }
+
