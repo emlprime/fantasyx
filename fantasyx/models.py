@@ -90,15 +90,15 @@ class User(Base):
 class Score(Base):
     __tablename__ = 'score'
     
-    id             = Column(Integer, primary_key=True)
-    character_id   = Column(Integer, ForeignKey('character.id', ondelete='CASCADE'), nullable=False, index=True)
-    draft_id       = Column(Integer, ForeignKey('draft.id', ondelete='CASCADE'), nullable=True, index=True)
-    user_id        = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=True, index=True)
-    rubric_id      = Column(Integer, ForeignKey('rubric.id', ondelete='CASCADE'), nullable=False, index=True)
-    episode_number = Column(String)
-    points         = Column(Integer)
-    bonus          = Column(Integer)
-    notes          = Column(String)
+    id               = Column(Integer, primary_key=True)
+    character_id     = Column(Integer, ForeignKey('character.id', ondelete='CASCADE'), nullable=False, index=True)
+    draft_history_id = Column(Integer, ForeignKey('draft_history.id', ondelete='CASCADE'), nullable=True, index=True)
+    user_id          = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=True, index=True)
+    rubric_id        = Column(Integer, ForeignKey('rubric.id', ondelete='CASCADE'), nullable=False, index=True)
+    episode_number   = Column(String)
+    points           = Column(Integer)
+    bonus            = Column(Integer)
+    notes            = Column(String)
     
     rubric = relationship('Rubric', backref=backref(
                     "score",
@@ -109,6 +109,13 @@ class Score(Base):
     character = relationship('Character', backref=backref(
                     "score",
                     collection_class=attribute_mapped_collection('character.name'),
+                    cascade="all, delete-orphan"
+                    )
+                )
+    
+    draft_history = relationship('DraftHistory', backref=backref(
+                    "score",
+                    collection_class=attribute_mapped_collection('draft_history.user_id'),
                     cascade="all, delete-orphan"
                     )
                 )
@@ -208,3 +215,20 @@ class Character(Base):
     def __repr__(self):
         return self.name
 
+# class Screening(Base):
+#     __tablename__ = 'screening'
+#     episode_id = Column(Integer, ForeignKey('episode.id', ondelete='CASCADE'), nullable=False, index=True)
+#     user_id      = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'), nullable=False, index=True)
+#     user = relationship(User, backref=backref(
+#                     "screenings",
+#                     collection_class=attribute_mapped_collection('user.name'),
+#                     cascade="all, delete-orphan"
+#                     )
+#                 )
+#     episode = relationship(Episode, backref=backref(
+#                     "screenings",
+#                     collection_class=attribute_mapped_collection('episode.number'),
+#                     cascade="all, delete-orphan"
+#                     )
+#                 )
+    

@@ -23,7 +23,7 @@ const Leaderboard = ({label, dataKey, report}) =>
       {({width}) =>
         <Table
           width={800}
-          height={600}
+          height={1500}
           headerHeight={20}
           rowHeight={30}
           rowCount={report.data.length}

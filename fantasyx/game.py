@@ -176,17 +176,17 @@ def generate_score(msg, db_session):
 
     # get a draft from the draft history. This is a historically idempotend approach
     # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
-    draft = db_session.query(DraftHistory).join(Character).filter(
+    draft_history = db_session.query(DraftHistory).join(Character).filter(
         Character.id == character.id,
         DraftHistory.drafted_at < episode.aired_at,
         (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
     ).first()
 
     # If we found a draft, populate the score with the relevant user information
-    if draft:
-        user = draft.user
+    if draft_history:
+        user = draft_history.user
         user_id = user.id
-        draft_id = draft.id
+        draft_id = draft_history.id
         # if we don't find a draft, still create the score, but don't associate it with a 
         # user this gives us a sense of the "points on the table" that were left because 
         # nobody had that character drafted at the time.
@@ -218,6 +218,7 @@ def generate_score(msg, db_session):
         "bonus": bonus,
         "notes": notes,
     }
+    print score_config
     db_session.execute(Score.__table__.insert(), score_config)
     db_session.commit()
 

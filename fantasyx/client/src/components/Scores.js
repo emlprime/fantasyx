@@ -18,7 +18,7 @@ const Scores = ({label, dataKey, report}) =>
       {({width}) =>
         <Table
           width={1000}
-          height={600}
+          height={100000}
           headerHeight={20}
           rowHeight={30}
           rowCount={report.data.length}
