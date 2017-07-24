@@ -29,5 +29,5 @@ import hashlib
     
 # print user.empty_slots(db_session)
 
-msg = {"options": {"canon": "altfacts"}}
+msg = {"options": {"canon": "canon"}}
 print raw_scores(msg, db_session)
