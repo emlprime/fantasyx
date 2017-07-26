@@ -12,7 +12,14 @@ export const reducer = (state = {}, action) => {
     case "LOGGED_OUT":
       return {};
     case "USER_DATA":
-      return {...state, email: action.user_data.email};
+      console.log("got user data");
+      return {
+        ...state,
+        email: action.user_data.email,
+        username: action.user_data.username,
+        seat_of_power: action.user_data.seat_of_power,
+        family_words: action.user_data.family_words,
+      };
     case "CHARACTERS":
       return {...state, characters: action.characters};
     case "SCORES":

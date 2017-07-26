@@ -6,6 +6,7 @@ import Characters from "./components/Characters";
 import MyDrafts from "./components/MyDrafts";
 import Draft from "./components/Draft";
 import Home from "./components/Home";
+import Profile from "./components/Profile";
 import LeaderboardUserCanon from "./components/LeaderboardUserCanon";
 import LeaderboardUserAltfacts from "./components/LeaderboardUserAltfacts";
 import LeaderboardCharacterCanon from "./components/LeaderboardCharacterCanon";
@@ -36,22 +37,23 @@ const pageWrapStyles = {
 
 class App extends Component {
   constructor(props) {
-    // console.log("getting constructed app");
     super(props);
     const pathname = global.location.pathname;
     this.getUserData = this.getUserData.bind(this);
-    // console.log("pathname:", pathname);
+
     if (pathname.match(/\/user\//)) {
       const user_identifier = pathname.split("/")[2];
-      // console.log("got user identifier:", user_identifier);
+      console.log("got user identifier:", user_identifier);
       let getUserData = this.getUserData;
+
       this.props.ws.onopen = evt => {
-        // console.log("websocket on open. send user data");
+        console.log(`websocket on open. send user data: ${user_identifier}`);
         getUserData(user_identifier);
       };
+
       this.props.gotUserIdentifier(user_identifier);
     } else {
-      /* console.log("no user identifier, we should log in");*/
+      console.log("no user identifier, we should log in");
 
       // Messy getting the production vs development hostname
       const hostname = global.location.host.split(":")[0];
@@ -66,6 +68,7 @@ class App extends Component {
       type: "user_data",
       user_identifier: user_identifier,
     });
+    console.log(`msg: ${msg}`);
     // console.log("this.props.ws.readystate:", this.props.ws.readyState);
     this.props.ws.send(msg);
   }
@@ -102,10 +105,14 @@ class App extends Component {
                 Crush your enemies. See them driven before you. Hear the
                 lamentations of their women.
               </h2>
+              <div>
+                <Link to="/profile">Profile</Link>
+              </div>
               <h3>
                 Welcome {this.props.email}
               </h3>
               <Route exact path="/" component={Home} />
+              <Route exact path="/profile" component={Profile} />
               <Route exact path="/user/:user_identifier" component={Home} />
               <Route path="/characters" component={Characters} />
               <Route path="/draft" component={Draft} />

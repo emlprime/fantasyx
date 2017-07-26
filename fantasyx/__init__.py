@@ -157,6 +157,8 @@ def test(ws):
                         response = handle_event(msg_type, msg, engine)
                         ws.send(response)
                     else:
+                        print "message: %s" % (msg)
+                        print "user_identifier: %s" % user_identifier
                         response = handle_event(msg_type, msg, db_session)
                         ws.send(response)
 

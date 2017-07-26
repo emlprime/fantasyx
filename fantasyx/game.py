@@ -46,10 +46,12 @@ def characters(msg, db_session):
 
 # user details for the front end display
 def user_data(msg, db_session):
+    print "msg:"
+    print msg
     user_identifier = msg['user_identifier']
     print "selecting user for user identifier: %s" % (user_identifier)
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    return {"user_data": {"email": user.email}}
+    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "family_words": user.family_words}}
 
 # characters that are unclaimed at this point in time
 def available_characters(msg, db_session):
