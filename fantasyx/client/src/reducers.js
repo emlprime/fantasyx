@@ -1,8 +1,8 @@
 import {removeNotification} from "./actions";
 
 export const reducer = (state = {}, action) => {
-  // console.log("handing action:", action.type);
-  // console.log("action:", action);
+  /* console.log("handing action:", action.type);
+   * console.log("action:", action);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
       if (state.user_identifier && !action.user_identifier) {

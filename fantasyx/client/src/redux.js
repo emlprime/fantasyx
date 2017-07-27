@@ -1,4 +1,4 @@
-import {applyMiddleware, createStore, compose} from "redux";
+import {applyMiddleware, createStore, compose, combineReducers} from "redux";
 
 import thunk from "redux-thunk";
 
@@ -17,6 +17,22 @@ import {
   removeNotification,
 } from "./actions";
 import {reducer} from "./reducers";
+/* import {reducer as formReducer} from "redux-form";*/
+
+const formReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "LOAD":
+      return {
+        data: action.data,
+      };
+    default:
+      return state;
+  }
+};
+
+/* const load = data => ({type: "LOAD", data});*/
+
+const rootReducer = combineReducers({form: formReducer, data: reducer});
 
 export const gotMsg = msg => {
   // console.log(`got a message:`, msg);
@@ -57,7 +73,7 @@ export function configureStore(preloadedState = {}) {
     // autoRehydrate(),
   );
 
-  const store = createStore(reducer, preloadedState, enhancer);
+  const store = createStore(rootReducer, preloadedState, enhancer);
   // persistStore(store);
   return store;
 }
@@ -73,33 +89,35 @@ ws.onmessage = function(evt) {
 };
 
 const preloadedState = {
-  rubric: {},
-  characters: [],
-  available_characters: [],
-  my_drafts: [],
-  can_draft: false,
-  notifications: [
-    {
-      message: `Welcome to League of Thrones!`,
-      key: `DraftNotice_0`,
-      dismissAfter: 2000,
-      action: "dismiss",
-      onClick: (notification, deactivate) => {
-        deactivate();
-        removeNotification("DraftNotice");
+  data: {
+    rubric: {},
+    characters: [],
+    available_characters: [],
+    my_drafts: [],
+    can_draft: false,
+    notifications: [
+      {
+        message: `Welcome to League of Thrones!`,
+        key: `DraftNotice_0`,
+        dismissAfter: 2000,
+        action: "dismiss",
+        onClick: (notification, deactivate) => {
+          deactivate();
+          removeNotification("DraftNotice");
+        },
       },
+    ],
+    scores: {
+      user_canon_report: undefined,
+      user_altfacts_report: undefined,
+      character_canon_report: undefined,
+      character_altfacts_report: undefined,
     },
-  ],
-  scores: {
-    user_canon_report: undefined,
-    user_altfacts_report: undefined,
-    character_canon_report: undefined,
-    character_altfacts_report: undefined,
+    raw_scores: {
+      raw_scores_canon_report: undefined,
+      raw_scores_altfacts_report: undefined,
+    },
+    ws: ws,
   },
-  raw_scores: {
-    raw_scores_canon_report: undefined,
-    raw_scores_altfacts_report: undefined,
-  },
-  ws: ws,
 };
 export const store = configureStore(preloadedState);

@@ -12,8 +12,8 @@ class ScoresCharacterAltfacts extends BaseScores {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  report: state.raw_scores.raw_scores_altfacts_report,
-  ws: state.ws,
+  report: state.data.raw_scores.raw_scores_altfacts_report,
+  ws: state.data.ws,
 });
 
 const ScoresCharacterAltfactsContainer = connect(mapStateToProps)(

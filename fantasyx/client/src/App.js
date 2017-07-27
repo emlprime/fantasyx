@@ -35,6 +35,10 @@ const pageWrapStyles = {
   margin: "auto",
 };
 
+const profileStyles = {
+  float: "right",
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -44,6 +48,7 @@ class App extends Component {
     if (pathname.match(/\/user\//)) {
       const user_identifier = pathname.split("/")[2];
       console.log("got user identifier:", user_identifier);
+
       let getUserData = this.getUserData;
 
       this.props.ws.onopen = evt => {
@@ -100,14 +105,19 @@ class App extends Component {
         <div id="outer-container">
           <Sidebar content={items} width={170} background="#23160d">
             <main id="page-wrap" style={pageWrapStyles}>
+              <Link to="/profile" style={profileStyles}>
+                <img
+                  width="32px"
+                  height="32px"
+                  src="/profile.png"
+                  alt="profile"
+                />
+              </Link>
               <h1 style={headerStyles}>aGoT</h1>
               <h2 style={subtitleStyles}>
                 Crush your enemies. See them driven before you. Hear the
                 lamentations of their women.
               </h2>
-              <div>
-                <Link to="/profile">Profile</Link>
-              </div>
               <h3>
                 Welcome {this.props.email}
               </h3>
@@ -149,11 +159,10 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  all: state,
-  user_identifier: state.user_identifier,
-  email: state.email,
-  ws: state.ws,
-  notifications: state.notifications,
+  user_identifier: state.data.user_identifier,
+  email: state.data.email,
+  notifications: state.data.notifications,
+  ws: state.data.ws,
 });
 
 const mapDispatchToProps = {

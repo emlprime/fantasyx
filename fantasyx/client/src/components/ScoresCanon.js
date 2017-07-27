@@ -12,8 +12,8 @@ class ScoresCharacterCanon extends BaseScores {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  report: state.raw_scores.raw_scores_canon_report,
-  ws: state.ws,
+  report: state.data.raw_scores.raw_scores_canon_report,
+  ws: state.data.ws,
 });
 
 const ScoresCharacterCanonContainer = connect(mapStateToProps)(

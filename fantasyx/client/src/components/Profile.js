@@ -1,5 +1,6 @@
-import React, {Component} from "react";
+import React from "react";
 import {connect} from "react-redux";
+import {Field, reduxForm} from "redux-form";
 
 const rowStyles = {
   width: "100%",
@@ -17,49 +18,63 @@ const inputStyles = {
   height: "3em",
 };
 
-class Profile extends Component {
-  render() {
-    return (
-      <ul id="profile">
-        <li style={rowStyles}>
-          <label style={labelStyles}>Username:</label>
-          <input
-            style={inputStyles}
-            type="text"
-            name="username"
-            value={this.props.username}
-          />
-        </li>
-        <li style={rowStyles}>
-          <label style={labelStyles}>Seat of Power:</label>
-          <input
-            style={inputStyles}
-            type="text"
-            name="seat_of_power"
-            value={this.props.seat_of_power}
-          />
-        </li>
-        <li style={rowStyles}>
-          <label style={labelStyles}>Family Words:</label>
-          <input
-            style={inputStyles}
-            type="text"
-            name="family_words"
-            value={this.props.family_words}
-          />
-        </li>
-      </ul>
-    );
-  }
-}
+let Profile = props => {
+  const {handleSubmit} = props;
+  return (
+    <form onSubmit={handleSubmit}>
+      <div style={rowStyles}>
+        <label htmlFor="username" style={labelStyles}>
+          Username
+        </label>
+        <Field
+          name="username"
+          component="input"
+          type="text"
+          style={inputStyles}
+        />
+      </div>
+      <div style={rowStyles}>
+        <label htmlFor="seat_of_power" style={labelStyles}>
+          Seat Of Power
+        </label>
+        <Field
+          name="seat_of_power"
+          component="input"
+          type="text"
+          style={inputStyles}
+        />
+      </div>
+      <div style={rowStyles}>
+        <label htmlFor="house_words" style={labelStyles}>
+          House Words
+        </label>
+        <Field
+          name="house_words"
+          component="input"
+          type="email"
+          style={inputStyles}
+        />
+      </div>
+      <button type="submit">Update</button>
+    </form>
+  );
+};
 
-const mapStateToProps = (state, ownProps) => ({
-  username: state.username,
-  seat_of_power: state.seat_of_power,
-  family_words: state.family_words,
-  ws: state.ws,
-});
+// Decorate with reduxForm(). It will read the initialValues prop provided by connect()
+Profile = reduxForm({
+  form: "initializeFromState", // a unique identifier for this form
+})(Profile);
 
-const ProfileContainer = connect(mapStateToProps)(Profile);
+const loadAccount = () => {
+  return {};
+};
 
-export default ProfileContainer;
+// You have to connect() to any reducers that you wish to connect to yourself
+Profile = connect(
+  state => ({
+    initialValues: state.user_data, // pull initial values from account reducer
+  }),
+  {load: loadAccount}, // bind account loading action creator
+)(Profile);
+
+export default Profile;

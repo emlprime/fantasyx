@@ -13,8 +13,8 @@ class LeaderboardUserAltfacts extends BaseLeaderboard {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  report: state.scores.user_altfacts_report,
-  ws: state.ws,
+  report: state.data.scores.user_altfacts_report,
+  ws: state.data.ws,
 });
 
 const LeaderboardUserAltfactsContainer = connect(mapStateToProps)(

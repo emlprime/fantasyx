@@ -19,6 +19,7 @@
     "react-router-dom": "^4.1.1",
     "react-sidebar": "^2.3.2",
     "react-virtualized": "^9.8.0",
+    "redux-form": "^7.0.2",
     "redux-persist": "^4.8.2",
     "redux-thunk": "^2.2.0"
   },

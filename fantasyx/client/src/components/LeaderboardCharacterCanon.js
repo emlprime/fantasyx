@@ -13,8 +13,8 @@ class LeaderboardCharacterCanon extends BaseLeaderboard {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  report: state.scores.character_canon_report,
-  ws: state.ws,
+  report: state.data.scores.character_canon_report,
+  ws: state.data.ws,
 });
 
 const LeaderboardCharacterCanonContainer = connect(mapStateToProps)(
