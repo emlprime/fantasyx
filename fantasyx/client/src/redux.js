@@ -1,6 +1,7 @@
 import {applyMiddleware, createStore, compose, combineReducers} from "redux";
 
 import thunk from "redux-thunk";
+import {reducer as formReducer} from "redux-form";
 
 // actions.js
 
@@ -16,21 +17,9 @@ import {
   gotCanDraft,
   removeNotification,
 } from "./actions";
+
 import {reducer} from "./reducers";
 /* import {reducer as formReducer} from "redux-form";*/
-
-const formReducer = (state = {}, action) => {
-  switch (action.type) {
-    case "LOAD":
-      return {
-        data: action.data,
-      };
-    default:
-      return state;
-  }
-};
-
-/* const load = data => ({type: "LOAD", data});*/
 
 const rootReducer = combineReducers({form: formReducer, data: reducer});
 
