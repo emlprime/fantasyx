@@ -1,6 +1,7 @@
-import React from "react";
+import React, {Component} from "react";
+import {change} from "redux-form";
+import {connect} from "react-redux";
 import {Field, reduxForm} from "redux-form";
-
 /* const rowStyles = {
  *   width: "100%",
  *   height: "3em",
@@ -24,18 +25,36 @@ import {Field, reduxForm} from "redux-form";
  *   house_words: "sdfdfds",
  * };*/
 
-let ProfileForm = props => {
-  const {handleSubmit} = props;
-  return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">Username</label>
-        <Field name="username" component="input" type="text" />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
-  );
-};
+class ProfileForm extends Component {
+  render() {
+    const {handleSubmit, changeForm} = this.props;
+    return (
+      <form onSubmit={handleSubmit}>
+        <div>
+          <button type="button" onClick={changeForm}>
+            Load Profile
+          </button>
+        </div>
+        <div>
+          <label htmlFor="username">Username</label>
+          <Field name="username" component="input" type="text" />
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+    );
+  }
+}
+
+function mapDispatchToProps(dispatch, ownProps) {
+  return {
+    changeForm: () => {
+      console.log("foo");
+      dispatch(change("profile", "username", "foo"));
+    },
+  };
+}
+
+ProfileForm = connect(null, mapDispatchToProps)(ProfileForm);
 
 ProfileForm = reduxForm({
   form: "profile",
