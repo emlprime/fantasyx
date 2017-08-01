@@ -1,6 +1,6 @@
 import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
-from sqlalchemy import or_
+from sqlalchemy import or_, exc
 from sqlalchemy.orm import lazyload
 
 import pandas as pd
@@ -19,6 +19,7 @@ def handle_event(msg_type, msg, db_session=None):
         "scores": scores,
         "raw_scores": raw_scores,
         "user_data": user_data,
+        "update_user": update_user,
         "can_draft": can_draft,
     }
 
@@ -224,3 +225,26 @@ def generate_score(msg, db_session):
     db_session.execute(Score.__table__.insert(), score_config)
     db_session.commit()
 
+def update_user(msg, db_session):
+    data = {
+        "username": msg["data"]["username"],
+        "seat_of_power": msg["data"]["seat_of_power"],
+        "house_words": msg["data"]["house_words"],
+    }
+    
+    return {"notify": "User %s updated" % data["username"]}
+    try:
+        db_session.execute(User.__table__.update(), data);
+        db_session.commit()
+        return {"notify": "User %s updated" % data["username"]}
+    except exc.InternalError, exception:
+        reason = exception.message
+        print "Failed because: %s" % reason
+        db_session.rollback()
+        return {"notify": "User %s failed to update because %s" % (data["username"], reason)}
+    except exc.IntegrityError, exception:
+        reason = exception.message
+        print "Failed because: %s" % reason
+        db_session.rollback()
+        return {"notify": "User %s failed to update because %s" % (data["username"], reason)}
+        

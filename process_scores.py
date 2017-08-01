@@ -3,13 +3,14 @@ from fantasyx.models import DraftHistory, DraftTicket, User, Episode
 from fantasyx.game import generate_score, scores
 import csv
 
-db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
+# db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
 
-db_session.commit()
+# db_session.commit()
 
 episodes = [
-    'S07E01',
-    'S07E02',
+    # 'S07E01',
+    # 'S07E02',
+    'S07E03',
 ]
 for episode in episodes:
     with open('fantasyx/data/episode_scores/%s.csv' % episode) as data_file:

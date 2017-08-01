@@ -1,8 +1,8 @@
 import {removeNotification} from "./actions";
 
 export const reducer = (state = {}, action) => {
-  /* console.log("handing action:", action.type);
-   * console.log("action:", action);*/
+  console.log("handing action:", action.type);
+  console.log("action:", action);
   switch (action.type) {
     case "USER_IDENTIFIER":
       if (state.user_identifier && !action.user_identifier) {
@@ -12,7 +12,7 @@ export const reducer = (state = {}, action) => {
     case "LOGGED_OUT":
       return {};
     case "USER_DATA":
-      console.log("got user data");
+      /* console.log("got user data");*/
       return {
         ...state,
         email: action.user_data.email,
@@ -33,6 +33,22 @@ export const reducer = (state = {}, action) => {
     case "MY_DRAFTS":
       // console.log("got my drafts");
       return {...state, my_drafts: action.my_drafts};
+    case "NOTIFY":
+      console.log("notifying:", action.message);
+      notifications = [
+        ...state.notifications,
+        {
+          message: action.message,
+          key: `Notify_${state.notifications.length + 1}`,
+          dismissAfter: 2000,
+          action: "dismiss",
+          onClick: (notification, deactivate) => {
+            deactivate();
+            removeNotification("Notify");
+          },
+        },
+      ];
+      return {...state, notifications};
     case "REMOVE_NOTIFICATION":
       // console.log("removing notification");
       let notifications = [];

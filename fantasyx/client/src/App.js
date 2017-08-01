@@ -47,18 +47,18 @@ class App extends Component {
 
     if (pathname.match(/\/user\//)) {
       const user_identifier = pathname.split("/")[2];
-      console.log("got user identifier:", user_identifier);
+      /* console.log("got user identifier:", user_identifier);*/
 
       let getUserData = this.getUserData;
 
       this.props.ws.onopen = evt => {
-        console.log(`websocket on open. send user data: ${user_identifier}`);
+        /* console.log(`websocket on open. send user data: ${user_identifier}`);*/
         getUserData(user_identifier);
       };
 
       this.props.gotUserIdentifier(user_identifier);
     } else {
-      console.log("no user identifier, we should log in");
+      /* console.log("no user identifier, we should log in");*/
 
       // Messy getting the production vs development hostname
       const hostname = global.location.host.split(":")[0];
@@ -73,7 +73,7 @@ class App extends Component {
       type: "user_data",
       user_identifier: user_identifier,
     });
-    console.log(`msg: ${msg}`);
+    /* console.log(`msg: ${msg}`);*/
     // console.log("this.props.ws.readystate:", this.props.ws.readyState);
     this.props.ws.send(msg);
   }
