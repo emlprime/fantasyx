@@ -52,7 +52,7 @@ def user_data(msg, db_session):
     user_identifier = msg['user_identifier']
     print "selecting user for user identifier: %s" % (user_identifier)
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "family_words": user.family_words}}
+    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "house_words": user.house_words}}
 
 # characters that are unclaimed at this point in time
 def available_characters(msg, db_session):
@@ -227,24 +227,26 @@ def generate_score(msg, db_session):
 
 def update_user(msg, db_session):
     data = {
-        "username": msg["data"]["username"],
+        "name": msg["data"]["username"],
         "seat_of_power": msg["data"]["seat_of_power"],
         "house_words": msg["data"]["house_words"],
     }
     
-    return {"notify": "User %s updated" % data["username"]}
     try:
-        db_session.execute(User.__table__.update(), data);
+        db_session.query(User).filter(User.name == data['name']).update(data)
         db_session.commit()
-        return {"notify": "User %s updated" % data["username"]}
+        return {
+            "notify": "User %s updated" % data["name"],
+            "user_data": {"username": data['name'], "seat_of_power": data['seat_of_power'], "house_words": data['house_words']},
+        }
     except exc.InternalError, exception:
         reason = exception.message
         print "Failed because: %s" % reason
         db_session.rollback()
-        return {"notify": "User %s failed to update because %s" % (data["username"], reason)}
+        return {"notify": "User %s failed to update because %s" % (data["name"], reason)}
     except exc.IntegrityError, exception:
         reason = exception.message
         print "Failed because: %s" % reason
         db_session.rollback()
-        return {"notify": "User %s failed to update because %s" % (data["username"], reason)}
+        return {"notify": "User %s failed to update because %s" % (data["name"], reason)}
         

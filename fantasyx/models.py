@@ -13,7 +13,7 @@ class User(Base):
     id               = Column(Integer, primary_key=True)
     name             = Column(String, unique=True, nullable=False)
     seat_of_power    = Column(String, unique=True, nullable=False)
-    family_words     = Column(String, unique=True, nullable=False)
+    house_words      = Column(String, unique=True, nullable=False)
     image            = Column(String, unique=True, nullable=False)
     email            = Column(String, unique=True, nullable=False)
     identifier       = Column(String, unique=True, nullable=False)
