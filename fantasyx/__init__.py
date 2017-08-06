@@ -160,6 +160,7 @@ def test(ws):
                         print "message: %s" % (msg)
                         print "user_identifier: %s" % user_identifier
                         response = handle_event(msg_type, msg, db_session)
+                        print "response: %s" % response
                         ws.send(response)
 
                         if msg_type in ['user_data', 'my_drafts', 'release']:

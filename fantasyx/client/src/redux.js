@@ -15,6 +15,7 @@ import {
   gotRawScores,
   gotMyDrafts,
   gotCanDraft,
+  gotNotification,
   removeNotification,
 } from "./actions";
 
@@ -30,6 +31,9 @@ export const gotMsg = msg => {
   }
   if (msg.user_data) {
     store.dispatch(gotUserData(msg.user_data));
+  }
+  if (msg.notify) {
+    store.dispatch(gotNotification(msg.notify));
   }
   if (msg.characters) {
     store.dispatch(gotCharacters(msg.characters));

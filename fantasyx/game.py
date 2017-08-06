@@ -1,10 +1,11 @@
 import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
-from sqlalchemy import or_
+from sqlalchemy import or_, exc
 from sqlalchemy.orm import lazyload
-
+from datetime import timedelta
 import pandas as pd
 import numpy as np
+
 
 def handle_event(msg_type, msg, db_session=None):
     print("handling %s" % msg_type)
@@ -19,6 +20,7 @@ def handle_event(msg_type, msg, db_session=None):
         "scores": scores,
         "raw_scores": raw_scores,
         "user_data": user_data,
+        "update_user": update_user,
         "can_draft": can_draft,
     }
 
@@ -51,7 +53,7 @@ def user_data(msg, db_session):
     user_identifier = msg['user_identifier']
     print "selecting user for user identifier: %s" % (user_identifier)
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "family_words": user.family_words}}
+    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "house_words": user.house_words}}
 
 # characters that are unclaimed at this point in time
 def available_characters(msg, db_session):
@@ -175,12 +177,12 @@ def generate_score(msg, db_session):
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
-
+    
     # get a draft from the draft history. This is a historically idempotend approach
     # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
     draft_history = db_session.query(DraftHistory).join(Character).filter(
         Character.id == character.id,
-        DraftHistory.drafted_at < episode.aired_at,
+        DraftHistory.drafted_at < (episode.aired_at - timedelta(hours=4)),
         (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
     ).first()
 
@@ -224,3 +226,28 @@ def generate_score(msg, db_session):
     db_session.execute(Score.__table__.insert(), score_config)
     db_session.commit()
 
+def update_user(msg, db_session):
+    data = {
+        "name": msg["data"]["username"],
+        "seat_of_power": msg["data"]["seat_of_power"],
+        "house_words": msg["data"]["house_words"],
+    }
+    
+    try:
+        db_session.query(User).filter(User.name == data['name']).update(data)
+        db_session.commit()
+        return {
+            "notify": "User %s updated" % data["name"],
+            "user_data": {"username": data['name'], "seat_of_power": data['seat_of_power'], "house_words": data['house_words']},
+        }
+    except exc.InternalError, exception:
+        reason = exception.message
+        print "Failed because: %s" % reason
+        db_session.rollback()
+        return {"notify": "User %s failed to update because %s" % (data["name"], reason)}
+    except exc.IntegrityError, exception:
+        reason = exception.message
+        print "Failed because: %s" % reason
+        db_session.rollback()
+        return {"notify": "User %s failed to update because %s" % (data["name"], reason)}
+        
