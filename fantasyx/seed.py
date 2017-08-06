@@ -32,14 +32,14 @@ else:
 
 db_session = Session(bind=engine)
 
-db_session.execute("TRUNCATE TABLE character restart identity CASCADE")
-db_session.execute("TRUNCATE TABLE draft restart identity CASCADE")
-db_session.execute("TRUNCATE TABLE draft_ticket restart identity CASCADE")
-db_session.execute('TRUNCATE TABLE "user" restart identity CASCADE')
-db_session.execute('TRUNCATE TABLE episode restart identity CASCADE')
-db_session.execute('TRUNCATE TABLE rubric restart identity CASCADE')
-db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
-db_session.commit()
+# db_session.execute("TRUNCATE TABLE character restart identity CASCADE")
+# db_session.execute("TRUNCATE TABLE draft restart identity CASCADE")
+# db_session.execute("TRUNCATE TABLE draft_ticket restart identity CASCADE")
+# db_session.execute('TRUNCATE TABLE "user" restart identity CASCADE')
+# db_session.execute('TRUNCATE TABLE episode restart identity CASCADE')
+# db_session.execute('TRUNCATE TABLE rubric restart identity CASCADE')
+# db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
+# db_session.commit()
 
 seeds = {
     Character: 'character',

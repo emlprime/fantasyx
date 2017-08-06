@@ -4,6 +4,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, Session, backref
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from datetime import date
+from datetime import datetime
+from dateutil import tz
+
+FROM_ZONE = tz.gettz('UTC')
+TO_ZONE = tz.gettz('America/Los_Angeles')
 Base = declarative_base()
 
 class User(Base):
@@ -199,7 +204,9 @@ class DraftHistory(Base):
                 )
     
     def __repr__(self):
-        return "%s drafted %s" % (self.user.name, self.character.name)
+        utc_drafted_at = self.drafted_at.replace(tzinfo=FROM_ZONE)
+        local_drafted_at = utc_drafted_at.astimezone(TO_ZONE)
+        return "%s drafted %s at %s" % (self.user.name, self.character.name, local_drafted_at)
     
 class Character(Base):
     __tablename__ = 'character'

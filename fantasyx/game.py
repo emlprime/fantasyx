@@ -2,9 +2,10 @@ import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
 from sqlalchemy import or_, exc
 from sqlalchemy.orm import lazyload
-
+from datetime import timedelta
 import pandas as pd
 import numpy as np
+
 
 def handle_event(msg_type, msg, db_session=None):
     print("handling %s" % msg_type)
@@ -176,12 +177,12 @@ def generate_score(msg, db_session):
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
-
+    
     # get a draft from the draft history. This is a historically idempotend approach
     # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
     draft_history = db_session.query(DraftHistory).join(Character).filter(
         Character.id == character.id,
-        DraftHistory.drafted_at < episode.aired_at,
+        DraftHistory.drafted_at < (episode.aired_at - timedelta(hours=4)),
         (or_(DraftHistory.released_at == None, DraftHistory.released_at > episode.aired_at))
     ).first()
 
