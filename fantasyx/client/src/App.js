@@ -19,22 +19,6 @@ import {removeNotification, gotUserIdentifier} from "./actions";
 
 import {Sidebar, SidebarItem} from "react-responsive-sidebar";
 
-const headerStyles = {
-  marginTop: "1em",
-  color: "#c11d43",
-  fontSize: "2.5em",
-};
-
-const subtitleStyles = {
-  color: "#c11d43",
-  fontSize: ".01em",
-};
-
-const pageWrapStyles = {
-  width: "70%",
-  margin: "auto",
-};
-
 const profileStyles = {
   float: "right",
 };
@@ -105,22 +89,6 @@ class App extends Component {
         <div id="outer-container">
           <Sidebar content={items} width={170} background="#23160d">
             <main id="page-wrap" style={pageWrapStyles}>
-              <Link to="/profile" style={profileStyles}>
-                <img
-                  width="32px"
-                  height="32px"
-                  src="/profile.png"
-                  alt="profile"
-                />
-              </Link>
-              <h1 style={headerStyles}>aGoT</h1>
-              <h2 style={subtitleStyles}>
-                Crush your enemies. See them driven before you. Hear the
-                lamentations of their women.
-              </h2>
-              <h3>
-                Welcome {this.props.email}
-              </h3>
               <Route exact path="/" component={Home} />
               <Route exact path="/profile" component={Profile} />
               <Route exact path="/user/:user_identifier" component={Home} />

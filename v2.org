@@ -1,0 +1,89 @@
+* FantasyX
+** Server
+*** Game
+**** user_data
+**** user_data_update
+**** draft
+**** release
+**** my_drafts
+**** rubric
+**** characters
+**** available_characters
+**** scores
+**** user_scores
+**** character_scores
+**** can_draft
+*** Routes
+**** /api/
+redirect to login if not logged in
+otherwise send to the client
+**** /login/
+send to google login
+**** /authorized/
+redirect to the index
+**** /api/socket/
+Subscribe to the pubsub
+Handle messages from the clients
+Loop infinitely
+Unsubscribe on disconnect
+** Client
+*** Chrome
+**** DONE Sidebar
+***** DONE Navigation Links
+***** DONE Navigation Link
+**** DONE Header
+***** DONE Logo
+***** DONE Subtitle
+***** DONE Username
+***** DONE Profile
+*** Home
+**** Introduction
+**** Rubric
+***** Altfacts filter toggle
+***** Plot
+***** Blood
+***** Rhetoric
+***** Sex
+*** Characters
+**** Character Title
+**** Current Owner
+**** Description
+**** Original Draft
+**** Episode Breakdown
+***** Points
+***** Owner
+*** Draft
+**** Title
+**** characters to draft
+***** Name
+***** Points breakdown
+***** Draft Button
+*** My Drafts
+**** drafted characters
+***** Name
+***** points
+***** Release Button
+***** Warning dialog when release clicked
+***** Trade Button
+***** Trade Dialog when trade clicked
+*** Leaderboard
+**** Altfacts filter
+**** Table
+***** Character Name
+***** Episode scores
+***** Character Totals
+***** Episode Totals
+*** Scores
+**** Altfacts filter
+**** Character Filter
+**** Episode Filter
+**** Owner Filter
+**** Table
+***** Character
+***** Points
+***** Bonus
+***** Episode
+*** Profile
+**** Username
+**** Seat of Power
+**** House Words
