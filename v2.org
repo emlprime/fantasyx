@@ -27,7 +27,7 @@ Handle messages from the clients
 Loop infinitely
 Unsubscribe on disconnect
 ** Client
-*** Chrome
+*** DONE Chrome
 **** DONE Sidebar
 ***** DONE Navigation Links
 ***** DONE Navigation Link
@@ -36,14 +36,14 @@ Unsubscribe on disconnect
 ***** DONE Subtitle
 ***** DONE Username
 ***** DONE Profile
-*** Home
-**** Introduction
-**** Rubric
-***** Altfacts filter toggle
-***** Plot
-***** Blood
-***** Rhetoric
-***** Sex
+*** DONE Home
+**** DONE Introduction
+**** DONE Rubric
+***** DONE Altfacts filter toggle
+***** DONE Plot
+***** DONE Blood
+***** DONE Rhetoric
+***** DONE Sex
 *** Characters
 **** Character Title
 **** Current Owner

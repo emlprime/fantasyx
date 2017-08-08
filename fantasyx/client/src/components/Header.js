@@ -2,13 +2,11 @@ import React from "react";
 import {Link} from "react-router-dom";
 import "../App.css";
 
-const outerContainerStyles = {
-  minWidth: "640px",
-  outline: "1px dashed red",
-};
+const headerStyles = {};
 
-const headerStyles = {
-  marginTop: "1em",
+const h1Styles = {
+  marginTop: ".3em",
+  marginBottom: ".1em",
   color: "#c11d43",
   fontSize: "2.5em",
 };
@@ -29,7 +27,7 @@ const usernameStyles = {
 };
 
 const Header = ({username, style = {}}) =>
-  <div>
+  <div style={headerStyles}>
     <div style={profileStyles}>
       <p style={usernameStyles}>
         {username}
@@ -39,7 +37,7 @@ const Header = ({username, style = {}}) =>
       </Link>
     </div>
     <Link to="/">
-      <h1 style={headerStyles}>aGoT</h1>
+      <h1 style={h1Styles}>aGoT</h1>
     </Link>
     <h2 style={subtitleStyles}>
       Crush your enemies. See them driven before you. Hear the lamentations of

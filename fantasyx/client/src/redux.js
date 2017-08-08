@@ -20,9 +20,13 @@ import {
 } from "./actions";
 
 import {reducer} from "./reducers";
-/* import {reducer as formReducer} from "redux-form";*/
+import GameReducer from "./GameReducers";
 
-const rootReducer = combineReducers({form: formReducer, data: reducer});
+const rootReducer = combineReducers({
+  game: GameReducer,
+  form: formReducer,
+  data: reducer,
+});
 
 export const gotMsg = msg => {
   // console.log(`got a message:`, msg);
@@ -60,14 +64,9 @@ export const gotMsg = msg => {
 };
 
 export function configureStore(preloadedState = {}) {
-  // console.log("starting app with preloadedState:", preloadedState);
-  const enhancer = compose(
-    applyMiddleware(thunk),
-    // autoRehydrate(),
-  );
+  const enhancer = compose(applyMiddleware(thunk));
 
   const store = createStore(rootReducer, preloadedState, enhancer);
-  // persistStore(store);
   return store;
 }
 
@@ -82,9 +81,12 @@ ws.onmessage = function(evt) {
 };
 
 const preloadedState = {
-  data: {
-    rubric: {},
+  game: {
+    introduction: ["Loading..."],
+    rubric_sections: [],
     characters: [],
+  },
+  data: {
     available_characters: [],
     my_drafts: [],
     can_draft: false,

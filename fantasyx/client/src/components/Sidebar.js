@@ -3,11 +3,12 @@ import {Link} from "react-router-dom";
 import "../App.css";
 
 const sidebarStyles = {
+  marginTop: "0px",
   listStyleType: "none",
   backgroundColor: "#511818",
   maxWidth: "10em",
   minWidth: "10em",
-  minHeight: "500px",
+  height: "500px",
   float: "left",
 };
 

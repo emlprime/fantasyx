@@ -12,7 +12,7 @@ def handle_event(msg_type, msg, db_session=None):
     handlers = {
         "draft": draft,
         "my_drafts": my_drafts,
-        "rubric": rubric,
+        "initial_info": initial_info,
         "characters": characters,
         "available_characters": available_characters,
         "draft": draft,
@@ -30,17 +30,20 @@ def handle_event(msg_type, msg, db_session=None):
         response = {"error": "no handler implemented for %s" % msg_type}
     return json.dumps(response)
 
+def initial_info(msg, db_session):
+    return rubric(msg, db_session)
+
 # The full list of characters
 def rubric(msg, db_session):
     rubric = {}
-    result = db_session.query(Rubric).order_by(Rubric.kind, Rubric.points).values(Rubric.description, Rubric.kind, Rubric.points)
+    result = db_session.query(Rubric).order_by(Rubric.kind, Rubric.points).values(Rubric.description, Rubric.kind, Rubric.points, Rubric.canon)
     for row in result:
-        description, kind, points = row
+        description, kind, points, canon = row
         if not kind in rubric.keys():
             rubric[kind] = []
-        rubric[kind].append({"description":description, "points":points})
-    print("writing rubric: %s" % rubric)
-    return {"rubric": rubric}
+        rubric[kind].append({"description":description, "points":points, "kind": canon})
+
+    return {"rubric": [{"title": title, "data": data} for title, data in rubric.items()]}
 
 def characters(msg, db_session):
     result = db_session.query(Character).outerjoin(Draft).outerjoin(User).order_by(Character.name).values(Character.id, Character.name, Character.description, User.name)

@@ -25,17 +25,6 @@ const characterClearStyles = {
 };
 
 class Characters extends Component {
-  componentWillMount() {
-    setTimeout(() => {
-      this.getCharacters();
-    }, 100);
-  }
-
-  getCharacters() {
-    const msg = JSON.stringify({type: "characters"});
-    this.props.ws.send(msg);
-  }
-
   render() {
     return (
       <div>
@@ -66,10 +55,9 @@ class Characters extends Component {
   }
 }
 const mapStateToProps = (state, ownProps) => ({
-  characters: state.data.characters,
-  ws: state.data.ws,
+  characters: state.game.characters,
 });
 
-const CharactersContainer = connect(mapStateToProps)(Characters);
+Characters = connect(mapStateToProps)(Characters);
 
-export default CharactersContainer;
+export default Characters;

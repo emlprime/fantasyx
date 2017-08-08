@@ -1,27 +1,10 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import "./App.css";
-import Characters from "./components/Characters";
-import MyDrafts from "./components/MyDrafts";
-import Draft from "./components/Draft";
+import Chrome from "./components/Chrome";
 import Home from "./components/Home";
-import Profile from "./components/Profile";
-import LeaderboardUserCanon from "./components/LeaderboardUserCanon";
-import LeaderboardUserAltfacts from "./components/LeaderboardUserAltfacts";
-import LeaderboardCharacterCanon from "./components/LeaderboardCharacterCanon";
-import LeaderboardCharacterAltfacts from "./components/LeaderboardCharacterAltfacts";
-import ScoresCanon from "./components/ScoresCanon";
-import ScoresAltfacts from "./components/ScoresAltfacts";
 import {NotificationStack} from "react-notification";
-
 import {removeNotification, gotUserIdentifier} from "./actions";
-
-import {Sidebar, SidebarItem} from "react-responsive-sidebar";
-
-const profileStyles = {
-  float: "right",
-};
 
 class App extends Component {
   constructor(props) {
@@ -63,72 +46,22 @@ class App extends Component {
   }
 
   render() {
-    const items = [
-      <SidebarItem>
-        <Link to="/">Home</Link>
-      </SidebarItem>,
-      <SidebarItem>
-        <Link to="/characters">Characters</Link>
-      </SidebarItem>,
-      <SidebarItem>
-        <Link to="/draft">Draft</Link>
-      </SidebarItem>,
-      <SidebarItem>
-        <Link to="/my_drafts">My Drafts</Link>
-      </SidebarItem>,
-      <SidebarItem>
-        <Link to="/leaderboard/user/altfacts">Leaderboard</Link>
-      </SidebarItem>,
-      <SidebarItem>
-        <Link to="/scores/altfacts">Scores</Link>
-      </SidebarItem>,
-    ];
-
     return (
-      <Router>
-        <div id="outer-container">
-          <Sidebar content={items} width={170} background="#23160d">
-            <main id="page-wrap" style={pageWrapStyles}>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/profile" component={Profile} />
-              <Route exact path="/user/:user_identifier" component={Home} />
-              <Route path="/characters" component={Characters} />
-              <Route path="/draft" component={Draft} />
-              <Route path="/my_drafts" component={MyDrafts} />
-              <Route
-                path="/leaderboard/user/altfacts"
-                component={LeaderboardUserAltfacts}
-              />
-              <Route
-                path="/leaderboard/user/canon"
-                component={LeaderboardUserCanon}
-              />
-              <Route
-                path="/leaderboard/character/canon"
-                component={LeaderboardCharacterCanon}
-              />
-              <Route
-                path="/leaderboard/character/altfacts"
-                component={LeaderboardCharacterAltfacts}
-              />
-              <Route path="/scores/canon" component={ScoresCanon} />
-              <Route path="/scores/altfacts" component={ScoresAltfacts} />
-            </main>
-          </Sidebar>
-          <NotificationStack
-            notifications={this.props.notifications}
-            onDismiss={notification =>
-              this.props.removeNotification(notification)}
-          />
-        </div>
-      </Router>
+      <Chrome username={this.props.username}>
+        <Home />
+        <NotificationStack
+          notifications={this.props.notifications}
+          onDismiss={notification =>
+            this.props.removeNotification(notification)}
+        />
+      </Chrome>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
   user_identifier: state.data.user_identifier,
-  email: state.data.email,
+  username: state.data.username,
   notifications: state.data.notifications,
   ws: state.data.ws,
 });
@@ -138,6 +71,6 @@ const mapDispatchToProps = {
   gotUserIdentifier,
 };
 
-const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+App = connect(mapStateToProps, mapDispatchToProps)(App);
 
-export default AppContainer;
+export default App;

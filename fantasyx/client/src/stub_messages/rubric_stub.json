@@ -1,0 +1,21 @@
+{
+  "type": "RUBRIC",
+  "rubric": [
+  {
+    "title": "Sex",
+    "data": [
+      {"description": "Cockblock/Clam Jam", "points": -20, "kind": "canon"},
+      {"description": "Bold come-ons", "points": 5, "kind": "altfacts"}
+    ]
+  },
+  {
+    "title": "Blood",
+    "data": [
+      {"description": "Kill an individual", "points": 30, "kind": "canon"},
+      {"description": "Charge a dragon", "points": 55, "kind": "altfacts"},
+      {"description": "Kill a leader", "points": 70, "kind": "canon"}
+    ]
+  }
+  ]
+}
+

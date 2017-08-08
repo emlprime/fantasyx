@@ -8,6 +8,11 @@ export const gotUserData = user_data => ({
   user_data,
 });
 
+export const gotInitialData = user_data => ({
+  type: "INITIAL_DATA",
+  user_data,
+});
+
 export const gotCharacters = characters => ({
   type: "CHARACTERS",
   characters,
@@ -16,6 +21,11 @@ export const gotCharacters = characters => ({
 export const gotRubric = rubric => ({
   type: "RUBRIC",
   rubric,
+});
+
+export const gotIntroduction = introduction => ({
+  type: "INTRODUCTION",
+  introduction,
 });
 
 export const gotAvailableCharacters = available_characters => ({

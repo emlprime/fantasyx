@@ -1,10 +1,10 @@
 import React from "react";
-import {BrowserRouter as Router, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router} from "react-router-dom";
 import "../App.css";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 const outerContainerStyles = {
-  minWidth: "680px",
+  minWidth: "750px",
 };
 
 const contentStyles = {
@@ -12,7 +12,9 @@ const contentStyles = {
   margin: "auto",
   float: "left",
   backgroundColor: "rgba(255, 255, 255, 0.3)",
-  minHeight: "500px",
+  height: "510px",
+  paddingLeft: "1em",
+  overflowY: "auto",
 };
 
 const clearStyles = {clear: "both"};

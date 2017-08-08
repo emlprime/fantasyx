@@ -1,0 +1,17 @@
+{
+  "type": "CHARACTERS",
+  "characters": [
+    {
+      "id": 1,
+      "name": "Daenerys Targaryen",
+      "description": "hot dragon blonde",
+      "user": "erife"
+    },
+    {
+      "id": 2,
+      "name": "Oberon Martel",
+      "description": "Awesome Sauce",
+      "user": null
+    }
+  ]
+}

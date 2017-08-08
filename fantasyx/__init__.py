@@ -167,6 +167,8 @@ def test(ws):
                             if msg_type == 'user_data':
                                 user_identifier = msg['user_identifier']
                                 print "setting user identifier for: %s" % user_identifier
+                                initial_info = handle_event('initial_info', {"type": "initial_info"}, db_session)
+                                ws.send(initial_info)
 
                             if msg_type == 'release':
                                 r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
