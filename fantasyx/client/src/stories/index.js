@@ -2,6 +2,7 @@ import React from "react";
 import {BrowserRouter as Router} from "react-router-dom";
 import {storiesOf, action, linkTo} from "@kadira/storybook";
 
+import Frame from "../components/Frame";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import Chrome from "../components/Chrome";
@@ -12,6 +13,8 @@ import Content from "../components/Content";
 
 import Home from "../components/Home";
 import Characters from "../components/Characters";
+import Draft from "../components/Draft";
+import MyDrafts from "../components/MyDrafts";
 
 import {Provider} from "react-redux";
 import {store} from "../redux";
@@ -20,6 +23,7 @@ import {gotRubric, gotIntroduction} from "../actions.js";
 import IntroductionMessage from "../stub_messages/introduction_stub.json";
 import RubricMessage from "../stub_messages/rubric_stub.json";
 import CharacterMessage from "../stub_messages/character_stub.json";
+import UserDataMessage from "../stub_messages/user_data_stub.json";
 
 storiesOf("Header", module)
   .addDecorator(getStory =>
@@ -102,8 +106,14 @@ storiesOf("Sections", module)
       rubric_sections={rubric_sections}
     />,
   )
-  .add("Characters", () => <Characters />);
+  .add("Characters", () => <Characters />)
+  .add("Draft", () => <Draft />)
+  .add("MyDrafts", () => <MyDrafts />)
+  .add("Frame", () => <Frame />);
 
-store.dispatch(RubricMessage);
-store.dispatch(IntroductionMessage);
-store.dispatch(CharacterMessage);
+store.dispatch(UserDataMessage);
+setTimeout(() => {
+  store.dispatch(RubricMessage);
+  store.dispatch(IntroductionMessage);
+  store.dispatch(CharacterMessage);
+}, 100);

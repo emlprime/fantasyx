@@ -19,19 +19,11 @@ const releaseButtonStyles = {
   textAlign: "right",
 };
 
-class MyDraft extends Component {
+class MyDrafts extends Component {
   componentWillMount() {
     setTimeout(() => {
       this.getMyDrafts();
     }, 100);
-  }
-
-  getMyDrafts() {
-    const msg = JSON.stringify({
-      type: "my_drafts",
-      user_identifier: this.props.user_identifier,
-    });
-    this.props.ws.send(msg);
   }
 
   release(character_id) {
@@ -44,12 +36,12 @@ class MyDraft extends Component {
   }
 
   render() {
-    const characters = this.props.my_drafts || [];
+    console.log("my drafts:", this.props.my_drafts);
     return (
       <div>
         Characters that you have drafted:
         <ul>
-          {characters.map(character =>
+          {this.props.my_drafts.map(character =>
             <li
               id={`character${character.id}`}
               key={`character_${character.id}`}
@@ -75,12 +67,9 @@ class MyDraft extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  user_identifier: state.data.user_identifier,
-  email: state.data.email,
-  my_drafts: state.data.my_drafts,
-  ws: state.data.ws,
+  my_drafts: state.user.my_drafts,
 });
 
-const MyDraftContainer = connect(mapStateToProps)(MyDraft);
+MyDrafts = connect(mapStateToProps)(MyDrafts);
 
-export default MyDraftContainer;
+export default MyDrafts;

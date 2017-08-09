@@ -19,13 +19,13 @@ import {
   removeNotification,
 } from "./actions";
 
-import {reducer} from "./reducers";
-import GameReducer from "./GameReducers";
+import UserReducer from "./UserReducer";
+import GameReducer from "./GameReducer";
 
 const rootReducer = combineReducers({
   game: GameReducer,
   form: formReducer,
-  data: reducer,
+  user: UserReducer,
 });
 
 export const gotMsg = msg => {
@@ -85,9 +85,9 @@ const preloadedState = {
     introduction: ["Loading..."],
     rubric_sections: [],
     characters: [],
-  },
-  data: {
     available_characters: [],
+  },
+  user: {
     my_drafts: [],
     can_draft: false,
     notifications: [

@@ -27,28 +27,6 @@ class Draft extends Component {
     super(props);
     this.draftButton = this.draftButton.bind(this);
   }
-  componentWillMount() {
-    setTimeout(() => {
-      this.getAvailableCharacters();
-    }, 100);
-  }
-
-  getAvailableCharacters() {
-    const msg = JSON.stringify({
-      type: "available_characters",
-      user_identifier: this.props.user_identifier,
-    });
-    this.props.ws.send(msg);
-  }
-
-  draft(character_id) {
-    const msg = JSON.stringify({
-      type: "draft",
-      user_identifier: this.props.user_identifier,
-      character_id: character_id,
-    });
-    this.props.ws.send(msg);
-  }
 
   draftButton(can_draft, character_id) {
     if (this.props.can_draft) {
@@ -56,7 +34,7 @@ class Draft extends Component {
         <Button
           style={draftButtonStyles}
           onClick={() => {
-            this.draft(character_id);
+            console.log("implement draft");
           }}
         >
           Draft
@@ -70,6 +48,7 @@ class Draft extends Component {
       );
     }
   }
+
   render() {
     return (
       <div>
@@ -94,12 +73,10 @@ class Draft extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  user_identifier: state.data.user_identifier,
-  email: state.data.email,
-  available_characters: state.data.available_characters,
-  ws: state.data.ws,
-  can_draft: state.data.can_draft,
+  user_identifier: state.user.user_identifier,
+  available_characters: state.game.available_characters,
+  can_draft: state.user.can_draft,
 });
-const DraftContainer = connect(mapStateToProps)(Draft);
+Draft = connect(mapStateToProps)(Draft);
 
-export default DraftContainer;
+export default Draft;

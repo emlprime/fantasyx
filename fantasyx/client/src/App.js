@@ -3,8 +3,6 @@ import {connect} from "react-redux";
 import "./App.css";
 import Chrome from "./components/Chrome";
 import Home from "./components/Home";
-import {NotificationStack} from "react-notification";
-import {removeNotification, gotUserIdentifier} from "./actions";
 
 class App extends Component {
   constructor(props) {

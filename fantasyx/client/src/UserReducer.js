@@ -1,39 +1,30 @@
 import {removeNotification} from "./actions";
 
-export const reducer = (state = {}, action) => {
+const reducer = (state = {}, action) => {
   let notifications = [];
-  /* console.log("handing action:", action.type);
-   * console.log("action:", action);*/
+  console.log("handing action:", action.type);
+  /* console.log("action:", action);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
-      if (state.user_identifier && !action.user_identifier) {
-        // console.log("clearing user identifier");
-      }
       return {...state, user_identifier: action.user_identifier};
     case "LOGGED_OUT":
       return {};
     case "USER_DATA":
-      /* console.log("got user data");*/
       return {
         ...state,
         email: action.user_data.email,
         username: action.user_data.username,
         seat_of_power: action.user_data.seat_of_power,
-        house_words: action.user_data.house_words,
+        HOUSE_words: action.user_data.house_words,
       };
-    case "CHARACTERS":
-      return {...state, characters: action.characters};
-    case "SCORES":
-      return {...state, scores: action.scores};
-    case "RAW_SCORES":
-      return {...state, raw_scores: action.raw_scores};
     case "RUBRIC":
       return {...state, rubric: action.rubric};
-    case "AVAILABLE_CHARACTERS":
-      return {...state, available_characters: action.available_characters};
-    case "MY_DRAFTS":
-      // console.log("got my drafts");
-      return {...state, my_drafts: action.my_drafts};
+    case "CHARACTERS":
+      const my_drafts = action.characters.filter(character => {
+        return character.user === state.username;
+      });
+
+      return {...state, my_drafts: my_drafts};
     case "NOTIFY":
       console.log("notifying:", action.message);
       notifications = [
@@ -79,9 +70,9 @@ export const reducer = (state = {}, action) => {
       }
       return {...state, can_draft: action.can_draft, notifications};
     case "CONNECT_WEBSOCKET":
-      // console.log("setting web socket to state:", action.ws);
       return {...state, ws: action.ws};
     default:
       return state;
   }
 };
+export default reducer;
