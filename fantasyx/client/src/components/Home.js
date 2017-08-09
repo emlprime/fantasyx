@@ -5,7 +5,6 @@ import Rubric from "./Rubric";
 
 class Home extends Component {
   render() {
-    console.log(this.props);
     return (
       <div>
         <Content rows={this.props.introduction} />

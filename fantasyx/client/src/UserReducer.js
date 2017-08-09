@@ -2,13 +2,15 @@ import {removeNotification} from "./actions";
 
 const reducer = (state = {}, action) => {
   let notifications = [];
-  console.log("handing action:", action.type);
+  /* console.log("handing action:", action.type);*/
   /* console.log("action:", action);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
       return {...state, user_identifier: action.user_identifier};
     case "LOGGED_OUT":
       return {};
+    case "RELEASE":
+      console.log("send relase to server");
     case "USER_DATA":
       return {
         ...state,

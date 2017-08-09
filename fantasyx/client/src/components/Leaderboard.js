@@ -1,45 +1,126 @@
-import React from "react";
-import {NavLink} from "react-router-dom";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import Pivot from "quick-pivot";
+import * as Table from "reactabular-table";
+import Button from "./Button";
 
-import {Column, Table, AutoSizer} from "react-virtualized";
-import "react-virtualized/styles.css"; // only needs to be imported once
-
-const navigationStyles = {
-  padding: "1em",
+const tableStyles = {
+  marginTop: "1em",
 };
 
-const Leaderboard = ({label, dataKey, report}) =>
-  <div>
-    <div style={navigationStyles}>
-      <NavLink to="/leaderboard/user/altfacts">User Altfacts</NavLink> |
-      <NavLink to="/leaderboard/user/canon">User Canon</NavLink> |
-      <NavLink to="/leaderboard/character/altfacts">
-        Character Altfacts
-      </NavLink>{" "}
-      |
-      <NavLink to="/leaderboard/character/canon">Character Canon</NavLink>
-    </div>
-    <AutoSizer>
-      {({width}) =>
-        <Table
-          width={800}
-          height={1500}
-          headerHeight={20}
-          rowHeight={30}
-          rowCount={report.data.length}
-          rowGetter={({index}) => report.data[index]}
-        >
-          <Column label={label} dataKey={dataKey} width={300} />
-          {[1, 2, 3, 4, 5, 6, 7].map(episode_number =>
-            <Column
-              width={100}
-              label={`S07E0${episode_number}`}
-              dataKey={`S07E0${episode_number}`}
-              key={`S07E0${episode_number}`}
-            />,
-          )}
-        </Table>}
-    </AutoSizer>
-  </div>;
+class Leaderboard extends Component {
+  constructor(props) {
+    super(props);
+    this.togglePivot = this.togglePivot.bind(this);
+    this.reversePivotKey = this.reversePivotKey.bind(this);
+    this.state = {
+      pivot_key: "owner",
+    };
+  }
+
+  reversePivotKey() {
+    return this.state.pivot_key == "owner" ? "character_name" : "owner";
+  }
+
+  togglePivot() {
+    this.setState({
+      pivot_key: this.reversePivotKey(),
+    });
+  }
+
+  render() {
+    const {pivot_key} = this.state;
+    const rowsToPivot = [pivot_key];
+    const colsToPivot = ["episode_number"];
+    const aggregationDimension = "score";
+    const aggregator = "sum";
+
+    const pivot = new Pivot(
+      this.props.scores,
+      rowsToPivot,
+      colsToPivot,
+      aggregationDimension,
+      aggregator,
+    );
+    const pt = pivot.data.table;
+    const cols = pt.shift().value;
+    cols.shift();
+
+    const rows = pivot.data.table.map(row => {
+      const row_data = {};
+      row_data[pivot_key] = row.value[0];
+
+      let i = 1;
+      let total = 0;
+      cols.map(col => {
+        row_data[col] = row.value[i];
+        total += parseInt(row.value[i] || 0);
+        i++;
+      });
+      row_data["total"] = total;
+      return row_data;
+    });
+
+    const columns = [
+      {
+        property: pivot_key,
+        header: {
+          label: pivot_key,
+          props: {
+            style: {
+              width: 200,
+              textAlign: "left",
+            },
+          },
+        },
+      },
+      ,
+      ...cols.map(col => ({
+        property: col,
+        props: {style: {textAlign: "right"}},
+        header: {
+          label: col,
+          props: {
+            style: {
+              width: 100,
+              textAlign: "right",
+            },
+          },
+        },
+      })),
+      {
+        property: "total",
+        props: {style: {textAlign: "right"}},
+        header: {
+          label: "Total",
+          props: {
+            style: {
+              width: 50,
+              textAlign: "right",
+            },
+          },
+        },
+      },
+    ];
+
+    const pivot_key_map = {character_name: "Character", owner: "Owner"};
+    return (
+      <div>
+        <Button onClick={this.togglePivot}>
+          Change to {pivot_key_map[this.reversePivotKey()]}
+        </Button>
+        <Table.Provider columns={columns} style={tableStyles}>
+          <Table.Header />
+          <Table.Body rows={rows} rowKey={pivot_key} />
+        </Table.Provider>
+      </div>
+    );
+  }
+}
+const mapStateToProps = (state, ownProps) => ({
+  scores: state.game.scores,
+});
+
+Leaderboard = connect(mapStateToProps)(Leaderboard);
 
 export default Leaderboard;

@@ -1,65 +1,20 @@
 import {applyMiddleware, createStore, compose, combineReducers} from "redux";
-
 import thunk from "redux-thunk";
 import {reducer as formReducer} from "redux-form";
 
-// actions.js
-
-import {
-  gotUserIdentifier,
-  gotUserData,
-  gotCharacters,
-  gotRubric,
-  gotAvailableCharacters,
-  gotScores,
-  gotRawScores,
-  gotMyDrafts,
-  gotCanDraft,
-  gotNotification,
-  removeNotification,
-} from "./actions";
-
+import {removeNotification} from "./actions";
 import UserReducer from "./UserReducer";
 import GameReducer from "./GameReducer";
 
 const rootReducer = combineReducers({
+  user: UserReducer,
   game: GameReducer,
   form: formReducer,
-  user: UserReducer,
 });
 
-export const gotMsg = msg => {
-  // console.log(`got a message:`, msg);
-  if (msg.user_identifier) {
-    store.dispatch(gotUserIdentifier(msg.user_identifier));
-  }
-  if (msg.user_data) {
-    store.dispatch(gotUserData(msg.user_data));
-  }
-  if (msg.notify) {
-    store.dispatch(gotNotification(msg.notify));
-  }
-  if (msg.characters) {
-    store.dispatch(gotCharacters(msg.characters));
-  }
-  if (msg.rubric) {
-    store.dispatch(gotRubric(msg.rubric));
-  }
-  if (msg.available_characters) {
-    store.dispatch(gotAvailableCharacters(msg.available_characters));
-  }
-  if (msg.my_drafts) {
-    store.dispatch(gotMyDrafts(msg.my_drafts));
-  }
-  if (msg.scores) {
-    store.dispatch(gotScores(msg.scores));
-  }
-  if (msg.raw_scores) {
-    store.dispatch(gotRawScores(msg.raw_scores));
-  }
-  if (typeof msg.can_draft !== "undefined") {
-    // console.log("doing can draft");
-    store.dispatch(gotCanDraft(msg.can_draft));
+export const gotMessage = message => {
+  if (message.type) {
+    store.dispatch(message);
   }
 };
 
@@ -77,7 +32,7 @@ const ws = new WebSocket(socket_address);
 ws.onmessage = function(evt) {
   // console.log("evt with data:", evt);
   const parsed_data = JSON.parse(evt.data);
-  gotMsg(parsed_data);
+  gotMessage(parsed_data);
 };
 
 const preloadedState = {
@@ -85,10 +40,10 @@ const preloadedState = {
     introduction: ["Loading..."],
     rubric_sections: [],
     characters: [],
-    available_characters: [],
+    scores: [],
+    owners: [],
   },
   user: {
-    my_drafts: [],
     can_draft: false,
     notifications: [
       {
@@ -102,16 +57,6 @@ const preloadedState = {
         },
       },
     ],
-    scores: {
-      user_canon_report: undefined,
-      user_altfacts_report: undefined,
-      character_canon_report: undefined,
-      character_altfacts_report: undefined,
-    },
-    raw_scores: {
-      raw_scores_canon_report: undefined,
-      raw_scores_altfacts_report: undefined,
-    },
     ws: ws,
   },
 };

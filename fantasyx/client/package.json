@@ -7,18 +7,13 @@
     "react-scripts": "1.0.7"
   },
   "dependencies": {
-    "axios": "^0.16.2",
     "prop-types": "^15.5.10",
     "query-string": "^4.3.4",
     "react": "^15.6.1",
-    "react-burger-menu": "^2.1.1",
     "react-dom": "^15.6.1",
     "react-notification": "^6.7.1",
     "react-redux": "^5.0.5",
-    "react-responsive-sidebar": "^0.1.16",
     "react-router-dom": "^4.1.1",
-    "react-sidebar": "^2.3.2",
-    "react-virtualized": "^9.8.0",
     "redux-form": "^7.0.2",
     "redux-persist": "^4.8.2",
     "redux-thunk": "^2.2.0"

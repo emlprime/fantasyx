@@ -24,8 +24,6 @@ class Rubric extends Component {
   }
 
   render() {
-    console.log("foo");
-    console.log(this.props);
     if (!this.props.sections) {
       return <p />;
     }

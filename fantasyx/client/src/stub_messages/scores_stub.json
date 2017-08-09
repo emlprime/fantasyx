@@ -1,0 +1,11 @@
+{
+  "type": "SCORES",
+  "scores": [
+    {"id": 1, "character_name": "Daenerys Targaryen", "points": 40, "bonus": 5, "score": 45, "owner": "erife", "canon": "canon", "episode_number": "S07E01"},
+    {"id": 2, "character_name": "Daenerys Targaryen", "points": 10, "bonus": 0, "score": 10, "owner": "erife", "canon": "canon", "episode_number": "S07E01"},
+    {"id": 3, "character_name": "Samwell Tarly", "points": 66, "bonus": 0, "score": 66, "owner": "erife", "canon": "canon", "episode_number": "S07E02"},
+    {"id": 4, "character_name": "Daenerys Targaryen", "points": 20, "bonus": -5, "score": 15, "owner": "erife", "canon": "canon", "episode_number": "S07E02"},
+    {"id": 5, "character_name": "Jaime Lannister", "points": 70, "bonus": 25, "score": 100, "owner": "shaz", "canon": "altfacts", "episode_number": "S07E04"},
+    {"id": 6, "character_name": "Jaime Lannister", "points": 10, "bonus": 0, "score": 10, "owner": "shaz", "canon": "canon", "episode_number": "S07E01"}
+  ]  
+}

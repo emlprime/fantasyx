@@ -9,21 +9,24 @@ import Chrome from "../components/Chrome";
 import RubricSection from "../components/RubricSection";
 import Rubric from "../components/Rubric";
 import Button from "../components/Button";
+import Select from "../components/Select";
 import Content from "../components/Content";
 
 import Home from "../components/Home";
 import Characters from "../components/Characters";
-import Draft from "../components/Draft";
-import MyDrafts from "../components/MyDrafts";
+import Leaderboard from "../components/Leaderboard";
+import Scores from "../components/Scores";
 
 import {Provider} from "react-redux";
 import {store} from "../redux";
-import {gotRubric, gotIntroduction} from "../actions.js";
 
 import IntroductionMessage from "../stub_messages/introduction_stub.json";
 import RubricMessage from "../stub_messages/rubric_stub.json";
 import CharacterMessage from "../stub_messages/character_stub.json";
 import UserDataMessage from "../stub_messages/user_data_stub.json";
+import CanDraftMessage from "../stub_messages/can_draft_stub.json";
+import ScoresMessage from "../stub_messages/scores_stub.json";
+import OwnersMessage from "../stub_messages/owners_stub.json";
 
 storiesOf("Header", module)
   .addDecorator(getStory =>
@@ -45,8 +48,6 @@ storiesOf("Sidebar", module)
   .add("on the characters section", () =>
     <Sidebar currentSection="Characters" />,
   )
-  .add("on the draft section", () => <Sidebar currentSection="Draft" />)
-  .add("on the My Drafts section", () => <Sidebar currentSection="My Drafts" />)
   .add("on the leaderboard section", () =>
     <Sidebar currentSection="Leaderboard" />,
   )
@@ -88,7 +89,23 @@ storiesOf("Rubric", module).add("with all canon", () =>
   <Rubric sections={rubric_sections} />,
 );
 
-storiesOf("Button", module).add("some text", () => <Button>Some Text </Button>);
+storiesOf("Button", module)
+  .add("active", () =>
+    <Button onClick={action("draft character")}>Draft</Button>,
+  )
+  .add("inactive", () => <Button active={false}>Draft</Button>);
+
+storiesOf("Select", module)
+  .add("default", () =>
+    <Select onChange={action("selected")} options={["All", "erife", "shaz"]} />,
+  )
+  .add("selected", () =>
+    <Select
+      onChange={action("selected")}
+      options={["All", "erife", "shaz"]}
+      default_value="erife"
+    />,
+  );
 
 storiesOf("Content", module).add("some content", () =>
   <Content rows={IntroductionMessage.introduction} />,
@@ -106,14 +123,22 @@ storiesOf("Sections", module)
       rubric_sections={rubric_sections}
     />,
   )
-  .add("Characters", () => <Characters />)
-  .add("Draft", () => <Draft />)
-  .add("MyDrafts", () => <MyDrafts />)
+  .add("Characters", () =>
+    <Characters
+      handleDraft={action("handle draft")}
+      handleRelease={action("handle release")}
+    />,
+  )
+  .add("Leaderboard", () => <Leaderboard />)
+  .add("Scores", () => <Scores />)
   .add("Frame", () => <Frame />);
 
 store.dispatch(UserDataMessage);
 setTimeout(() => {
+  store.dispatch(OwnersMessage);
   store.dispatch(RubricMessage);
   store.dispatch(IntroductionMessage);
   store.dispatch(CharacterMessage);
+  store.dispatch(CanDraftMessage);
+  store.dispatch(ScoresMessage);
 }, 100);

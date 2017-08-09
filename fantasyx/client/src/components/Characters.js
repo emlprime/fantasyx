@@ -1,17 +1,25 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
+import Button from "./Button";
+import Select from "./Select";
 
 const characterRowStyles = {
   listStyleType: "none",
-  padding: ".4em 1em",
+  padding: "0em .2em",
+  fontSize: ".7em",
 };
 
 const characterStyles = {};
 const characterNameStyles = {
+  padding: ".2em .2em",
+  margin: 0,
   width: "60%",
 };
 
-const characterDescriptionStyles = {};
+const characterDescriptionStyles = {
+  margin: 0,
+  padding: ".2em",
+};
 
 const characterOwnerStyles = {
   width: "30%",
@@ -25,11 +33,68 @@ const characterClearStyles = {
 };
 
 class Characters extends Component {
+  constructor(props) {
+    super(props);
+    this.formatCharacterAction = this.formatCharacterAction.bind(this);
+    this.filterCharacters = this.filterCharacters.bind(this);
+    this.state = {
+      characters: this.props.characters,
+    };
+  }
+
+  formatCharacterAction(username) {
+    let action = (
+      <Button active={this.props.can_draft} onClick={this.props.handleDraft}>
+        Draft
+      </Button>
+    );
+    if (username) {
+      if (username === this.props.username) {
+        action = (
+          <Button
+            active={this.props.can_draft}
+            onClick={this.props.handleRelease}
+          >
+            Release
+          </Button>
+        );
+      } else {
+        action = username;
+      }
+    }
+    return (
+      <p>
+        {action}
+      </p>
+    );
+  }
+
+  filterCharacters(event) {
+    const user = event.target.value;
+    const characters =
+      user !== "All"
+        ? this.props.characters.filter(character => character.user === user)
+        : this.props.characters;
+    this.setState({characters});
+  }
+
   render() {
     return (
       <div>
         <ul id="characters">
-          {this.props.characters.map(character =>
+          <li>
+            <h2>
+              Characters:{" "}
+              <Select
+                options={[
+                  "All",
+                  ...this.props.owners.map(owner => owner.username),
+                ]}
+                onChange={this.filterCharacters}
+              />
+            </h2>
+          </li>
+          {this.state.characters.map(character =>
             <li
               id={`character${character.id}`}
               key={`character_${character.id}`}
@@ -37,14 +102,14 @@ class Characters extends Component {
             >
               <div style={characterStyles}>
                 <div style={characterOwnerStyles}>
-                  {character.user}
+                  {this.formatCharacterAction(character.user)}
                 </div>
-                <h2 style={characterNameStyles}>
+                <h3 style={characterNameStyles}>
                   {character.name}
-                </h2>
-                <h3 style={characterDescriptionStyles}>
-                  {character.description}
                 </h3>
+                <p style={characterDescriptionStyles}>
+                  {character.description}
+                </p>
                 <div style={characterClearStyles}>&nbsp;</div>
               </div>
             </li>,
@@ -55,7 +120,10 @@ class Characters extends Component {
   }
 }
 const mapStateToProps = (state, ownProps) => ({
+  can_draft: state.user.can_draft,
+  username: state.user.username,
   characters: state.game.characters,
+  owners: state.game.owners,
 });
 
 Characters = connect(mapStateToProps)(Characters);

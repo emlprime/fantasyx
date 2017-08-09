@@ -22,7 +22,7 @@ const currentSectionStyles = {
   textDecoration: "none",
 };
 
-const sections = ["Characters", "Draft", "My Drafts", "Leaderboard", "Scores"];
+const sections = ["Characters", "Leaderboard", "Scores"];
 const section_map = {
   Characters: "/characters",
   Draft: "/draft",

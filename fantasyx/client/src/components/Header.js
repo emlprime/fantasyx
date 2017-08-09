@@ -6,14 +6,9 @@ const headerStyles = {};
 
 const h1Styles = {
   marginTop: ".3em",
-  marginBottom: ".1em",
+  marginBottom: "0",
   color: "#c11d43",
   fontSize: "2.5em",
-};
-
-const subtitleStyles = {
-  color: "#c11d43",
-  fontSize: ".01em",
 };
 
 const profileStyles = {
@@ -37,12 +32,15 @@ const Header = ({username, style = {}}) =>
       </Link>
     </div>
     <Link to="/">
-      <h1 style={h1Styles}>aGoT</h1>
+      <h1 style={h1Styles}>
+        <img
+          src="/lot_logo.png"
+          width="400px"
+          height="107px"
+          alt="Leage of Thrones"
+        />
+      </h1>
     </Link>
-    <h2 style={subtitleStyles}>
-      Crush your enemies. See them driven before you. Hear the lamentations of
-      their women.
-    </h2>
   </div>;
 
 Header.propTypes = {};

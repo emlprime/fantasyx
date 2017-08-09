@@ -47,11 +47,6 @@ class App extends Component {
     return (
       <Chrome username={this.props.username}>
         <Home />
-        <NotificationStack
-          notifications={this.props.notifications}
-          onDismiss={notification =>
-            this.props.removeNotification(notification)}
-        />
       </Chrome>
     );
   }

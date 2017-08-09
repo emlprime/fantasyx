@@ -6,6 +6,10 @@ const GameReducer = (state = {}, action) => {
     case "RUBRIC":
       const introduction = IntroductionMessage.introduction;
       return {...state, rubric: action.rubric, introduction};
+    case "SCORES":
+      return {...state, scores: action.scores};
+    case "OWNERS":
+      return {...state, owners: action.owners};
     case "CHARACTERS":
       const available_characters = action.characters.filter(character => {
         return character.user === null;

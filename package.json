@@ -2,6 +2,7 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "prettier": "^1.5.3",
+    "quick-pivot": "^2.2.5",
     "react": "^15.6.1",
     "reactabular-table": "^8.9.0"
   }

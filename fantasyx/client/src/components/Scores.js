@@ -1,38 +1,97 @@
-import React from "react";
-import {NavLink} from "react-router-dom";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import * as Table from "reactabular-table";
+import Button from "./Button";
+import Select from "./Select";
 
-import {Column, Table, AutoSizer} from "react-virtualized";
-import "react-virtualized/styles.css"; // only needs to be imported once
-
-const navigationStyles = {
-  padding: "1em",
+const tableStyles = {
+  marginTop: "1em",
 };
 
-const Scores = ({label, dataKey, report}) =>
-  <div>
-    <div style={navigationStyles}>
-      <NavLink to="/scores/altfacts">Altfacts</NavLink> |
-      <NavLink to="/scores/canon">Canon</NavLink>
-    </div>
-    <AutoSizer>
-      {({width}) =>
-        <Table
-          width={1000}
-          height={100000}
-          headerHeight={20}
-          rowHeight={30}
-          rowCount={report.data.length}
-          rowGetter={({index}) => report.data[index]}
-        >
-          <Column label={label} dataKey={dataKey} width={140} />
-          {["points", "bonus", "ep"].map(key =>
-            <Column width={80} label={key} dataKey={key} key={key} />,
-          )}
-          {["description", "notes"].map(key =>
-            <Column width={350} label={key} dataKey={key} key={key} />,
-          )}
-        </Table>}
-    </AutoSizer>
-  </div>;
+const formatColumn = (name, label, type = "text") => ({
+  property: name,
+  textAlign: type === "text" ? "left" : "right",
+  header: {
+    label: label,
+    props: {
+      style: {
+        width: 200,
+        textAlign: type === "text" ? "left" : "right",
+      },
+    },
+  },
+});
+
+class Scores extends Component {
+  constructor(props) {
+    super(props);
+    this.toggleCanonFilter = this.toggleCanonFilter.bind(this);
+    this.reverseCanonFilter = this.reverseCanonFilter.bind(this);
+    this.filterScores = this.filterScores.bind(this);
+    this.changeOwnerFilter = this.changeOwnerFilter.bind(this);
+    this.state = {
+      canon_filter: "altfacts",
+      owner_filter: "All",
+    };
+  }
+
+  filterScores() {
+    const scores =
+      this.state.canon_filter === "altfacts"
+        ? this.props.scores
+        : this.props.scores.filter(
+            score => score.canon === this.state.canon_filter,
+          );
+    return this.state.owner_filter === "All"
+      ? scores
+      : scores.filter(score => score.owner === this.state.owner_filter);
+  }
+
+  reverseCanonFilter() {
+    return this.state.canon_filter == "altfacts" ? "canon" : "altfacts";
+  }
+
+  toggleCanonFilter() {
+    this.setState({
+      canon_filter: this.reverseCanonFilter(),
+    });
+  }
+
+  changeOwnerFilter(event) {
+    const owner_filter = event.target.value;
+    this.setState({owner_filter});
+  }
+
+  render() {
+    const {canon_filter} = this.state;
+    const columns = [
+      formatColumn("character_name", "Character"),
+      formatColumn("episode_number", "Ep No"),
+      formatColumn("canon", "Canon"),
+    ];
+    const canon_filter_map = {canon: "Canon", altfacts: "AltFacts"};
+    return (
+      <div>
+        <Button onClick={this.toggleCanonFilter}>
+          Change to {canon_filter_map[this.reverseCanonFilter()]}
+        </Button>
+        <Select
+          options={["All", ...this.props.owners.map(owner => owner.username)]}
+          onChange={this.changeOwnerFilter}
+        />
+        <Table.Provider columns={columns} style={tableStyles}>
+          <Table.Header />
+          <Table.Body rows={this.filterScores()} rowKey="id" />
+        </Table.Provider>
+      </div>
+    );
+  }
+}
+const mapStateToProps = (state, ownProps) => ({
+  scores: state.game.scores,
+  owners: state.game.owners,
+});
+
+Scores = connect(mapStateToProps)(Scores);
 
 export default Scores;

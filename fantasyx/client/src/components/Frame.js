@@ -3,7 +3,8 @@ import {connect} from "react-redux";
 import {Route} from "react-router-dom";
 import Home from "./Home";
 import Characters from "./Characters";
-import Draft from "./Draft";
+import Leaderboard from "./Leaderboard";
+import Scores from "./Scores";
 import Chrome from "./Chrome";
 
 class Frame extends Component {
@@ -12,14 +13,14 @@ class Frame extends Component {
       <Chrome username={this.props.username}>
         <Route exact path="/" component={Home} />
         <Route exact path="/characters" component={Characters} />
-        <Route exact path="/draft" component={Draft} />
+        <Route exact path="/leaderboard" component={Leaderboard} />
+        <Route exact path="/scores" component={Scores} />
       </Chrome>
     );
   }
 }
 
 const mapStateToProps = state => {
-  console.log(state);
   return {
     username: state.user.username,
   };

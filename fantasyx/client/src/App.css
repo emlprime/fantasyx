@@ -77,7 +77,7 @@ li {
     padding-left: None;
 }
 
-#characters li:nth-child(odd) {
+th, li:nth-child(even), tr:nth-child(even) {
     background-color: rgba(0,0,0,0.1);
 }
 
