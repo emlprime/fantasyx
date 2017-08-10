@@ -4,7 +4,8 @@ import "../App.css";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 const outerContainerStyles = {
-  Width: "750px",
+  width: "100%",
+  minWidth: "900px",
 };
 
 const contentStyles = {

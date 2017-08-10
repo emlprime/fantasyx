@@ -14,7 +14,7 @@ def handle_event(msg_type, msg, db_session=None):
         "RELEASE": release,
         "UPDATE_USER": update_user,
     }
-
+    print "msg_type: %s" % msg
     if msg_type in handlers.keys():
         response = handlers[msg_type](msg, db_session)
     else:
@@ -33,7 +33,6 @@ def initial_data(user_identifier, db_session):
 def format_owners(db_session):
     result = db_session.query(User).order_by(User.name).values(User.name)
     owners = [{"username": user[0]} for user in result]
-    print owners
     return {"type": "OWNERS", "owners": owners}
 
 # The full list of characters
@@ -76,9 +75,6 @@ def format_scores(db_session):
         "character_name": score.character.name,
     } for score in raw_report]
 
-    print "scores: %d" % len(scores)
-    for score in scores:
-        print "score detail: %s" % score
     return {"type":"SCORES", "scores": scores}
     
 # action to draft character from available characters
@@ -135,7 +131,6 @@ def generate_score(msg, db_session):
         character = db_session.query(Character).filter(Character.name == character_name).first()
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
-    print episode_number
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
     
     # get a draft from the draft history. This is a historically idempotend approach
@@ -182,7 +177,6 @@ def generate_score(msg, db_session):
         "bonus": bonus,
         "notes": notes,
     }
-    print score_config
     db_session.execute(Score.__table__.insert(), score_config)
     db_session.commit()
 
@@ -192,14 +186,14 @@ def update_user(msg, db_session):
         "seat_of_power": msg["data"]["seat_of_power"],
         "house_words": msg["data"]["house_words"],
     }
-    
+    print data
     try:
         db_session.query(User).filter(User.name == data['name']).update(data)
         db_session.commit()
-        return {
-            "notify": "User %s updated" % data["name"],
-            "user_data": {"username": data['name'], "seat_of_power": data['seat_of_power'], "house_words": data['house_words']},
-        }
+    #     return {
+    #         "notify": "User %s updated" % data["name"],
+    #         "user_data": {"username": data['name'], "seat_of_power": data['seat_of_power'], "house_words": data['house_words']},
+    #     }
     except exc.InternalError, exception:
         reason = exception.message
         print "Failed because: %s" % reason

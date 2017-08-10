@@ -19,10 +19,11 @@ const characterNameStyles = {
 const characterDescriptionStyles = {
   margin: 0,
   padding: ".2em",
+  width: "80%",
 };
 
 const characterOwnerStyles = {
-  width: "30%",
+  width: "10%",
   float: "right",
   padding: "0.3em",
   textShadow: "2px 2px 2px #666",

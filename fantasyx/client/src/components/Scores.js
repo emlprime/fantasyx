@@ -68,6 +68,10 @@ class Scores extends Component {
       formatColumn("episode_number", "Ep No"),
       formatColumn("canon", "Canon"),
       formatColumn("owner", "Player"),
+      formatColumn("score", "Score"),
+      formatColumn("kind", "Kind"),
+      formatColumn("description", "Description"),
+      formatColumn("notes", "Notes"),
     ];
 
     const canon_filter_map = {canon: "AltFacts", altfacts: "Canon"};

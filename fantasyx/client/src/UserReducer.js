@@ -2,11 +2,14 @@ import {removeNotification} from "./actions";
 
 const reducer = (state = {}, action) => {
   let notifications = [];
+  console.log("action:", action);
   console.log("handing action:", action.type);
-  /* console.log("action:", action);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
       return {...state, user_identifier: action.user_identifier};
+    case "UPDATE_USER":
+      state.ws.send(JSON.stringify(action));
+      return {...state, ...action.data};
     case "SEND_USER_IDENTIFIER":
       console.log("ready to send user identifier");
       console.log(state.ws);
@@ -29,7 +32,7 @@ const reducer = (state = {}, action) => {
         email: action.user_data.email,
         username: action.user_data.username,
         seat_of_power: action.user_data.seat_of_power,
-        HOUSE_words: action.user_data.house_words,
+        house_words: action.user_data.house_words,
       };
     case "RUBRIC":
       return {...state, rubric: action.rubric};

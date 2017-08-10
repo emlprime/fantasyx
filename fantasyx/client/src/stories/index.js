@@ -16,6 +16,7 @@ import Home from "../components/Home";
 import Characters from "../components/Characters";
 import Leaderboard from "../components/Leaderboard";
 import Scores from "../components/Scores";
+import Profile from "../components/Profile";
 
 import {Provider} from "react-redux";
 import {store} from "../redux";
@@ -131,6 +132,7 @@ storiesOf("Sections", module)
   )
   .add("Leaderboard", () => <Leaderboard />)
   .add("Scores", () => <Scores />)
+  .add("Profile", () => <Profile onSubmit={action("send profile")} />)
   .add("Frame", () => <Frame />);
 
 store.dispatch(UserDataMessage);

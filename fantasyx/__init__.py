@@ -146,7 +146,9 @@ def test(ws):
                 new_ws = False
                 for message in initial_data(user_identifier, db_session):
                     ws.send(json.dumps(message))
-            print "msg [%s] for %s" % (msg, user_identifier)
+            else:
+                handle_event(msg["type"], msg, db_session)
+                print "msg [%s] for %s" % (msg, user_identifier)
         else:
             submsg = pubsub.get_message()
             if submsg and type(submsg['data']) == str:
@@ -154,19 +156,7 @@ def test(ws):
                 print "submsg [%s] for %s" % (submsg, user_identifier)
                 if msg and 'user_identifier' in msg.keys() and msg['user_identifier'] == user_identifier:
                     msg = None
-        if msg:
-            msg_type = msg['type']
-            if msg_type:
-                print "handling message type: %s" % msg_type
-                try:
-                    response = handle_event(msg_type, msg, engine)
-                    # ws.send(response)
-                    # r.publish('msgs', json.dumps({'type': 'CHARACTERS'}))
 
-                except Exception as error:
-                    print "error: %s" % error
-                    error_response = json.dumps({"error": error.args[0]})
-                    ws.send(error_response)
 
     if user_identifier:
         # unsubscribe user identifier
