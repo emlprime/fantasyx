@@ -2,6 +2,8 @@ import React from "react";
 
 const selectStyles = {
   borderRadius: 5,
+  backgroundColor: "#511818",
+  color: "#CCC",
   outline: "none",
   fontSize: 15,
   padding: "3px 10px",

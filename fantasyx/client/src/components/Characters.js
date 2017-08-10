@@ -54,6 +54,7 @@ class Characters extends Component {
           <Button
             active={this.props.can_draft}
             onClick={this.props.handleRelease}
+            style={{color: "#c11d43"}}
           >
             Release
           </Button>
@@ -84,7 +85,7 @@ class Characters extends Component {
         <ul id="characters">
           <li>
             <h2>
-              Characters:{" "}
+              Showing characters for:
               <Select
                 options={[
                   "All",

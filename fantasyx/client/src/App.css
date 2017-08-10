@@ -77,7 +77,15 @@ li {
     padding-left: None;
 }
 
-th, li:nth-child(even), tr:nth-child(even) {
+th, #content li:nth-child(even), tr:nth-child(even) {
     background-color: rgba(0,0,0,0.1);
 }
 
+.anim-appear {
+  opacity: 0.01;
+}
+ 
+.anim-appear.anim-appear-active{
+  opacity: 2;
+  transition: opacity 5s ease-in;
+}

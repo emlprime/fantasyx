@@ -9,7 +9,7 @@ const buttonStyles = {
 };
 
 const activeStyles = {
-  color: "#c11d43",
+  color: "#ccc",
   border: "1px solid #000",
   backgroundColor: "#511818",
   cursor: "pointer",

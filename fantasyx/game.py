@@ -10,18 +10,9 @@ import numpy as np
 def handle_event(msg_type, msg, db_session=None):
     print("handling %s" % msg_type)
     handlers = {
-        "draft": draft,
-        "my_drafts": my_drafts,
-        "initial_info": initial_info,
-        "characters": characters,
-        "available_characters": available_characters,
-        "draft": draft,
-        "release": release,
-        "scores": scores,
-        "raw_scores": raw_scores,
-        "user_data": user_data,
-        "update_user": update_user,
-        "can_draft": can_draft,
+        "DRAFT": draft,
+        "RELEASE": release,
+        "UPDATE_USER": update_user,
     }
 
     if msg_type in handlers.keys():
@@ -30,11 +21,23 @@ def handle_event(msg_type, msg, db_session=None):
         response = {"error": "no handler implemented for %s" % msg_type}
     return json.dumps(response)
 
-def initial_info(msg, db_session):
-    return rubric(msg, db_session)
+def initial_data(user_identifier, db_session):
+    rubric = format_rubric(db_session)
+    characters = format_characters(db_session)
+    user_data = format_user_data(user_identifier, db_session)
+    scores = format_scores(db_session)
+    owners = format_owners(db_session)
+    
+    return [rubric, characters, user_data, scores, owners]
+
+def format_owners(db_session):
+    result = db_session.query(User).order_by(User.name).values(User.name)
+    owners = [{"username": user[0]} for user in result]
+    print owners
+    return {"type": "OWNERS", "owners": owners}
 
 # The full list of characters
-def rubric(msg, db_session):
+def format_rubric(db_session):
     rubric = {}
     result = db_session.query(Rubric).order_by(Rubric.kind, Rubric.points).values(Rubric.description, Rubric.kind, Rubric.points, Rubric.canon)
     for row in result:
@@ -43,86 +46,43 @@ def rubric(msg, db_session):
             rubric[kind] = []
         rubric[kind].append({"description":description, "points":points, "kind": canon})
 
-    return {"rubric": [{"title": title, "data": data} for title, data in rubric.items()]}
+    return {"type": "RUBRIC", "rubric": [{"title": title, "data": data} for title, data in rubric.items()]}
 
-def characters(msg, db_session):
+def format_characters(db_session):
     result = db_session.query(Character).outerjoin(Draft).outerjoin(User).order_by(Character.name).values(Character.id, Character.name, Character.description, User.name)
-    return {"characters": [{"id": item[0], "name": item[1], "description": item[2], "user": item[3]} for item in result if item[0]]}
+    return {"type": "CHARACTERS", "characters": [{"id": item[0], "name": item[1], "description": item[2], "user": item[3]} for item in result if item[0]]}
 
 # user details for the front end display
-def user_data(msg, db_session):
-    print "msg:"
-    print msg
-    user_identifier = msg['user_identifier']
+def format_user_data(user_identifier, db_session):
     print "selecting user for user identifier: %s" % (user_identifier)
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    return {"user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "house_words": user.house_words}}
+    return {"type": "USER_DATA", "user_data": {"email": user.email, "username": user.name, "seat_of_power": user.seat_of_power, "house_words": user.house_words}}
 
-# characters that are unclaimed at this point in time
-def available_characters(msg, db_session):
-    result = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).order_by(Character.name).values(Character.id, Character.name)
-    return {"available_characters": [{"id": item[0], "name": item[1]} for item in result if item[0]]}
-
-# characters claimed by the session with this user identifier
-def my_drafts(msg, db_session):
-    user_identifier = msg['user_identifier']
-    user = db_session.query(User).filter(User.identifier == user_identifier).first()
-    if not user:
-        raise Exception("No user found with name %s" % user_identifier)
-    return {"my_drafts": [{"id": draft.character.id, "name": draft.character.name} for draft in user.drafts.values()]}
-
-# scores for the game so far
-def scores(msg, db_session):
-    pivot = msg['options']['pivot']
-    canon = msg['options']['canon']
-    
-    canon_filter =  "" if canon == 'altfacts' else """ WHERE r.canon='canon'"""
-    index = 'user_name' if pivot == 'user' else 'character_name'
-            
-    query = """SELECT c.name as character_name, u.name as user_name, s.points + s.bonus as total_points, s.episode_number as episode_number FROM score s join character c on s.character_id = c.id join rubric r on r.id=s.rubric_id left outer join "user" u on u.id=s.user_id  %s""" % (canon_filter)
-    print query
-    df = pd.read_sql_query(query,con=db_session)
-    
-    pt = pd.pivot_table(df, index=index, columns='episode_number', values='total_points', aggfunc=np.sum)
-
-    report =  json.loads(pt.to_json(orient="table"))
-    report_title = "%s_%s_report" % (pivot, canon)
-    return {"scores": {
-        report_title: report,
-    }}
-
-def raw_scores(msg, db_session):
-    canon = msg['options']['canon']
+def format_scores(db_session):
     query = db_session.query(Score).outerjoin(Character).options(lazyload('rubric'))
-    if canon == 'canon':
-        query = query.outerjoin(Rubric).filter(Rubric.canon == 'canon')
     raw_report = query.order_by(Score.episode_number, Character.name).all()
 
-    data = [{
-        "ep": score.episode_number,
+    scores = [{
+        "id": score.id,
+        "episode_number": score.episode_number,
+        "owner": score.user.name if score.user else "",
         "notes": score.notes,
         "points": score.points,
         "bonus": score.bonus,
+        "score": score.points + (score.bonus or 0),
         "kind": score.rubric.kind,
         "canon": score.rubric.canon,
         "description": score.rubric.description,
         "character_name": score.character.name,
     } for score in raw_report]
 
-    report = {
-        "data": data,
-    }
-    # print report
-    report_title = "raw_scores_%s_report" % (canon)
-    return {"raw_scores": {
-        report_title: report,
-    }}
+    print "scores: %d" % len(scores)
+    for score in scores:
+        print "score detail: %s" % score
+    return {"type":"SCORES", "scores": scores}
     
 # action to draft character from available characters
-def draft(msg, db_session):
-    user_identifier = msg['user_identifier']
-    character_id = msg['character_id']
-    
+def draft(user_identifier, character_id, db_session):
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
@@ -131,6 +91,7 @@ def draft(msg, db_session):
         return {"can_draft": False}
     
     draft_ticket = user.next_draft_ticket(db_session)
+
     if draft_ticket:
         if not draft_ticket.user_identifier == user_identifier:
             raise Exception("It is not %s's turn to draft" % user_identifier)
@@ -144,14 +105,10 @@ def draft(msg, db_session):
         
     db_session.commit()
     db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
-    return available_characters(msg, db_session)
+    return True
 
 # action to release a character from the draft for this user_identifier
-def release(msg, db_session):
-    user_identifier = msg['user_identifier']
-    character_id = msg['character_id']
-
-
+def release(user_identifier, character_id, db_session):
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
@@ -160,15 +117,14 @@ def release(msg, db_session):
     user.release(character)
     db_session.commit()
     
-    return my_drafts(msg, db_session)
+    return True
 
-def can_draft(msg, db_session):
-    user_identifier = msg['user_identifier']
+def can_draft(user_identifier, db_session):
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
 
-    return {"can_draft": user.can_draft(db_session)}
+    return {"type": "CAN_DRAFT", "can_draft": user.can_draft(db_session)}
 
 def generate_score(msg, db_session):
     # Get the character from the unique character name
@@ -179,6 +135,7 @@ def generate_score(msg, db_session):
         character = db_session.query(Character).filter(Character.name == character_name).first()
     # get the episode from the unique episode number
     episode_number = msg['episode_number']
+    print episode_number
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
     
     # get a draft from the draft history. This is a historically idempotend approach

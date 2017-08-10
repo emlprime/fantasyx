@@ -61,3 +61,6 @@ const preloadedState = {
   },
 };
 export const store = configureStore(preloadedState);
+ws.onopen = function() {
+  store.dispatch({type: "SEND_USER_IDENTIFIER"});
+};

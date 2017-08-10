@@ -19,7 +19,7 @@ class Leaderboard extends Component {
   }
 
   reversePivotKey() {
-    return this.state.pivot_key == "owner" ? "character_name" : "owner";
+    return this.state.pivot_key === "owner" ? "character_name" : "owner";
   }
 
   togglePivot() {
@@ -43,19 +43,22 @@ class Leaderboard extends Component {
       aggregator,
     );
     const pt = pivot.data.table;
-    const cols = pt.shift().value;
+    const col_source = pt.shift();
+    const cols = col_source ? col_source.value : [];
     cols.shift();
 
     const rows = pivot.data.table.map(row => {
       const row_data = {};
-      row_data[pivot_key] = row.value[0];
+      const owner = row.value[0];
+      row_data[pivot_key] = owner === "" ? "No one" : owner;
 
       let i = 1;
       let total = 0;
       cols.map(col => {
         row_data[col] = row.value[i];
-        total += parseInt(row.value[i] || 0);
+        total += parseInt(row.value[i] || 0, 10);
         i++;
+        return total;
       });
       row_data["total"] = total;
       return row_data;
@@ -74,7 +77,6 @@ class Leaderboard extends Component {
           },
         },
       },
-      ,
       ...cols.map(col => ({
         property: col,
         props: {style: {textAlign: "right"}},
@@ -103,12 +105,15 @@ class Leaderboard extends Component {
       },
     ];
 
-    const pivot_key_map = {character_name: "Character", owner: "Owner"};
+    const pivot_key_map = {character_name: "owner", owner: "character"};
     return (
       <div>
-        <Button onClick={this.togglePivot}>
-          Change to {pivot_key_map[this.reversePivotKey()]}
-        </Button>
+        <h2>
+          Scores by episode by {" "}
+          <Button onClick={this.togglePivot}>
+            {pivot_key_map[this.reversePivotKey()]}
+          </Button>
+        </h2>
         <Table.Provider columns={columns} style={tableStyles}>
           <Table.Header />
           <Table.Body rows={rows} rowKey={pivot_key} />

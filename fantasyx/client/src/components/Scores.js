@@ -48,7 +48,7 @@ class Scores extends Component {
   }
 
   reverseCanonFilter() {
-    return this.state.canon_filter == "altfacts" ? "canon" : "altfacts";
+    return this.state.canon_filter === "altfacts" ? "canon" : "altfacts";
   }
 
   toggleCanonFilter() {
@@ -63,22 +63,29 @@ class Scores extends Component {
   }
 
   render() {
-    const {canon_filter} = this.state;
     const columns = [
       formatColumn("character_name", "Character"),
       formatColumn("episode_number", "Ep No"),
       formatColumn("canon", "Canon"),
+      formatColumn("owner", "Player"),
     ];
-    const canon_filter_map = {canon: "Canon", altfacts: "AltFacts"};
+
+    const canon_filter_map = {canon: "AltFacts", altfacts: "Canon"};
+
     return (
       <div>
-        <Button onClick={this.toggleCanonFilter}>
-          Change to {canon_filter_map[this.reverseCanonFilter()]}
-        </Button>
-        <Select
-          options={["All", ...this.props.owners.map(owner => owner.username)]}
-          onChange={this.changeOwnerFilter}
-        />
+        <h2>
+          Scores for{" "}
+          <Button onClick={this.toggleCanonFilter}>
+            {canon_filter_map[this.reverseCanonFilter()]}
+          </Button>{" "}
+          rubric, showing{" "}
+          <Select
+            options={["All", ...this.props.owners.map(owner => owner.username)]}
+            onChange={this.changeOwnerFilter}
+          />{" "}
+          players
+        </h2>
         <Table.Provider columns={columns} style={tableStyles}>
           <Table.Header />
           <Table.Body rows={this.filterScores()} rowKey="id" />

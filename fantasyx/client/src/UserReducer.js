@@ -2,15 +2,27 @@ import {removeNotification} from "./actions";
 
 const reducer = (state = {}, action) => {
   let notifications = [];
-  /* console.log("handing action:", action.type);*/
+  console.log("handing action:", action.type);
   /* console.log("action:", action);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
+      return {...state, user_identifier: action.user_identifier};
+    case "SEND_USER_IDENTIFIER":
+      console.log("ready to send user identifier");
+      console.log(state.ws);
+      console.log(state.user_identifier);
+      state.ws.send(
+        JSON.stringify({
+          type: "USER_IDENTIFIER",
+          user_identifier: state.user_identifier,
+        }),
+      );
       return {...state, user_identifier: action.user_identifier};
     case "LOGGED_OUT":
       return {};
     case "RELEASE":
       console.log("send relase to server");
+      return state;
     case "USER_DATA":
       return {
         ...state,

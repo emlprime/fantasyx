@@ -1,15 +1,16 @@
 from fantasyx import app, db_session, redis
-from fantasyx.models import DraftTicket, User, Rubric, Episode
-from fantasyx.game import rubric, raw_scores
+from fantasyx.models import DraftTicket, User, Rubric, Episode, Score, Character
+from sqlalchemy.orm import lazyload, joinedload
+
+
 import csv
 import hashlib
 
-data = {
-    "name": 'peter',
-    "seat_of_power": 'foo',
-    "house_words": 'bar',
-}
 
-print db_session.query(User).filter(User.name == data['name']).update(data)
+for row in  db_session.query(Score).outerjoin(Character).outerjoin(User).order_by(Score.episode_number, Character.name).all():
+    print row.user
+    
 
-# db_session.commit()
+
+
+

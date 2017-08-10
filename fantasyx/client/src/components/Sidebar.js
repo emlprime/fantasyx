@@ -3,13 +3,16 @@ import {Link} from "react-router-dom";
 import "../App.css";
 
 const sidebarStyles = {
+  borderRadius: 4,
   marginTop: "0px",
   listStyleType: "none",
-  backgroundColor: "#511818",
+  backgroundColor: "rgba(81, 24, 24, 0.8)",
+  boxShadow: "5px 5px 5px 5px rgba(90, 24, 25, 0.3)",
   maxWidth: "10em",
   minWidth: "10em",
   height: "500px",
   float: "left",
+  marginRight: "30px",
 };
 
 const sidebarLinkStyles = {

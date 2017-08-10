@@ -12,6 +12,7 @@ class Frame extends Component {
     return (
       <Chrome username={this.props.username}>
         <Route exact path="/" component={Home} />
+        <Route exact path="/user/:user_identifier" component={Home} />
         <Route exact path="/characters" component={Characters} />
         <Route exact path="/leaderboard" component={Leaderboard} />
         <Route exact path="/scores" component={Scores} />

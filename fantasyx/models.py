@@ -64,7 +64,7 @@ class User(Base):
         draft_ticket = self.remaining_draft_tickets(db_session).first()
         if not draft_ticket:
             return None
-        return db_session.query(User).filter(User.identifier == draft_ticket.user_identifier).first()
+        return draft_ticket
 
     def draft_allowed(self, db_session):
         """ Are we allowed to draft
@@ -124,6 +124,15 @@ class Score(Base):
                     cascade="all, delete-orphan"
                     )
                 )
+    
+    user = relationship(User, backref=backref(
+                    "scores",
+                    cascade="all, delete-orphan"
+                    )
+                )
+
+    def __repr__(self):
+        return "%s" % (str(self.user_id) or "")
     
 class Rubric(Base):
     __tablename__ = 'rubric'

@@ -4,7 +4,7 @@ import "../App.css";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 const outerContainerStyles = {
-  minWidth: "750px",
+  Width: "750px",
 };
 
 const contentStyles = {
@@ -12,9 +12,10 @@ const contentStyles = {
   margin: "auto",
   float: "left",
   backgroundColor: "rgba(255, 255, 255, 0.3)",
-  height: "510px",
+  minHeight: "510px",
   paddingLeft: "1em",
   overflowY: "auto",
+  boxShadow: "5px 5px 25px 25px rgba(250, 240, 255, 0.3)",
 };
 
 const clearStyles = {clear: "both"};
@@ -24,7 +25,7 @@ const Chrome = ({children, username, currentSection, style = {}}) =>
     <div style={outerContainerStyles}>
       <Header username={username} />
       <Sidebar currentSection={currentSection} />
-      <div style={contentStyles}>
+      <div id="content" style={contentStyles}>
         {children}
       </div>
       <div style={clearStyles}>&nbsp;</div>

@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, Load
 from models import Character, User, Draft, DraftTicket
 from flask_uwsgi_websocket import GeventWebSocket
-from game import handle_event, can_draft
+from game import handle_event, initial_data
 from flask import Flask
 from flask_dotenv import DotEnv
 import json
@@ -134,11 +134,18 @@ pubsub = r.pubsub()
 @websocket.route('/api/test')
 def test(ws):
     user_identifier = None
+    new_ws = True
     pubsub.subscribe(['msgs'])
     while True:
         msg = ws.receive()
+        print "msg: %s" % msg
         if msg:
             msg = json.loads(msg)
+            if new_ws and msg["type"] == "USER_IDENTIFIER":
+                user_identifier = msg["user_identifier"]
+                new_ws = False
+                for message in initial_data(user_identifier, db_session):
+                    ws.send(json.dumps(message))
             print "msg [%s] for %s" % (msg, user_identifier)
         else:
             submsg = pubsub.get_message()
@@ -152,33 +159,9 @@ def test(ws):
             if msg_type:
                 print "handling message type: %s" % msg_type
                 try:
-                    if msg_type == 'scores':
-                        print "trying to get scores"
-                        response = handle_event(msg_type, msg, engine)
-                        ws.send(response)
-                    else:
-                        print "message: %s" % (msg)
-                        print "user_identifier: %s" % user_identifier
-                        response = handle_event(msg_type, msg, db_session)
-                        print "response: %s" % response
-                        ws.send(response)
-
-                        if msg_type in ['user_data', 'my_drafts', 'release']:
-                            if msg_type == 'user_data':
-                                user_identifier = msg['user_identifier']
-                                print "setting user identifier for: %s" % user_identifier
-                                initial_info = handle_event('initial_info', {"type": "initial_info"}, db_session)
-                                ws.send(initial_info)
-
-                            if msg_type == 'release':
-                                r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
-                        else:
-                            if msg_type == 'draft':
-                                r.publish('msgs', json.dumps({'type': 'available_characters', 'user_identifier': user_identifier}))
-                                
-                            can_draft_response = handle_event('can_draft', {'user_identifier': user_identifier}, db_session)
-                            ws.send(can_draft_response)
-
+                    response = handle_event(msg_type, msg, engine)
+                    # ws.send(response)
+                    # r.publish('msgs', json.dumps({'type': 'CHARACTERS'}))
 
                 except Exception as error:
                     print "error: %s" % error

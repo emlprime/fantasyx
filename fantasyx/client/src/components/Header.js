@@ -9,6 +9,8 @@ const h1Styles = {
   marginBottom: "0",
   color: "#c11d43",
   fontSize: "2.5em",
+  width: "390px",
+  padding: ".2em",
 };
 
 const profileStyles = {

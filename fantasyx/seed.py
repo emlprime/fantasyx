@@ -10,6 +10,7 @@ from models import Character, User, Draft, DraftTicket, Episode, Rubric
 from flask import Flask
 from flask_dotenv import DotEnv
 import os
+from game import draft
 
 app = Flask(__name__)
 env = DotEnv()
@@ -32,14 +33,14 @@ else:
 
 db_session = Session(bind=engine)
 
-# db_session.execute("TRUNCATE TABLE character restart identity CASCADE")
-# db_session.execute("TRUNCATE TABLE draft restart identity CASCADE")
-# db_session.execute("TRUNCATE TABLE draft_ticket restart identity CASCADE")
-# db_session.execute('TRUNCATE TABLE "user" restart identity CASCADE')
-# db_session.execute('TRUNCATE TABLE episode restart identity CASCADE')
-# db_session.execute('TRUNCATE TABLE rubric restart identity CASCADE')
-# db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
-# db_session.commit()
+db_session.execute("TRUNCATE TABLE character restart identity CASCADE")
+db_session.execute("TRUNCATE TABLE draft restart identity CASCADE")
+db_session.execute("TRUNCATE TABLE draft_ticket restart identity CASCADE")
+db_session.execute('TRUNCATE TABLE "user" restart identity CASCADE')
+db_session.execute('TRUNCATE TABLE episode restart identity CASCADE')
+db_session.execute('TRUNCATE TABLE rubric restart identity CASCADE')
+db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
+db_session.commit()
 
 seeds = {
     Character: 'character',
@@ -50,6 +51,7 @@ seeds = {
 for klass, filename in seeds.items():
     with open('data/seeds/%s.csv' % (filename)) as data_file:
         records = [dict(record) for record in csv.DictReader(data_file)]
+        print records
         db_session.execute(klass.__table__.insert(), records)
         db_session.commit()
     
@@ -66,17 +68,22 @@ character = db_session.query(Character).first()
 
 user_identifiers = [user_identifier for user_identifier in db_session.query(User).values(User.identifier)]
 
-draft_tickets = []
+# draft_tickets = []
 
-iterator = 0
-for x in xrange(8):
-    for i, user_identifier in enumerate(user_identifiers):
-        iterator += 1
-        draft_tickets.append({"user_identifier": user_identifier, "sort": iterator})
-    user_identifiers = list(reversed(user_identifiers))
+# iterator = 0
+# for x in xrange(8):
+#     for i, user_identifier in enumerate(user_identifiers):
+#         iterator += 1
+#         draft_tickets.append({"user_identifier": user_identifier, "sort": iterator})
+#     user_identifiers = list(reversed(user_identifiers))
 
-db_session.execute(DraftTicket.__table__.insert(), draft_tickets)
-db_session.commit()
+# db_session.execute(DraftTicket.__table__.insert(), draft_tickets)
+# db_session.commit()
+
+for i in xrange(1,10):
+    draft(user_identifiers[0], i, db_session)
+for i in xrange(11,20):
+    draft(user_identifiers[1], i, db_session)
 
 print(user.as_dict())
 user = db_session.query(User).limit(1).offset(1).first()
