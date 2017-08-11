@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {initialize, handleSubmit} from "redux-form";
+import {initialize} from "redux-form";
 import {Field, reduxForm} from "redux-form";
 import {updateUser} from "../actions";
 import Button from "./Button";

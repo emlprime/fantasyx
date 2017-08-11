@@ -2,29 +2,38 @@ import {removeNotification} from "./actions";
 
 const reducer = (state = {}, action) => {
   let notifications = [];
-  console.log("action:", action);
-  console.log("handing action:", action.type);
+  /* console.log("action:", action);
+   * console.log("handling action:", action.type);*/
   switch (action.type) {
     case "USER_IDENTIFIER":
       return {...state, user_identifier: action.user_identifier};
     case "UPDATE_USER":
       state.ws.send(JSON.stringify(action));
       return {...state, ...action.data};
+    case "DRAFT":
+      const data = action.data;
+      data.user_identifier = state.user_identifier;
+      const message = {
+        type: "DRAFT",
+        data,
+      };
+      state.ws.send(JSON.stringify(message));
+
+      return {...state};
     case "SEND_USER_IDENTIFIER":
-      console.log("ready to send user identifier");
-      console.log(state.ws);
-      console.log(state.user_identifier);
       state.ws.send(
         JSON.stringify({
           type: "USER_IDENTIFIER",
           user_identifier: state.user_identifier,
         }),
       );
-      return {...state, user_identifier: action.user_identifier};
+      return {...state, user_identifier: state.user_identifier};
     case "LOGGED_OUT":
       return {};
     case "RELEASE":
-      console.log("send relase to server");
+      let msg = action;
+      msg.data["user_identifier"] = state.user_identifier;
+      state.ws.send(JSON.stringify(msg));
       return state;
     case "USER_DATA":
       return {
@@ -43,7 +52,6 @@ const reducer = (state = {}, action) => {
 
       return {...state, my_drafts: my_drafts};
     case "NOTIFY":
-      console.log("notifying:", action.message);
       notifications = [
         ...state.notifications,
         {
@@ -72,7 +80,7 @@ const reducer = (state = {}, action) => {
         notifications = [
           ...state.notifications,
           {
-            message: `It is your turn to draft!`,
+            message: `You can draft if you want to!`,
             key: `DraftNotice_${state.notifications.length + 1}`,
             dismissAfter: 2000,
             action: "dismiss",
@@ -86,6 +94,8 @@ const reducer = (state = {}, action) => {
         notifications = [...state.notifications];
       }
       return {...state, can_draft: action.can_draft, notifications};
+    case "CAN_RELEASE":
+      return {...state, can_release: action.can_release};
     case "CONNECT_WEBSOCKET":
       return {...state, ws: action.ws};
     default:

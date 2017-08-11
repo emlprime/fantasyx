@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, Load
 from models import Character, User, Draft, DraftTicket
 from flask_uwsgi_websocket import GeventWebSocket
-from game import handle_event, initial_data
+from game import handle_event, initial_data, format_characters, format_can_draft, format_can_release
 from flask import Flask
 from flask_dotenv import DotEnv
 import json
@@ -129,36 +129,56 @@ def get_access_token():
     return session.get('access_token')
 
 r = redis.Redis()
-pubsub = r.pubsub()
 
 @websocket.route('/api/test')
 def test(ws):
     user_identifier = None
     new_ws = True
+    pubsub = r.pubsub()
     pubsub.subscribe(['msgs'])
     while True:
         msg = ws.receive()
-        print "msg: %s" % msg
         if msg:
+            print "ws msg: %s" % msg
             msg = json.loads(msg)
-            if new_ws and msg["type"] == "USER_IDENTIFIER":
+            if new_ws and msg["type"] == "USER_IDENTIFIER" and "user_identifier" in msg.keys():
                 user_identifier = msg["user_identifier"]
+                print "%s logged in" % user_identifier
                 new_ws = False
                 for message in initial_data(user_identifier, db_session):
                     ws.send(json.dumps(message))
+                r.publish("msgs", json.dumps({"type": "LOGIN", "username": "%s has logged in" % user_identifier}))
             else:
-                handle_event(msg["type"], msg, db_session)
+                response = handle_event(msg["type"], msg, db_session)
+                if msg["type"] in ["DRAFT", "RELEASE"]:
+                    r.publish('msgs', json.dumps({'type': 'CHARACTER_CHANGE', 'user_identifier': user_identifier, "message": response}))
                 print "msg [%s] for %s" % (msg, user_identifier)
         else:
             submsg = pubsub.get_message()
-            if submsg and type(submsg['data']) == str:
-                msg = json.loads(submsg['data'])
-                print "submsg [%s] for %s" % (submsg, user_identifier)
-                if msg and 'user_identifier' in msg.keys() and msg['user_identifier'] == user_identifier:
-                    msg = None
+            if submsg:
+                print "pubsub msg [%s] for %s" % (submsg, user_identifier)
+                if submsg["type"] == 'subscribe':
+                    continue
+                print submsg["data"]
+                msg = json.loads(submsg["data"])
+                print "a msg: %s" % msg
+                print "message:(%s == %s) %s" % (msg["type"], "NOTIFY", str(msg["type"]) == "NOTIFY")
+
+                if msg["type"] == "CHARACTER_CHANGE":
+                    print "character changed we should update %s" % user_identifier
+                    ws.send(json.dumps({"type": "NOTIFY", "message": msg["message"]}))
+                    ws.send(json.dumps(format_characters(db_session)))
+                    ws.send(json.dumps(format_can_draft(user_identifier, db_session)))
+                    ws.send(json.dumps(format_can_release(user_identifier, db_session)))
+                if msg["type"] == "NOTIFY":
+                    print "notifying msg: %s" % msg["message"]
+                    ws.send(json.dumps(msg))
+            else:
+                print "no pubsub for %s" % user_identifier
 
 
     if user_identifier:
         # unsubscribe user identifier
         print "unsubscribe user identifier"
-        pass
+        pubsub.unsubscribe(['msgs'])
+        

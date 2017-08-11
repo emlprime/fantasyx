@@ -46,6 +46,9 @@ class Leaderboard extends Component {
     const col_source = pt.shift();
     const cols = col_source ? col_source.value : [];
     cols.shift();
+    cols.sort();
+
+    console.log("cols:", cols);
 
     const rows = pivot.data.table.map(row => {
       const row_data = {};

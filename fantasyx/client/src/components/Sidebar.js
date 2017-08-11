@@ -25,8 +25,9 @@ const currentSectionStyles = {
   textDecoration: "none",
 };
 
-const sections = ["Characters", "Leaderboard", "Scores"];
+const sections = ["Home", "Characters", "Leaderboard", "Scores"];
 const section_map = {
+  Home: "/",
   Characters: "/characters",
   Draft: "/draft",
   "My Drafts": "/my_drafts",

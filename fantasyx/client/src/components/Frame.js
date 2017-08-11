@@ -7,6 +7,8 @@ import Leaderboard from "./Leaderboard";
 import Scores from "./Scores";
 import Chrome from "./Chrome";
 import Profile from "./Profile";
+import {NotificationStack} from "react-notification";
+import {removeNotification} from "../actions";
 
 class Frame extends Component {
   render() {
@@ -18,17 +20,25 @@ class Frame extends Component {
         <Route exact path="/leaderboard" component={Leaderboard} />
         <Route exact path="/scores" component={Scores} />
         <Route exact path="/profile" component={Profile} />
+        <NotificationStack
+          notifications={this.props.notifications}
+          onDismiss={notification =>
+            this.props.removeNotification(notification)}
+        />
       </Chrome>
     );
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    username: state.user.username,
-  };
-};
+const mapStateToProps = state => ({
+  username: state.user.username,
+  notifications: state.user.notifications,
+});
 
-Frame = connect(mapStateToProps)(Frame);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  removeNotification: removeNotification,
+});
+
+Frame = connect(mapStateToProps, mapDispatchToProps)(Frame);
 
 export default Frame;

@@ -19,16 +19,19 @@ def handle_event(msg_type, msg, db_session=None):
         response = handlers[msg_type](msg, db_session)
     else:
         response = {"error": "no handler implemented for %s" % msg_type}
-    return json.dumps(response)
+    return response
 
 def initial_data(user_identifier, db_session):
     rubric = format_rubric(db_session)
     characters = format_characters(db_session)
-    user_data = format_user_data(user_identifier, db_session)
     scores = format_scores(db_session)
     owners = format_owners(db_session)
     
-    return [rubric, characters, user_data, scores, owners]
+    user_data = format_user_data(user_identifier, db_session)
+    can_draft = format_can_draft(user_identifier,db_session)
+    can_release = format_can_release(user_identifier,db_session)
+    
+    return [rubric, characters, scores, owners, can_draft, user_data]
 
 def format_owners(db_session):
     result = db_session.query(User).order_by(User.name).values(User.name)
@@ -78,7 +81,10 @@ def format_scores(db_session):
     return {"type":"SCORES", "scores": scores}
     
 # action to draft character from available characters
-def draft(user_identifier, character_id, db_session):
+def draft(data, db_session):
+    user_identifier = data["data"]["user_identifier"]
+    character_id = data["data"]["character_id"]
+    
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
@@ -95,16 +101,19 @@ def draft(user_identifier, character_id, db_session):
     character = db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).filter(Character.id == character_id).first()
     
     result = "Drafting %s for %s" % (character, user_identifier)
+
     user.draft(character)
     if draft_ticket:
         db_session.delete(draft_ticket)
         
     db_session.commit()
     db_session.query(Character).outerjoin(Draft).filter(Draft.id == None).values(Character.id, Character.name)
-    return True
+    return "%s drafted %s" % (user.name, character.name)
 
 # action to release a character from the draft for this user_identifier
-def release(user_identifier, character_id, db_session):
+def release(data, db_session):
+    user_identifier = data["data"]["user_identifier"]
+    character_id = data["data"]["character_id"]
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
@@ -113,14 +122,21 @@ def release(user_identifier, character_id, db_session):
     user.release(character)
     db_session.commit()
     
-    return True
+    return "%s released %s" % (user.name, character.name)
 
-def can_draft(user_identifier, db_session):
+def format_can_draft(user_identifier, db_session):
     user = db_session.query(User).filter(User.identifier == user_identifier).first()
     if not user:
         raise Exception("No user found with identifier %s" % user_identifier)
 
     return {"type": "CAN_DRAFT", "can_draft": user.can_draft(db_session)}
+
+def format_can_release(user_identifier, db_session):
+    user = db_session.query(User).filter(User.identifier == user_identifier).first()
+    if not user:
+        raise Exception("No user found with identifier %s" % user_identifier)
+
+    return {"type": "CAN_RELEASE", "can_release": user.can_release(db_session)}
 
 def generate_score(msg, db_session):
     # Get the character from the unique character name

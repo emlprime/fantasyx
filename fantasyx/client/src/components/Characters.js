@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {connect} from "react-redux";
 import Button from "./Button";
 import Select from "./Select";
+import {handleDraft, handleRelease} from "../actions";
 
 const characterRowStyles = {
   listStyleType: "none",
@@ -38,23 +39,32 @@ class Characters extends Component {
     super(props);
     this.formatCharacterAction = this.formatCharacterAction.bind(this);
     this.filterCharacters = this.filterCharacters.bind(this);
+    this.setOwnerFilter = this.setOwnerFilter.bind(this);
     this.state = {
-      characters: this.props.characters,
+      owner_filter: "All",
     };
   }
 
-  formatCharacterAction(username) {
+  formatCharacterAction(character_id, username) {
     let action = (
-      <Button active={this.props.can_draft} onClick={this.props.handleDraft}>
+      <Button
+        active={this.props.can_draft}
+        onClick={() => {
+          this.props.handleDraft(character_id, this.props.username);
+        }}
+      >
         Draft
       </Button>
     );
+
     if (username) {
       if (username === this.props.username) {
         action = (
           <Button
-            active={this.props.can_draft}
-            onClick={this.props.handleRelease}
+            active={this.props.can_release}
+            onClick={() => {
+              this.props.handleRelease(character_id, this.props.username);
+            }}
             style={{color: "#c11d43"}}
           >
             Release
@@ -71,13 +81,22 @@ class Characters extends Component {
     );
   }
 
-  filterCharacters(event) {
-    const user = event.target.value;
-    const characters =
-      user !== "All"
-        ? this.props.characters.filter(character => character.user === user)
-        : this.props.characters;
-    this.setState({characters});
+  setOwnerFilter(event) {
+    this.setState({owner_filter: event.target.value});
+  }
+
+  filterCharacters(characters) {
+    let owner_filter = null;
+    if (this.state.owner_filter !== "All") {
+      if (this.state.owner_filter !== "No One") {
+        owner_filter = this.state.owner_filter;
+      }
+      return this.props.characters.filter(
+        character => character.user === owner_filter,
+      );
+    } else {
+      return this.props.characters;
+    }
   }
 
   render() {
@@ -90,13 +109,14 @@ class Characters extends Component {
               <Select
                 options={[
                   "All",
+                  "No One",
                   ...this.props.owners.map(owner => owner.username),
                 ]}
-                onChange={this.filterCharacters}
+                onChange={this.setOwnerFilter}
               />
             </h2>
           </li>
-          {this.state.characters.map(character =>
+          {this.filterCharacters(this.props.characters).map(character =>
             <li
               id={`character${character.id}`}
               key={`character_${character.id}`}
@@ -104,7 +124,7 @@ class Characters extends Component {
             >
               <div style={characterStyles}>
                 <div style={characterOwnerStyles}>
-                  {this.formatCharacterAction(character.user)}
+                  {this.formatCharacterAction(character.id, character.user)}
                 </div>
                 <h3 style={characterNameStyles}>
                   {character.name}
@@ -121,13 +141,24 @@ class Characters extends Component {
     );
   }
 }
+
 const mapStateToProps = (state, ownProps) => ({
   can_draft: state.user.can_draft,
+  can_release: state.user.can_release,
   username: state.user.username,
   characters: state.game.characters,
   owners: state.game.owners,
 });
 
-Characters = connect(mapStateToProps)(Characters);
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  handleDraft: (character_id, username) => {
+    dispatch(handleDraft({character_id, username}));
+  },
+  handleRelease: (character_id, username) => {
+    dispatch(handleRelease({character_id, username}));
+  },
+});
+
+Characters = connect(mapStateToProps, mapDispatchToProps)(Characters);
 
 export default Characters;

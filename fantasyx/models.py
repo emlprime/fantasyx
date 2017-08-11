@@ -92,6 +92,10 @@ class User(Base):
         empty_slots = self.empty_slots()
         return not_blackout and draft_allowed and empty_slots
     
+    def can_release(self, db_session):
+        not_blackout = self.is_not_episode_blackout(db_session)
+        return not_blackout
+    
 class Score(Base):
     __tablename__ = 'score'
     
