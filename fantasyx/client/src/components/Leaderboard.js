@@ -59,6 +59,7 @@ class Leaderboard extends Component {
     });
 
     cols.sort();
+    rows.sort((a, b) => a.total < b.total);
 
     const columns = [
       {
