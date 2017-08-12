@@ -48,13 +48,18 @@ class Leaderboard extends Component {
     const rows = pivot.data.table.map(row => {
       const row_data = {total: 0};
       const values = row.value.slice(1);
+      const owner = row.value[0];
+      row_data[pivot_key] = owner === "" ? "No one" : owner;
+
       for (let i = 0; i < cols.length; i++) {
         row_data[cols[i]] = values[i];
         row_data.total += parseInt(values[i] || 0, 10);
       }
       return row_data;
     });
+
     cols.sort();
+
     const columns = [
       {
         property: pivot_key,
