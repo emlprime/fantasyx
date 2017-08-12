@@ -36,7 +36,7 @@ const Header = ({username, style = {}}) =>
     <Link to="/">
       <h1 style={h1Styles}>
         <img
-          src="/lot_logo.png"
+          src="/league_of_butts.png"
           width="400px"
           height="107px"
           alt="Leage of Thrones"

@@ -50,6 +50,8 @@ class User(Base):
     
     def release(self, character):
         self.characters.pop(character.name)
+        print "releasing %s" % character.name
+        print self.drafted_characters[character.name]
         return True
 
     def remaining_draft_tickets(self, db_session):
