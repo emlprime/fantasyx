@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import Pivot from "quick-pivot";
 import * as Table from "reactabular-table";
 import Button from "./Button";
+import Select from "./Select";
 
 const tableStyles = {
   marginTop: "1em",
@@ -15,10 +16,24 @@ class Leaderboard extends Component {
     this.reversePivotKey = this.reversePivotKey.bind(this);
     this.toggleCanonFilter = this.toggleCanonFilter.bind(this);
     this.reverseCanonFilter = this.reverseCanonFilter.bind(this);
+    this.filterScores = this.filterScores.bind(this);
+    this.changeOwnerFilter = this.changeOwnerFilter.bind(this);
     this.state = {
       pivot_key: "owner",
       canon_filter: "canon",
+      owner_filter: "All",
     };
+  }
+  filterScores() {
+    const scores =
+      this.state.canon_filter === "altfacts"
+        ? this.props.scores
+        : this.props.scores.filter(
+            score => score.canon === this.state.canon_filter,
+          );
+    return this.state.owner_filter === "All"
+      ? scores
+      : scores.filter(score => score.owner === this.state.owner_filter);
   }
 
   reversePivotKey() {
@@ -27,6 +42,11 @@ class Leaderboard extends Component {
 
   reverseCanonFilter() {
     return this.state.canon_filter === "canon" ? "altfacts" : "canon";
+  }
+
+  changeOwnerFilter(event) {
+    const owner_filter = event.target.value;
+    this.setState({owner_filter});
   }
 
   togglePivot() {
@@ -48,10 +68,7 @@ class Leaderboard extends Component {
     const aggregationDimension = "score";
     const aggregator = "sum";
 
-    const scores =
-      this.state.canon_filter === "canon"
-        ? this.props.scores.filter(score => score.canon === "canon")
-        : this.props.scores;
+    const scores = this.filterScores(this.props.scores);
 
     const pivot = new Pivot(
       scores,
@@ -140,7 +157,13 @@ class Leaderboard extends Component {
           using {" "}
           <Button onClick={this.toggleCanonFilter}>
             {canon_filter_map[this.reverseCanonFilter()]}
-          </Button>
+          </Button>{" "}
+          for
+          <Select
+            options={["All", ...this.props.owners.map(owner => owner.username)]}
+            onChange={this.changeOwnerFilter}
+          />{" "}
+          players
         </h2>
         <Table.Provider columns={columns} style={tableStyles}>
           <Table.Header />
@@ -152,6 +175,7 @@ class Leaderboard extends Component {
 }
 const mapStateToProps = (state, ownProps) => ({
   scores: state.game.scores,
+  owners: state.game.owners,
 });
 
 Leaderboard = connect(mapStateToProps)(Leaderboard);
