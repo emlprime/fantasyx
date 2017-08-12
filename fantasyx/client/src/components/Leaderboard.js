@@ -128,7 +128,7 @@ class Leaderboard extends Component {
     ];
 
     const pivot_key_map = {character_name: "owner", owner: "character"};
-    const canon_filter_map = {canon: "Canon", altfacts: "AltFacts"};
+    const canon_filter_map = {canon: "AltFacts", altfacts: "Canon"};
     return (
       <div>
         <h2>
