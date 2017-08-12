@@ -13,8 +13,11 @@ class Leaderboard extends Component {
     super(props);
     this.togglePivot = this.togglePivot.bind(this);
     this.reversePivotKey = this.reversePivotKey.bind(this);
+    this.toggleCanonFilter = this.toggleCanonFilter.bind(this);
+    this.reverseCanonFilter = this.reverseCanonFilter.bind(this);
     this.state = {
       pivot_key: "owner",
+      canon_filter: "canon",
     };
   }
 
@@ -22,9 +25,19 @@ class Leaderboard extends Component {
     return this.state.pivot_key === "owner" ? "character_name" : "owner";
   }
 
+  reverseCanonFilter() {
+    return this.state.canon_filter === "canon" ? "altfacts" : "canon";
+  }
+
   togglePivot() {
     this.setState({
       pivot_key: this.reversePivotKey(),
+    });
+  }
+
+  toggleCanonFilter() {
+    this.setState({
+      canon_filter: this.reverseCanonFilter(),
     });
   }
 
@@ -35,8 +48,13 @@ class Leaderboard extends Component {
     const aggregationDimension = "score";
     const aggregator = "sum";
 
+    const scores =
+      this.state.canon_filter === "canon"
+        ? this.props.scores.filter(score => score.canon === "canon")
+        : this.props.scores;
+
     const pivot = new Pivot(
-      this.props.scores,
+      scores,
       rowsToPivot,
       colsToPivot,
       aggregationDimension,
@@ -110,12 +128,17 @@ class Leaderboard extends Component {
     ];
 
     const pivot_key_map = {character_name: "owner", owner: "character"};
+    const canon_filter_map = {canon: "Canon", altfacts: "AltFacts"};
     return (
       <div>
         <h2>
           Scores by episode by {" "}
           <Button onClick={this.togglePivot}>
             {pivot_key_map[this.reversePivotKey()]}
+          </Button>{" "}
+          using {" "}
+          <Button onClick={this.toggleCanonFilter}>
+            {canon_filter_map[this.reverseCanonFilter()]}
           </Button>
         </h2>
         <Table.Provider columns={columns} style={tableStyles}>
