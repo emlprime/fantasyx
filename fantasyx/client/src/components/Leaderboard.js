@@ -77,7 +77,8 @@ class Leaderboard extends Component {
     });
 
     cols.sort();
-    rows.sort((a, b) => a.total < b.total);
+    rows.sort((a, b) => (a.total > b.total ? -1 : 1));
+
     const owner = rows[0].owner;
     rows[0].owner = (
       <span>
