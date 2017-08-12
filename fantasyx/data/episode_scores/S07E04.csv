@@ -1,38 +1,63 @@
 character_name,notes,rubric_description,bonus,rubric,points
-Bran Stark,,Have a vision or prophecy,,canon,
-Bran Stark,,Attendence,1,,1
-Bronn,,Delivers a punchy one liner,,canon,
-Bronn,,Attendence,,,
-Cersei Lannister,"Totally has forced, incestuous sex with her brother",Kinky/taboo sex,5,canon,
-Cersei Lannister,Frontal nudity getting out of bed,Private nudity (seen on screen),5,canon,
-Daenerys Targaryen,Altered the course of a war granting access to Dragonglass,Change the course of a war,,canon,
-Daenerys Targaryen,My father was an evil man. On behalf of the house of Targaryen I ask you not to judge a daughter by that actions of her father.,Being a good ruler,,altfacts,
-Daenerys Targaryen,,Attendence,1,altfacts,1
-Davos Seaworth,"""This is Jon Snow!""",Delivers a punchy one liner,5,canon,
-Davos Seaworth,"""This place has changed""",Bold come-ons,,canon,
-Davos Seaworth,He took a knife in the heart for his people,Accidently reveals something they shouldn't,,altfacts,-5
-Davos Seaworth,,Attendence,1,altfacts,1
-Jaime Lannister,Totally has incestuous sex with his sister,Kinky/taboo sex,,canon,
-Jaime Lannister,Full butt,Private nudity (seen on screen),,canon,
-Jaime Lannister,Gives Olenna the lethal injection option,Kill a leader,25,canon,
-Jaime Lannister,,Attendence,1,altfacts,1
-Jon Snow,Got access to mine dragonglass,Get a cool new weapon,30,canon,
-Jon Snow,Convinced Tyrion that White Walkers were worth considering,Changes the mind of a character using only words,,canon,
-Jon Snow,"True, but I'm not a Stark",Dripping with Dramatic Irony,,altfacts,
-Jon Snow,,Attendence,1,altfacts,1
-Meera Reed,,Attendence,,altfacts,1
-Missandei,Stands up while the dragons swoop,Show courage in the face of danger,,altfacts,
-Missandei,"Clearly glowing after having ""gotten some""",Clearly smug about having had sex,,altfacts,
-Missandei,They can still do something to you. It only takes one arrow.,Changes the mind of a character using only words,,canon,
-Missandei,,Attendence,1,altfacts,1
-Petyr Baelish,,Attendence,1,altfacts,1
-Qhono,,Attendence,,altfacts,1
-Randyll Tarly,,Attendence,,altfacts,1
-Sansa Stark,"That the woman who murdered my father, mother, and brothers is dangerous? Thank you for your wise counsel.",Delivers a punchy one liner,,canon,
-Sansa Stark,,Attendence,1,altfacts,1
-Theon Greyjoy,,Attendence,1,altfacts,1
-Tycho Nestoris,,Attendence,1,altfacts,1
-Tyrion Lannister,Gains Casterly Rock through knowing about entrance,Change the course of a city/region,,canon,
-Tyrion Lannister,You make it difficult. You look a lot better brooding than I do.,Delivers a punchy one liner,,canon,
-Tyrion Lannister,,Attendence,1,altfacts,1
-Varys,,Attendence,1,altfacts,1
+Arya Stark,,Attendence,1,altfacts,
+Bran Stark,,Attendence,1,altfacts,
+Brienne of Tarth,,Attendence,1,altfacts,
+Bronn,,Attendence,1,altfacts,
+Cersei Lannister,,Attendence,1,altfacts,
+Daenerys Targaryen,,Attendence,1,altfacts,
+Davos Seaworth,,Attendence,1,altfacts,
+Harrag,,Attendence,,altfacts,
+Jaime Lannister,,Attendence,1,altfacts,
+Jon Snow,,Attendence,1,altfacts,
+Koner,,Attendence,1,altfacts,
+Meera Reed,,Attendence,1,altfacts,
+Missandei,,Attendence,1,altfacts,
+Petyr Baelish,,Attendence,1,altfacts,
+Podrick Payne,,Attendence,1,altfacts,
+Qhono,,Attendence,1,altfacts,
+Randyll Tarly,,Attendence,1,altfacts,
+Sansa Stark,,Attendence,1,altfacts,
+The Night King,,Attendence,,altfacts,
+Theon Greyjoy,,Attendence,1,altfacts,
+Tycho Nestoris,,Attendence,1,altfacts,
+Tyrion Lannister,,Attendence,1,altfacts,
+Varys,,Attendence,,altfacts,
+Arya Stark,Given the Valerian Steel dagger from Bran,Get a cool new weapon,,canon,
+Arya Stark,Crossed swords training with Brienne of Tarth,Their Kung Fu is strong,,altfacts,20
+Arya Stark,The weapons master didn't best the Hound in single combat,Changes the mind of a character using only words,,canon,
+Arya Stark,If I am and Sansa finds out you barred my way...,Changes the mind of a character using only words,,canon,
+Arya Stark,"""No one"" in response to ""Who taught you how to do that?""",Delivers a punchy one liner,,canon,
+Arya Stark,Most of them are already dead,Delivers a punchy one liner,,canon,
+Arya Stark,"I didn't run, you need better guards",Delivers a punchy one liner,,canon,
+Bran Stark,Given the Valerian Steel dagger used for his murder attempt from Little Finger,Get a cool new weapon,,canon,
+Bran Stark,I saw you at the crossroads. I thought you would go to King's Landing,Have a vision or prophecy,,canon,
+Bran Stark,"""Chaos is a ladder""",Have a vision or prophecy,,canon,
+Brienne of Tarth,Crossed swords training with Arya Stark,Their Kung Fu is strong,,altfacts,
+Bronn,Kills a Dothraki with the Scorpion just like in Broken Arrow,Movie Reference,,altfacts,3
+Bronn,Kills a bunch of unnamed Dothraki,Kill a group of unnamed characters,,canon,
+Bronn,Shoots a motherfucking dragon (bonus because it's the first anti-aircraft fire and he got it on the second try),Draws the blood of another,50,canon,
+Bronn,Saves Jaime Lannister from certain burning (loses points for tackling into water in armor),Save another character from certain death,-5,altfacts,20
+Bronn,"Come on, your father's not here now",Changes the mind of a character using only words,,canon,
+Daenerys Targaryen,Tells Drogon to burn the shit out of them (bonus for doing it in a cool way),Kill a group of unnamed characters,15,canon,
+Daenerys Targaryen,Gets off to pull the spear out of Drogon (bonus for doing it in the middle of battle),Being a good pet owner,5,altfacts,10
+Daenerys Targaryen,Burns Cersei's supply chain to cinders,Change the course of a war,,canon,
+Daenerys Targaryen,Clear lack of tactical thought with the burning (perpendicular burning and supply chain),Infuriating Tactics,,altfacts,
+Daenerys Targaryen,What would you do?,Being a good ruler,,canon,
+Davos Seaworth,Do you mind if I switch sides?,Delivers a punchy one liner,,canon,
+Davos Seaworth,King Snow...King John?,Delivers a punchy one liner,,canon,
+Davos Seaworth,"I've noticed you staring at her ""good heart""",Delivers a punchy one liner,,canon,
+Jaime Lannister,Killed a bunch of Dothraki with his off hand,Kill a group of unnamed characters,5,canon,
+Jaime Lannister,Charging Drogon with a spear,Kill having overcome a crippling fear of violence,,canon,
+Jaime Lannister,"Convinces Bronn to obey without his reward and ""motivate"" the farmers",Changes the mind of a character using only words,,canon,
+Jaime Lannister,Wins the loyalty of Dickon despite getting his name wrong,Form a new relationship,,altfacts,
+Jon Snow,Convinces Daenerys to go after the army instead of King's Landing,Changes the mind of a character using only words,,canon,
+Jon Snow,Convinces Daenerys that the Night King is real (deduction because he had to use pictures),Changes the mind of a character using only words,-5,canon,
+Missandei,"""Lots of things"" still glowing from getting it on with Grey Worm",Clearly smug about having had sex,,altfacts,
+Missandei,Convinced Davos of Daenerys' worthiness,Changes the mind of a character using only words,,canon,
+Petyr Baelish,Watching the girlfight and getting aroused,Watch people have sex,,canon,
+Podrick Payne,You're too hard on yourself m'lady,Changes the mind of a character using only words,,canon,
+Randyll Tarly,Flogging suggestion,Being a sadistic jerk,,altfacts,-5
+Sansa Stark,"""Yes"" in reply to ""do I have to call you lady Stark now?""",Delivers a punchy one liner,,canon,
+Tycho Nestoris,The Iron Bank would be glad to invest...when we get the gold,Delivers a punchy one liner,,canon,
+Dickon Tarly,Saves Jaime Lannister,Save another character from certain death,,altfacts,20
+Dickon Tarly,Killed a Dothraki,Kill an individual unnamed character,,canon,
