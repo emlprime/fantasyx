@@ -1,11 +1,8 @@
 from fantasyx import app, db_session, engine
-from fantasyx.models import DraftHistory, DraftTicket, User, Episode
+from fantasyx.models import DraftHistory, DraftTicket, User, Episode, Character
 from fantasyx.game import generate_score
 import csv
 
-db_session.execute('TRUNCATE TABLE score restart identity CASCADE')
-
-db_session.commit()
 
 episodes = [
     'S07E01',
@@ -18,11 +15,21 @@ for episode in episodes:
         for raw_score in csv.DictReader(data_file):
             score = dict(raw_score)
             score["episode_number"] = episode
+            if score["character_name"] != 'Tycho Nestoris':
+                continue
             print score
-            generate_score(score, db_session)
-        
+            # generate_score(score, db_session)
 
-# print scores({"type":"scores", }, engine)
+
+# for row in db_session.query(DraftHistory).join(Character).filter(Character.name == 'Tycho Nestoris').all():
+#     print row.id
+#     print row.released_at
+#     print "================"
+# tycho =  db_session.query(DraftHistory).filter(DraftHistory.id == 46).one()
+# tycho.released_at = '2017-07-23'
+# db_session.commit()
+    
+    # print scores({"type":"scores", }, engine)
 
 # for row in db_session.query(DraftHistory).offset(37).all():
 #     print row

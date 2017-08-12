@@ -149,7 +149,7 @@ def generate_score(msg, db_session):
     episode_number = msg['episode_number']
     episode = db_session.query(Episode).filter(Episode.number == episode_number).first()
     
-    # get a draft from the draft history. This is a historically idempotend approach
+    # get a draft from the draft history. This is a historically idempotent approach
     # ideally we should be able to clear and regenerate the scores at any time based on the draft history data. This depends upon the assumption that no drafts can be overlapping
     draft_history = db_session.query(DraftHistory).join(Character).filter(
         Character.id == character.id,
