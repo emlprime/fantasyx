@@ -60,6 +60,13 @@ class Leaderboard extends Component {
 
     cols.sort();
     rows.sort((a, b) => a.total < b.total);
+    const owner = rows[0].owner;
+    rows[0].owner = (
+      <span>
+        {owner}
+        <img src="/first_place.png" width="24px" />
+      </span>
+    );
 
     const columns = [
       {
