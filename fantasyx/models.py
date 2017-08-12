@@ -45,14 +45,11 @@ class User(Base):
     
     def draft(self, character):
         self.characters[character.name] = character
-        self.drafted_characters[character.name] = character
         return True
     
     def release(self, character):
         self.characters.pop(character.name)
-        print "releasing %s" % character.name
-        print self.drafted_characters[character.name]
-        return True
+        return character.name
 
     def remaining_draft_tickets(self, db_session):
         return db_session.query(DraftTicket).order_by(DraftTicket.sort)

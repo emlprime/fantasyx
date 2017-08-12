@@ -2,7 +2,7 @@ import json
 from models import Character, User, Draft, DraftTicket, Episode, DraftHistory, Rubric, Score
 from sqlalchemy import or_, exc
 from sqlalchemy.orm import lazyload
-from datetime import timedelta
+from datetime import timedelta, datetime
 import pandas as pd
 import numpy as np
 
@@ -103,6 +103,11 @@ def draft(data, db_session):
     result = "Drafting %s for %s" % (character, user_identifier)
 
     user.draft(character)
+    draft_history = {
+        "character_id": character.id,
+        "user_id": user.id
+    }
+    db_session.execute(DraftHistory.__table__.insert(), draft_history)
     if draft_ticket:
         db_session.delete(draft_ticket)
         
@@ -120,6 +125,9 @@ def release(data, db_session):
     
     character = db_session.query(Character).filter(Character.id == character_id).first()
     user.release(character)
+    draft_history_ids = db_session.query(User).outerjoin(DraftHistory).outerjoin(Character).filter(User.name==user.name, Character.name==character.name).values(DraftHistory.id)
+    for draft_history_id in draft_history_ids:
+        draft_history = db_session.query(DraftHistory).filter(DraftHistory.id == draft_history_id).update({"released_at":datetime.now()})
     db_session.commit()
     
     return "%s released %s" % (user.name, character.name)

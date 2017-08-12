@@ -68,7 +68,6 @@ db_session = Session(bind=engine)
 
 @app.route('/api/')
 def index():
-    print("in index")
     access_token = session.get('access_token')
     if access_token is None:
         return redirect(url_for('login'))
@@ -88,7 +87,6 @@ def index():
             session.pop('access_token', None)
             return redirect(url_for('login'))
         return res.read()
-    print("in passed the first try")
 
     try:
         import json
@@ -96,7 +94,7 @@ def index():
         data = json.loads(response)
         email = data["email"]
         user = db_session.query(User).filter(User.email==email).one()
-        print(user.as_dict())
+
     except ValueError:
         print("Could not parse json response from Google")
 
@@ -109,7 +107,6 @@ def index():
  
 @app.route('/api/login')
 def login():
-    print("in login")
     callback=url_for('authorized', _external=True)
     return google.authorize(callback=callback)
  
@@ -118,7 +115,6 @@ def login():
 @app.route(REDIRECT_URI)
 @google.authorized_handler
 def authorized(resp):
-    print("in authorized")
     access_token = resp['access_token']
     session['access_token'] = access_token, ''
     return redirect(url_for('index'))
@@ -174,8 +170,10 @@ def test(ws):
                     print "notifying msg: %s" % msg["message"]
                     ws.send(json.dumps(msg))
             else:
-                print "no pubsub for %s" % user_identifier
-
+                pass
+                # print "no pubsub for %s" % user_identifier
+                
+                
 
     if user_identifier:
         # unsubscribe user identifier
