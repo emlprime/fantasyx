@@ -7,7 +7,7 @@ click==6.7
 cryptography==1.9
 enum34==1.1.6
 Flask==0.12.2
-Flask-Cors==3.0.2
+Flask-Cors==3.0.9
 Flask-DotEnv==0.1.1
 Flask-OAuth==0.12
 Flask-SocketIO==2.9.0
